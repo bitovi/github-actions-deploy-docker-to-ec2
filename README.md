@@ -29,6 +29,7 @@ The following inputs can be used as `step.with` keys
 | `aws_session_token` | String | AWS session token |
 | `aws_default_region` | String | AWS default region |
 | `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state |
+| `dot_env` | String | `.env` file to be used with the app |
 
 ## Example usage
 
@@ -51,7 +52,7 @@ jobs:
     #   url: ${{ steps.build-publish.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-    - id: build-publish
+    - id: deploy
       uses: bitovi/github-actions-node-app-to-aws-vm@v0.1.0
       with:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID}}

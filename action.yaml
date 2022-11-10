@@ -34,13 +34,13 @@ outputs:
 
 runs:
   using: 'composite'
-
   steps:
     - name: Checkout if required
       if: ${{ inputs.checkout == 'true' }}
       uses: actions/checkout@v3
 
     - name: Deploy with BitOps
+      shell: bash
       env:
         BITOPS_ENVIRONMENT: deployment
         AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
@@ -57,6 +57,6 @@ runs:
         echo "ls GITHUB_ACTION_PATH"
         ls $GITHUB_ACTION_PATH
         exit 0
-        
+
         echo "running operations/_scripts/deploy/deploy.sh"
         # ${{ github.action_path }}/_scripts/deploy/deploy.sh
