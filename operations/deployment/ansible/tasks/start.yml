@@ -1,20 +1,3 @@
-- name: copy the .env file
-  copy:
-    src: "{{ lookup('ansible.builtin.env', 'ANSIBLE_ROOT') }}/.env"
-    dest: "{{ app_install_root }}/{{ app_repo_name }}/.env"
-
-- name: copy the docker-compose.yaml file
-  copy:
-    src: "{{ lookup('ansible.builtin.env', 'ANSIBLE_ROOT') }}/docker-compose.yaml"
-    dest: "{{ app_install_root }}/{{ app_repo_name }}/docker-compose.yaml"
-    force: no
-
-- name: copy the Dockerfile file
-  copy:
-    src: "{{ lookup('ansible.builtin.env', 'ANSIBLE_ROOT') }}/Dockerfile"
-    dest: "{{ app_install_root }}/{{ app_repo_name }}/Dockerfile"
-    force: no
-
 - name: Start docker-compose
   docker_compose:
     project_src: "{{ app_install_root }}/{{ app_repo_name }}"

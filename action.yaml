@@ -22,10 +22,14 @@ inputs:
     required: true
     default: 'us-east-1'
   tf_state_bucket:
-    description: 'AWS S3 bucket to use for Terraform state'
-    required: true
+    description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-tf-state'
+    required: false
   dot_env:
     description: '`.env` file to be used with the app'
+    required: false
+  app_port:
+    description: 'Port to expose for the app'
+    default: "80"
     required: false
 outputs:
   vm_url:
@@ -49,14 +53,8 @@ runs:
         AWS_DEFAULT_REGION: ${{ inputs.aws_default_region }}
         TF_STATE_BUCKET: ${{ inputs.tf_state_bucket }}
         DOT_ENV: ${{ inputs.dot_env }}
+        APP_PORT: ${{ inputs.app_port }}
         GITHUB_ACTION_PATH: ${{ github.action_path }}
       run: |
-        echo "DEBUGGING"
-        echo "GITHUB_ACTION_PATH"
-        echo "$GITHUB_ACTION_PATH"
-        echo "ls GITHUB_ACTION_PATH"
-        ls $GITHUB_ACTION_PATH
-        exit 0
-
         echo "running operations/_scripts/deploy/deploy.sh"
-        # ${{ github.action_path }}/_scripts/deploy/deploy.sh
+        $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh

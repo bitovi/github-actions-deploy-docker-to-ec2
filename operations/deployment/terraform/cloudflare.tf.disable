@@ -1,7 +1,0 @@
-resource "cloudflare_record" "aplication_subdomain_definition" {
-  zone_id = var.zone_id
-  name    = var.sub_domain_name
-  value   = aws_instance.server.public_ip 
-  type    = "A"
-  proxied = true
-}

@@ -30,6 +30,7 @@ The following inputs can be used as `step.with` keys
 | `aws_default_region` | String | AWS default region |
 | `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state |
 | `dot_env` | String | `.env` file to be used with the app |
+| `app_port` | String | port to expose for the app |
 
 ## Example usage
 
@@ -61,6 +62,7 @@ jobs:
         aws_default_region: us-east-1
         tf_state_bucket: my-terraform-state-bucket
         dot_env: ${{ secrets.DOT_ENV }}
+        app_port: 3000
 
 ```
 

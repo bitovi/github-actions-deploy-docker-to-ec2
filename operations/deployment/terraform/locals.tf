@@ -1,7 +1,8 @@
 locals {
   aws_tags = {
-    OperationsRepo = "jira-qa-metrics-operations"
-    OperationsRepoEnvironment = var.ops_repo_environment
+    OperationsRepo = "${var.app_org_name}-${var.app_repo_name}"
+    GitHubAction = "bitovi/github-actions-node-app-to-aws-vm"
+    OperationsRepoEnvironment = "deployment"
     created_with = "terraform"
   }
 }

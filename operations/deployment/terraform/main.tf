@@ -4,12 +4,12 @@ resource "tls_private_key" "key" {
 }
 
 resource "aws_key_pair" "aws_key" {
-  key_name   = "${var.ops_repo_environment}-ssh-key"
+  key_name   = "${var.app_org_name}-${var.app_repo_name}-ssh-key"
   public_key = tls_private_key.key.public_key_openssh
 }
 
 resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "${var.ops_repo_environment}-profile"
+  name = "${var.app_org_name}-${var.app_repo_name}-profile"
   role = var.ec2_iam_instance_profile
 }
 
@@ -24,7 +24,7 @@ resource "aws_instance" "server" {
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
 
   tags = {
-   Name = "${var.ops_repo_environment} - Instance"
+   Name = "${var.app_org_name}-${var.app_repo_name} - Instance"
   }
 }
 
