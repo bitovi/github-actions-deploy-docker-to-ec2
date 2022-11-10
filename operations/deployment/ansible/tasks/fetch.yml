@@ -1,12 +1,14 @@
-- name: clone the repo
-  become: false
-  git:
-    repo: "{{ app_repo_full_url }}"
+# copy the repo code to the VM
+- name: copy repo
+  copy:
+    src: "{{ lookup('ansible.builtin.env', 'GITHUB_WORKSPACE') }}"
     dest: "{{ app_install_root }}/{{ app_repo_name }}"
-    force: yes
-    update: yes
-    version: main
-  register: fetch_output
+  register: copy_repo_output
 
 - ansible.builtin.debug:
-    var: fetch_output
+    var: copy_repo_output
+
+- name: copy the .env file
+  copy:
+    src: "{{ lookup('ansible.builtin.env', 'ANSIBLE_ROOT') }}/app.env"
+    dest: "{{ app_install_root }}/{{ app_repo_name }}/.env"

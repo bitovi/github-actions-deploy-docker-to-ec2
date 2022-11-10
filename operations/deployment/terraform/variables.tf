@@ -1,28 +1,21 @@
-variable "app_repo_clone_url" {
+variable "app_port" {
   type = string
-  description = "GitHub Repo full url of the app to clone"
+  default = "3000"
+  description = "app port"
 }
 variable "app_repo_name" {
   type = string
   description = "GitHub Repo Name"
 }
-
-variable "app_cmd_command" {
+variable "app_org_name" {
   type = string
-  description = "Application start command"
-  default = "npm start"
+  description = "GitHub Org Name"
 }
 
 variable "app_install_root" {
   type = string
   description = "Path on the instance where the app will be cloned (do not include app_repo_name)."
   default = "/home/ubuntu"
-}
-
-variable "secret_name" {
-  type = string
-  description = "AWS Secret Manager secret name"
-  default = "env"
 }
 
 variable "os_system_user" {
@@ -43,7 +36,7 @@ variable "ec2_instance_type" {
 }
 variable "security_group_name" {
   type = string
-  default = "SG for jira-qa-metrics"
+  default = "SG for deployment"
   description = "Name of the security group to use"
 }
 variable "ec2_iam_instance_profile" {
@@ -54,22 +47,4 @@ variable "ec2_iam_instance_profile" {
 variable "lb_access_bucket_name" {
   type = string
   description = "s3 bucket for the lb access logs"
-}
-variable "sub_domain_name" {
-  type = string
-  description = "Subdomain name for DNS record"
-}
-variable "domain" {
-  type = string
-  description = "root domain name without any subdomains"
-}
-variable "zone_id" {
-  type = string
-  description = "ZoneID Hash from cloudflare"
-  default = "example to be removed"
-}
-variable "api_token" {
-  type = string
-  description = "API Token for cloudflare"
-  default = "example to be removed"
 }

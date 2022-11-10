@@ -10,18 +10,24 @@ echo "In deploy.sh"
 
 # Generate the tf state bucket
 export TF_STATE_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_tf_state_bucket.sh)"
-echo "in deploy.sh TF_STATE_BUCKET(${TF_STATE_BUCKET})"
-
 
 # Generate the provider.tf file
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_provider.sh
 
-# TODO: modify terraform variables
+# Generate terraform variables
+/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_tf_vars.sh
+
+# Generate dot_env
+/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_dot_env.sh
 
 
 echo "DEBUGGING - in deploy.sh"
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf
+echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars"
+cat $GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars
+echo "cat GITHUB_ACTION_PATH/operations/deployment/ansible/.env"
+cat $GITHUB_ACTION_PATH/operations/deployment/ansible/.env
 exit 0
 
 
