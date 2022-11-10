@@ -52,4 +52,4 @@ runs:
         GITHUB_ACTION_PATH: ${{ github.action_path }}
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
-        # ${{ github.action_path }}/_scripts/deploy/deploy.sh
+        ${{ github.action_path }}/_scripts/deploy/deploy.sh
