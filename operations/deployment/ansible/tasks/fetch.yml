@@ -2,7 +2,7 @@
 - name: copy repo
   copy:
     src: "{{ lookup('ansible.builtin.env', 'ANSIBLE_ROOT') }}/app/{{ app_repo_name }}"
-    dest: "{{ app_install_root }}/{{ app_repo_name }}"
+    dest: "{{ app_install_root }}"
   register: copy_repo_output
 
 - ansible.builtin.debug:
