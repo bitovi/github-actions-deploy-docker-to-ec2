@@ -29,13 +29,10 @@ echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars
-
 echo "ls GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
 ls "$GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
 
 
-echo "DEBUGGING"
-exit 0
 
 
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
