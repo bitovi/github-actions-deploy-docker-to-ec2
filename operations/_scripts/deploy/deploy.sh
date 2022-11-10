@@ -26,8 +26,8 @@ echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars
-echo "cat GITHUB_ACTION_PATH/operations/deployment/ansible/.env"
-cat $GITHUB_ACTION_PATH/operations/deployment/ansible/.env
+echo "cat GITHUB_ACTION_PATH/operations/deployment/ansible/app.env"
+cat $GITHUB_ACTION_PATH/operations/deployment/ansible/app.env
 exit 0
 
 
