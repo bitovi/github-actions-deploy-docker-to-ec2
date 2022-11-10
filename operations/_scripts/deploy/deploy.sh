@@ -8,6 +8,9 @@ echo "In deploy.sh"
 
 
 
+# Generate the tf state bucket
+/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_tf_state_bucket.sh
+
 # Generate the provider.tf file
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_provider.sh
 

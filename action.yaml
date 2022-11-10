@@ -22,8 +22,8 @@ inputs:
     required: true
     default: 'us-east-1'
   tf_state_bucket:
-    description: 'AWS S3 bucket to use for Terraform state'
-    required: true
+    description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-tf-state'
+    required: false
   dot_env:
     description: '`.env` file to be used with the app'
     required: false
