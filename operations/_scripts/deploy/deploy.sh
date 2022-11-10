@@ -6,7 +6,7 @@ set -x
 echo "In deploy.sh"
 
 
-echo "DEBUGGING"
+echo "DEBUGGING - in deploy.sh"
 echo "GITHUB_ACTION_PATH"
 echo "$GITHUB_ACTION_PATH"
 echo "ls GITHUB_ACTION_PATH"
