@@ -1,0 +1,12 @@
+# KitchenCI
+.kitchen/
+.kitchen.local.yml
+
+# Ansible Retry
+*.retry
+
+# Vagrant
+.vagrant/
+
+# Log files
+*.log

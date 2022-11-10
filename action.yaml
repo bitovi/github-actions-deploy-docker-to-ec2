@@ -1,0 +1,62 @@
+name: 'Deploy Node app to AWS VM (EC2)'
+description: 'Deploy NodeJS App to an AWS VM (EC2)'
+branding:
+  icon: upload-cloud
+  color: red
+inputs:
+  checkout:
+    description: 'Specifies if this action should checkout the code'
+    required: false
+    default: 'true'
+  aws_access_key_id:
+    description: 'AWS access key ID'
+    required: true
+  aws_secret_access_key:
+    description: 'AWS secret access key'
+    required: true
+  aws_session_token:
+    description: 'AWS session token'
+    required: false
+  aws_default_region:
+    description: 'AWS default region'
+    required: true
+    default: 'us-east-1'
+  tf_state_bucket:
+    description: 'AWS S3 bucket to use for Terraform state'
+    required: true
+  dot_env:
+    description: '`.env` file to be used with the app'
+    required: false
+outputs:
+  vm_url:
+    description: "The URL of the generated app"
+    value: ${{ steps.deploy.outputs.vm_url }}
+
+runs:
+  using: 'composite'
+
+  steps:
+    - name: Checkout if required
+      if: ${{ inputs.checkout == 'true' }}
+      uses: actions/checkout@v3
+
+    - name: Deploy with BitOps
+      env:
+        BITOPS_ENVIRONMENT: deployment
+        AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
+        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
+        AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
+        AWS_DEFAULT_REGION: ${{ inputs.aws_default_region }}
+        TF_STATE_BUCKET: ${{ inputs.tf_state_bucket }}
+        DOT_ENV: ${{ inputs.dot_env }}
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
+      run: |
+        echo "DEBUGGING"
+        echo "GITHUB_ACTION_PATH"
+        echo "$GITHUB_ACTION_PATH"
+        echo "ls GITHUB_ACTION_PATH"
+        ls $GITHUB_ACTION_PATH
+        exit 0
+        
+        echo "running operations/_scripts/deploy/deploy.sh"
+        # ${{ github.action_path }}/_scripts/deploy/deploy.sh
