@@ -36,4 +36,4 @@ provider \"aws\" {
     tags = local.aws_tags
   }
 }
-" >> "${$GITHUB_ACTION_PATH}/operations/deployment/terraform/provider.tf"
+" >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/provider.tf"
