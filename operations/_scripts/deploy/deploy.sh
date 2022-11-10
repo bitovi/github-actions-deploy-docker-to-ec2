@@ -5,7 +5,7 @@ set -x
 
 echo "In deploy.sh"
 
-
+GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 
 
 # Generate the tf state bucket
@@ -20,12 +20,18 @@ export TF_STATE_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gene
 # Generate dot_env
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_dot_env.sh
 
+# Generate app repo
+/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_app_repo.sh
+
 
 echo "DEBUGGING - in deploy.sh"
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars
+
+echo "ls GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
+cat "$GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
 
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
 docker run --rm --name bitops \

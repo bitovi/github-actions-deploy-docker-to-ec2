@@ -1,7 +1,7 @@
 # copy the repo code to the VM
 - name: copy repo
   copy:
-    src: "{{ lookup('ansible.builtin.env', 'GITHUB_WORKSPACE') }}"
+    src: "{{ lookup('ansible.builtin.env', 'ANSIBLE_ROOT') }}/app/{{ app_repo_name }}"
     dest: "{{ app_install_root }}/{{ app_repo_name }}"
   register: copy_repo_output
 
