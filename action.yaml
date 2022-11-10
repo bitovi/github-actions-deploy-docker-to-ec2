@@ -51,5 +51,11 @@ runs:
         DOT_ENV: ${{ inputs.dot_env }}
         GITHUB_ACTION_PATH: ${{ github.action_path }}
       run: |
+        echo "DEBUGGING"
+        echo "GITHUB_ACTION_PATH"
+        echo "$GITHUB_ACTION_PATH"
+        echo "ls GITHUB_ACTION_PATH"
+        ls $GITHUB_ACTION_PATH
+
         echo "running operations/_scripts/deploy/deploy.sh"
-        ${{ github.action_path }}/_scripts/deploy/deploy.sh
+        $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
