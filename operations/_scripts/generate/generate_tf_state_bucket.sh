@@ -9,4 +9,4 @@ if [ -z "${TF_STATE_BUCKET}" ]; then
   export TF_STATE_BUCKET="${ORG_NAME}-${REPO_NAME}-tf-state"
 fi
 
-echo "foo($TF_STATE_BUCKET)"
+echo "$TF_STATE_BUCKET"
