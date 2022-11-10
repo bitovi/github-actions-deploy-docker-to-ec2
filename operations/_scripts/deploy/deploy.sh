@@ -31,7 +31,7 @@ echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars
 
 echo "ls GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
-cat "$GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
+ls "$GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
 
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
 docker run --rm --name bitops \
