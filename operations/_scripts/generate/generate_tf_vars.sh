@@ -35,4 +35,7 @@ app_install_root = \"/home/ubuntu\"
 # logs
 lb_access_bucket_name = \"${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-lb-access-logs\"
 
+
+security_group_name = \"${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-sg\"
+
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
