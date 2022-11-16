@@ -25,7 +25,7 @@ echo $GITHUB_IDENTIFIER
 
 
 if [ -z "${EC2_INSTANCE_PROFILE}" ]; then
-  EC2_INSTANCE_PROFILE="${GITHUB_IDENTIFIER}-profile"
+  EC2_INSTANCE_PROFILE="${GITHUB_IDENTIFIER}"
 fi
 
 echo "
@@ -47,10 +47,10 @@ app_branch_name = \"${GITHUB_BRANCH_NAME}\"
 app_install_root = \"/home/ubuntu\"
 
 # logs
-lb_access_bucket_name = \"${GITHUB_IDENTIFIER}-access-logs\"
+lb_access_bucket_name = \"${GITHUB_IDENTIFIER}-logs\"
 
 
-security_group_name = \"${GITHUB_IDENTIFIER}-sg\"
+security_group_name = \"${GITHUB_IDENTIFIER}\"
 
 ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\"
 
