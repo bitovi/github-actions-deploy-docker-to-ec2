@@ -33,8 +33,10 @@ echo "ls GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME
 ls "$GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
 
 TERRAFORM_COMMAND=""
+TERRAFORM_DESTROY=""
 if [ "$STACK_DESTROY" == "true" ]; then
   TERRAFORM_COMMAND="destroy"
+  TERRAFORM_DESTROY="true"
 fi
 
 
@@ -48,6 +50,7 @@ docker run --rm --name bitops \
 -e SKIP_DEPLOY_TERRAFORM="${SKIP_DEPLOY_TERRAFORM}" \
 -e SKIP_DEPLOY_HELM="${SKIP_DEPLOY_HELM}" \
 -e BITOPS_TERRAFORM_COMMAND="${TERRAFORM_COMMAND}" \
+-e TERRAFORM_DESTROY="${TERRAFORM_DESTROY}" \
 -e TF_STATE_BUCKET="${TF_STATE_BUCKET}" \
 -e DEFAULT_FOLDER_NAME="_default" \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
