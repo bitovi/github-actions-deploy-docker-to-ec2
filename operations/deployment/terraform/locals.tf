@@ -1,6 +1,7 @@
 locals {
   aws_tags = {
-    OperationsRepo = "${var.app_org_name}-${var.app_repo_name}"
+    OperationsRepo = "bitovi/github-actions-node-app-to-aws-vm/operations/${var.ops_repo_environment}"
+    AWSResourceIdentifier = "${var.aws_resource_identifier}"
     GitHubAction = "bitovi/github-actions-node-app-to-aws-vm"
     OperationsRepoEnvironment = "deployment"
     created_with = "terraform"

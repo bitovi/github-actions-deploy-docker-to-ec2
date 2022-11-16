@@ -32,8 +32,10 @@ ops_repo_environment = \"deployment\"
 # provide the name of the repo's org
 app_org_name = \"${GITHUB_ORG_NAME}\"
 
-# provide the name of the repo (should correspond to the app_repo_clone_url)
+# provide the name of the repo
 app_repo_name = \"${GITHUB_REPO_NAME}\"
+
+app_branch_name = \"${GITHUB_BRANCH_NAME}\"
 
 # Path on the instance where the app will be cloned (do not include app_repo_name)
 app_install_root = \"/home/ubuntu\"
@@ -45,5 +47,7 @@ lb_access_bucket_name = \"${GITHUB_IDENTIFIER}-lb-access-logs\"
 security_group_name = \"${GITHUB_IDENTIFIER}-sg\"
 
 ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\"
+
+aws_resource_identifier = \"${GITHUB_IDENTIFIER}\"
 
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
