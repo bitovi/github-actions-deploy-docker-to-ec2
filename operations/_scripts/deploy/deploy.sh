@@ -38,6 +38,11 @@ if [ "$STACK_DESTROY" == "true" ]; then
   TERRAFORM_COMMAND="destroy"
   TERRAFORM_DESTROY="true"
 fi
+echo "DEBUGGING"
+echo "STACK_DESTROY (${STACK_DESTROY})"
+echo "TERRAFORM_COMMAND (${TERRAFORM_COMMAND})"
+echo "TERRAFORM_DESTROY (${TERRAFORM_DESTROY})"
+exit 0
 
 
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
