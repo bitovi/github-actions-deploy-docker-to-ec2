@@ -33,6 +33,8 @@ inputs:
     required: false
   ec2_instance_profile:
     description: 'The AWS IAM instance profile to use for the EC2 instance'
+  stack_destroy:
+    description: 'Destroy the stack'
 outputs:
   vm_url:
     description: "The URL of the generated app"
@@ -58,6 +60,7 @@ runs:
         APP_PORT: ${{ inputs.app_port }}
         GITHUB_ACTION_PATH: ${{ github.action_path }}
         EC2_INSTANCE_PROFILE: ${{ github.ec2_instance_profile }}
+        STACK_DESTROY: ${{ github.stack_destroy }}
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
