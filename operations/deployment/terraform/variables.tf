@@ -11,6 +11,10 @@ variable "app_org_name" {
   type = string
   description = "GitHub Org Name"
 }
+variable "app_branch_name" {
+  type = string
+  description = "GitHub Branch Name"
+}
 
 variable "app_install_root" {
   type = string
@@ -42,9 +46,14 @@ variable "security_group_name" {
 variable "ec2_iam_instance_profile" {
   type = string
   description = "IAM role for the ec2 instance"
-  default = "Jira_Integrations_EC2_Role"
+  default = ""
 }
 variable "lb_access_bucket_name" {
   type = string
   description = "s3 bucket for the lb access logs"
+}
+
+variable "aws_resource_identifier" {
+  type = string
+  description = "Identifier to use for AWS resources (defaults to GITHUB_ORG-GITHUB_REPO-GITHUB_BRANCH)"
 }

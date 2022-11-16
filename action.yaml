@@ -31,6 +31,8 @@ inputs:
     description: 'Port to expose for the app'
     default: "80"
     required: false
+  ec2_instance_profile:
+    description: 'The AWS IAM instance profile to use for the EC2 instance'
 outputs:
   vm_url:
     description: "The URL of the generated app"
@@ -55,6 +57,7 @@ runs:
         DOT_ENV: ${{ inputs.dot_env }}
         APP_PORT: ${{ inputs.app_port }}
         GITHUB_ACTION_PATH: ${{ github.action_path }}
+        EC2_INSTANCE_PROFILE: ${{ github.ec2_instance_profile }}
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
