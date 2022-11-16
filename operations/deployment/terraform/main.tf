@@ -10,7 +10,7 @@ resource "aws_key_pair" "aws_key" {
 
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = "${var.aws_resource_identifier}"
-  role = var.ec2_iam_instance_profile
+  role = aws_iam_role.ec2_role.name
 }
 
 resource "aws_instance" "server" {
