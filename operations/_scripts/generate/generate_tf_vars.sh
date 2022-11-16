@@ -14,13 +14,16 @@ echo "In generate_tf_vars.sh"
 
 GITHUB_ORG_NAME=$(echo $GITHUB_REPOSITORY | sed 's/\/.*//')
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
-GITHUB_BRANCH_NAME=${GITHUB_REF##*/}
-GITHUB_IDENTIFIER="${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}"
+
+if [ -n "$GITHUB_HEAD_REF" ]; then
+  GITHUB_BRANCH_NAME=${GITHUB_HEAD_REF}
+else
+  GITHUB_BRANCH_NAME=${GITHUB_REF_NAME}
+fi
+
+GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh)"
 echo "DEBUGGING"
 echo "GITHUB_IDENTIFIER"
-echo $GITHUB_IDENTIFIER
-GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/shorten_identifier.sh ${GITHUB_IDENTIFIER})"
-echo "GITHUB_IDENTIFIER shortened"
 echo $GITHUB_IDENTIFIER
 
 

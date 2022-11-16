@@ -32,6 +32,8 @@ The following inputs can be used as `step.with` keys
 | `dot_env` | String | `.env` file to be used with the app |
 | `app_port` | String | port to expose for the app |
 | `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}` |
+| `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` |
+| `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources. |
 
 ## Example usage
 

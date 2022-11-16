@@ -22,7 +22,7 @@ inputs:
     required: true
     default: 'us-east-1'
   tf_state_bucket:
-    description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-tf-state'
+    description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-{branch}-tf-state`'
     required: false
   dot_env:
     description: '`.env` file to be used with the app'
@@ -33,6 +33,10 @@ inputs:
     required: false
   ec2_instance_profile:
     description: 'The AWS IAM instance profile to use for the EC2 instance'
+  stack_destroy:
+    description: 'Set to "true" to Destroy the stack'
+  aws_resource_identifier:
+    description: 'Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources.'
 outputs:
   vm_url:
     description: "The URL of the generated app"
@@ -48,6 +52,7 @@ runs:
     - name: Deploy with BitOps
       shell: bash
       env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
         BITOPS_ENVIRONMENT: deployment
         AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
         AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
@@ -56,8 +61,9 @@ runs:
         TF_STATE_BUCKET: ${{ inputs.tf_state_bucket }}
         DOT_ENV: ${{ inputs.dot_env }}
         APP_PORT: ${{ inputs.app_port }}
-        GITHUB_ACTION_PATH: ${{ github.action_path }}
-        EC2_INSTANCE_PROFILE: ${{ github.ec2_instance_profile }}
+        EC2_INSTANCE_PROFILE: ${{ inputs.ec2_instance_profile }}
+        STACK_DESTROY: ${{ inputs.stack_destroy }}
+        AWS_RESOURCE_IDENTIFIER: ${{ inputs.aws_resource_identifier }}
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
