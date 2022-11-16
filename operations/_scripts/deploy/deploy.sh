@@ -37,6 +37,11 @@ if [ "$STACK_DESTROY" == "true" ]; then
   TERRAFORM_COMMAND="destroy"
 fi
 
+echo "DEBUGGING"
+echo "TERRAFORM_COMMAND"
+echo $TERRAFORM_COMMAND
+exit 0
+
 
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
 docker run --rm --name bitops \
