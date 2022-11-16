@@ -16,6 +16,7 @@ GITHUB_ORG_NAME=$(echo $GITHUB_REPOSITORY | sed 's/\/.*//')
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 GITHUB_BRANCH_NAME=${GITHUB_REF##*/}
 GITHUB_IDENTIFIER="${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}"
+GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/shorten_identifier.sh ${GITHUB_IDENTIFIER})"
 
 
 if [ -z "${EC2_INSTANCE_PROFILE}" ]; then
@@ -41,7 +42,7 @@ app_branch_name = \"${GITHUB_BRANCH_NAME}\"
 app_install_root = \"/home/ubuntu\"
 
 # logs
-lb_access_bucket_name = \"${GITHUB_IDENTIFIER}-lb-access-logs\"
+lb_access_bucket_name = \"${GITHUB_IDENTIFIER}-access-logs\"
 
 
 security_group_name = \"${GITHUB_IDENTIFIER}-sg\"
