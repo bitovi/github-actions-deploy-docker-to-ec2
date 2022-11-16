@@ -8,6 +8,15 @@ echo "In deploy.sh"
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 
 
+echo 'DEBUGGING'
+echo "GITHUB_REF"
+echo "$GITHUB_REF"
+echo "GITHUB_REF_NAME"
+echo "$GITHUB_REF_NAME"
+echo "GITHUB_REF - branch only"
+echo "${GITHUB_REF#refs/heads/}"
+exit 0
+
 # Generate the tf state bucket
 export TF_STATE_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_tf_state_bucket.sh)"
 
