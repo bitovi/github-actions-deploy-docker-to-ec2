@@ -4,12 +4,12 @@ resource "tls_private_key" "key" {
 }
 
 resource "aws_key_pair" "aws_key" {
-  key_name   = "${var.aws_resource_identifier}-ssh-key"
+  key_name   = "${var.aws_resource_identifier}"
   public_key = tls_private_key.key.public_key_openssh
 }
 
 resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "${var.aws_resource_identifier}-profile"
+  name = "${var.aws_resource_identifier}"
   role = var.ec2_iam_instance_profile
 }
 
