@@ -42,7 +42,7 @@ variable "security_group_name" {
 variable "ec2_iam_instance_profile" {
   type = string
   description = "IAM role for the ec2 instance"
-  default = "Jira_Integrations_EC2_Role"
+  default = ""
 }
 variable "lb_access_bucket_name" {
   type = string

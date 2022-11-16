@@ -38,4 +38,6 @@ lb_access_bucket_name = \"${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-lb-access-logs\
 
 security_group_name = \"${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-sg\"
 
+ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}-sg\"
+
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
