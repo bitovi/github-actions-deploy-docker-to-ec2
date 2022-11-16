@@ -52,6 +52,7 @@ runs:
     - name: Deploy with BitOps
       shell: bash
       env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
         BITOPS_ENVIRONMENT: deployment
         AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
         AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
@@ -60,10 +61,9 @@ runs:
         TF_STATE_BUCKET: ${{ inputs.tf_state_bucket }}
         DOT_ENV: ${{ inputs.dot_env }}
         APP_PORT: ${{ inputs.app_port }}
-        GITHUB_ACTION_PATH: ${{ github.action_path }}
-        EC2_INSTANCE_PROFILE: ${{ github.ec2_instance_profile }}
-        STACK_DESTROY: ${{ github.stack_destroy }}
-        AWS_RESOURCE_IDENTIFIER: ${{ github.aws_resource_identifier }}
+        EC2_INSTANCE_PROFILE: ${{ inputs.ec2_instance_profile }}
+        STACK_DESTROY: ${{ inputs.stack_destroy }}
+        AWS_RESOURCE_IDENTIFIER: ${{ inputs.aws_resource_identifier }}
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
