@@ -11,6 +11,10 @@ GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 echo 'DEBUGGING'
 echo "GITHUB_REF"
 echo "$GITHUB_REF"
+echo "GITHUB_BASE_REF"
+echo "$GITHUB_BASE_REF"
+echo "GITHUB_HEAD_REF"
+echo "$GITHUB_HEAD_REF"
 echo "GITHUB_REF_NAME"
 echo "$GITHUB_REF_NAME"
 echo "GITHUB_REF - branch only"
