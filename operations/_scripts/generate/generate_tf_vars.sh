@@ -22,7 +22,6 @@ echo $GITHUB_IDENTIFIER
 GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/shorten_identifier.sh ${GITHUB_IDENTIFIER})"
 echo "GITHUB_IDENTIFIER shortened"
 echo $GITHUB_IDENTIFIER
-exit 0
 
 
 if [ -z "${EC2_INSTANCE_PROFILE}" ]; then
