@@ -14,7 +14,13 @@ echo "In generate_tf_vars.sh"
 
 GITHUB_ORG_NAME=$(echo $GITHUB_REPOSITORY | sed 's/\/.*//')
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
+GITHUB_BRANCH_NAME=${GITHUB_REF##*/}
+GITHUB_IDENTIFIER="${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}"
 
+
+if [ -z "${EC2_INSTANCE_PROFILE}" ]; then
+  EC2_INSTANCE_PROFILE="${GITHUB_IDENTIFIER}-profile"
+fi
 
 echo "
 # the name of the operations repo environment directory
@@ -33,11 +39,11 @@ app_repo_name = \"${GITHUB_REPO_NAME}\"
 app_install_root = \"/home/ubuntu\"
 
 # logs
-lb_access_bucket_name = \"${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-lb-access-logs\"
+lb_access_bucket_name = \"${GITHUB_IDENTIFIER}-lb-access-logs\"
 
 
-security_group_name = \"${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-sg\"
+security_group_name = \"${GITHUB_IDENTIFIER}-sg\"
 
-ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}-sg\"
+ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\"
 
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"

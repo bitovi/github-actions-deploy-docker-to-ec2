@@ -31,7 +31,7 @@ The following inputs can be used as `step.with` keys
 | `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state |
 | `dot_env` | String | `.env` file to be used with the app |
 | `app_port` | String | port to expose for the app |
-| `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance |
+| `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}` |
 
 ## Example usage
 
