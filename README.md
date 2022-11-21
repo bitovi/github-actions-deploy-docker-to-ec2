@@ -28,6 +28,8 @@ The following inputs can be used as `step.with` keys
 | `aws_secret_access_key` | String | AWS secret access key |
 | `aws_session_token` | String | AWS session token |
 | `aws_default_region` | String | AWS default region |
+| `domain_name` | String | Define the root domain name for the application. e.g. app.com' |
+| `sub_domain` | String | Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}` |
 | `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state |
 | `dot_env` | String | `.env` file to be used with the app |
 | `app_port` | String | port to expose for the app |

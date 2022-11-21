@@ -57,3 +57,12 @@ variable "aws_resource_identifier" {
   type = string
   description = "Identifier to use for AWS resources (defaults to GITHUB_ORG-GITHUB_REPO-GITHUB_BRANCH)"
 }
+
+variable "sub_domain_name" {
+  type = string
+  description = "Subdomain name for DNS record"
+}
+variable "domain_name" {
+  type = string
+  description = "root domain name without any subdomains"
+}
