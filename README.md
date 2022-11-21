@@ -28,7 +28,7 @@ The following inputs can be used as `step.with` keys
 | `aws_secret_access_key` | String | AWS secret access key |
 | `aws_session_token` | String | AWS session token |
 | `aws_default_region` | String | AWS default region |
-| `domain_name` | String | Define the root domain name for the application. e.g. app.com' |
+| `domain_name` | String | Define the root domain name for the application. e.g. bitovi.com' |
 | `sub_domain` | String | Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}` |
 | `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state |
 | `dot_env` | String | `.env` file to be used with the app |
@@ -65,6 +65,7 @@ jobs:
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
         aws_session_token: ${{ secrets.AWS_SESSION_TOKEN}}
         aws_default_region: us-east-1
+        domain: bitovi.com
         tf_state_bucket: my-terraform-state-bucket
         dot_env: ${{ secrets.DOT_ENV }}
         app_port: 3000
