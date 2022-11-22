@@ -22,9 +22,7 @@ else
 fi
 
 GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh)"
-echo "DEBUGGING"
-echo "GITHUB_IDENTIFIER"
-echo $GITHUB_IDENTIFIER
+echo "GITHUB_IDENTIFIER: [$GITHUB_IDENTIFIER]"
 
 
 if [ -z "${EC2_INSTANCE_PROFILE}" ]; then

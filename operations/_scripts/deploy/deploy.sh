@@ -27,7 +27,6 @@ export TF_STATE_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gene
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
 
 
-echo "DEBUGGING - in deploy.sh"
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars"
