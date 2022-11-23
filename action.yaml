@@ -64,6 +64,7 @@ runs:
         EC2_INSTANCE_PROFILE: ${{ inputs.ec2_instance_profile }}
         STACK_DESTROY: ${{ inputs.stack_destroy }}
         AWS_RESOURCE_IDENTIFIER: ${{ inputs.aws_resource_identifier }}
+        BITOPS_FAST_FAIL: true
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
