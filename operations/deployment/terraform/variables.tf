@@ -61,8 +61,10 @@ variable "aws_resource_identifier" {
 variable "sub_domain_name" {
   type = string
   description = "Subdomain name for DNS record"
+  default = ""
 }
 variable "domain_name" {
   type = string
   description = "root domain name without any subdomains"
+  default = ""
 }

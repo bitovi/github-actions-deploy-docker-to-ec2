@@ -1,11 +1,12 @@
 data "aws_route53_zone" "selected" {
+  count        = local.fqdn_provided ? 1 : 0
   name         = "${var.domain_name}."
   private_zone = false
 }
 
 resource "aws_route53_record" "dev" {
-  count = "${var.sub_domain_name}.${var.domain_name}" == null ? 0 : 1
-  zone_id = data.aws_route53_zone.selected.zone_id
+  count = local.fqdn_provided ? 1 : 0
+  zone_id = data.aws_route53_zone.selected[0].zone_id
   name    = "${var.sub_domain_name}.${var.domain_name}"
   type    = "A"
 
@@ -19,6 +20,21 @@ resource "aws_route53_record" "dev" {
 }
 
 output "application_public_dns" {
-  description = "Public DNS address for the application behind load balancer"
-  value       = "${var.sub_domain_name}.${var.domain_name}"
+  description = "Public DNS address for the application or load balancer public DNS"
+  value       = local.url
+}
+
+locals {
+  fqdn_provided = (
+    (var.sub_domain_name != "") ?
+    (var.domain_name != "" ?
+      true :
+      false
+    ):
+    false
+  )
+}
+
+locals {
+  url = local.fqdn_provided ? "${var.sub_domain_name}.${var.domain_name}" : aws_elb.vm[0].dns_name
 }
