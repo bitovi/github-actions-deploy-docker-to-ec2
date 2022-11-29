@@ -2,7 +2,7 @@
 
 GitHub action to deploy any Docker-based app to an AWS VM (EC2) using Docker and Docker Compose.
 
-The action will `git clone` this repo from the VM and then run `docker-compose up`.
+The action will copy this repo to the VM and then run `docker-compose up`.
 
 ## Requirements
 Your app needs a `Dockerfile` and a `docker-compose.yaml` file.
