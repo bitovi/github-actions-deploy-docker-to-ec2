@@ -1,4 +1,4 @@
-# Node App to AWS VM
+# Docker to AWS VM
 
 GitHub action to deploy any Docker-based app to an AWS VM (EC2) using Docker and Docker Compose.
 
@@ -71,10 +71,10 @@ jobs:
 
 
 ## Contributing
-We would love for you to contribute to [`bitovi/github-actions-node-app-to-aws-vm`](hhttps://github.com/bitovi/github-actions-node-app-to-aws-vm).   [Issues](https://github.com/bitovi/github-actions-node-app-to-aws-vm/issues) and [Pull Requests](https://github.com/bitovi/github-actions-node-app-to-aws-vm/pulls) are welcome!
+We would love for you to contribute to [`bitovi/github-actions-deploy-docker-to-ec2`](hhttps://github.com/bitovi/github-actions-deploy-docker-to-ec2).   [Issues](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/issues) and [Pull Requests](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/pulls) are welcome!
 
 ## License
-The scripts and documentation in this project are released under the [MIT License](https://github.com/bitovi/github-actions-github-actions-node-app-to-aws-vm/blob/main/LICENSE).
+The scripts and documentation in this project are released under the [MIT License](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/blob/main/LICENSE).
 
 ## Provided by Bitovi
 [Bitovi](https://www.bitovi.com/) is a proud supporter of Open Source software.
