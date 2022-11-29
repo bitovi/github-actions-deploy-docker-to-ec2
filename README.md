@@ -1,6 +1,6 @@
 # Node App to AWS VM
 
-GitHub action to deploy a Node app to an AWS VM (EC2) using Docker and Docker Compose.
+GitHub action to deploy any Docker-based app to an AWS VM (EC2) using Docker and Docker Compose.
 
 The action will `git clone` this repo from the VM and then run `docker-compose up`.
 
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - id: deploy
-      uses: bitovi/github-actions-node-app-to-aws-vm@v0.1.0
+      uses: bitovi/github-actions-deploy-docker-to-ec2@0.1.0
       with:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID}}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
