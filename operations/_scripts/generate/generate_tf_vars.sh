@@ -31,6 +31,15 @@ if [ -z "${EC2_INSTANCE_PROFILE}" ]; then
   EC2_INSTANCE_PROFILE="${GITHUB_IDENTIFIER}"
 fi
 
+
+# ADDITIONAL TAGS
+IFS=',' read -ra ADDR <<< "$ADDITIONAL_TAGS"
+for i in "${ADDR[@]}"; do
+
+    IFS='=' read -r key val <<< "$i"
+    ADDITIONAL_TAGS_LIST+="\"$key\": \"$val\","
+done
+
 echo "
 # the name of the operations repo environment directory
 app_port = \"$APP_PORT\"
@@ -59,6 +68,6 @@ ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\"
 
 aws_resource_identifier = \"${GITHUB_IDENTIFIER}\"
 
-additional_tags = {\"${ADDITIONAL_TAGS}\"}
+additional_tags = {$( IFS=','; echo "${ADDITIONAL_TAGS_LIST[*]}" )}
 
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
