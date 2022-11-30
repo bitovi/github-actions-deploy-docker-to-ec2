@@ -59,5 +59,6 @@ docker run --rm --name bitops \
 -e TERRAFORM_DESTROY="${TERRAFORM_DESTROY}" \
 -e TF_STATE_BUCKET="${TF_STATE_BUCKET}" \
 -e DEFAULT_FOLDER_NAME="_default" \
+-e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
 bitovi/bitops:2.1.0

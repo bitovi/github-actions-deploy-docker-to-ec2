@@ -71,6 +71,7 @@ runs:
         AWS_RESOURCE_IDENTIFIER: ${{ inputs.aws_resource_identifier }}
         DOMAIN_NAME: ${{ inputs.domain_name }}
         SUB_DOMAIN: ${{ inputs.sub_domain }}
+        BITOPS_FAST_FAIL: true
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
