@@ -1,14 +1,20 @@
 #!/bin/bash
 
-set -e
+set -ex
 
+echo "DEBUGGING"
+echo "in shorten_identifier.sh"
 IDENTIFIER="$1"
 final_id=""
 MAX_IDENTIFIER_LENGTH=$2
 
+
 if [ -z $MAX_IDENTIFIER_LENGTH ]; then
   MAX_IDENTIFIER_LENGTH=60
 fi
+
+echo "MAX_IDENTIFIER_LENGTH"
+echo $MAX_IDENTIFIER_LENGTH
 
 # if identifier is less than or equal to 60, shorten
 IDENTIFIER_LENGTH=${#IDENTIFIER}
