@@ -57,3 +57,8 @@ variable "aws_resource_identifier" {
   type = string
   description = "Identifier to use for AWS resources (defaults to GITHUB_ORG-GITHUB_REPO-GITHUB_BRANCH)"
 }
+
+variable "additional_tags" {
+  type = map(string)
+  description = "A list of strings that will be added to created resources"
+}

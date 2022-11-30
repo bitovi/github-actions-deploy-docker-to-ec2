@@ -37,6 +37,8 @@ inputs:
     description: 'Set to "true" to Destroy the stack'
   aws_resource_identifier:
     description: 'Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources.'
+  additional_tags:
+    description: 'A list of additional tags that will be included on created resources'
 outputs:
   vm_url:
     description: "The URL of the generated app"
@@ -64,6 +66,7 @@ runs:
         EC2_INSTANCE_PROFILE: ${{ inputs.ec2_instance_profile }}
         STACK_DESTROY: ${{ inputs.stack_destroy }}
         AWS_RESOURCE_IDENTIFIER: ${{ inputs.aws_resource_identifier }}
+        ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh

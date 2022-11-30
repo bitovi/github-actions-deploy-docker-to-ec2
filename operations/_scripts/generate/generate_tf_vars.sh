@@ -59,4 +59,6 @@ ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\"
 
 aws_resource_identifier = \"${GITHUB_IDENTIFIER}\"
 
+additional_tags = {\"${ADDITIONAL_TAGS}\"}
+
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
