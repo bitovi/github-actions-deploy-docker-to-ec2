@@ -10,11 +10,11 @@ resource "aws_route53_record" "dev" {
   name    = "${var.sub_domain_name}.${var.domain_name}"
   type    = "A"
 
-  # NOTE: using the array syntax (aws_elb.vm[0]) because the aws_elb is optional via the count property
+  # NOTE: using the array syntax (aws_elb.vm_ssl[0]) because the aws_elb is optional via the count property
   #       which causes the properties to exist as a list
   alias {
-    name                   = aws_elb.vm[0].dns_name
-    zone_id                = aws_elb.vm[0].zone_id
+    name                   = aws_elb.vm_ssl[0].dns_name
+    zone_id                = aws_elb.vm_ssl[0].zone_id
     evaluate_target_health = true
   }
 }
