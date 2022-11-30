@@ -1,5 +1,5 @@
-name: 'Deploy Node app to AWS VM (EC2)'
-description: 'Deploy NodeJS App to an AWS VM (EC2)'
+name: 'Deploy Docker to AWS (EC2)'
+description: 'Deploy a Docker app to an AWS Virtual Machine (EC2) with Docker Compose'
 branding:
   icon: upload-cloud
   color: red

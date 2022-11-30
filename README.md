@@ -1,8 +1,8 @@
-# Node App to AWS VM
+# Docker to AWS VM
 
-GitHub action to deploy a Node app to an AWS VM (EC2) using Docker and Docker Compose.
+GitHub action to deploy any Docker-based app to an AWS VM (EC2) using Docker and Docker Compose.
 
-The action will `git clone` this repo from the VM and then run `docker-compose up`.
+The action will copy this repo to the VM and then run `docker-compose up`.
 
 ## Requirements
 Your app needs a `Dockerfile` and a `docker-compose.yaml` file.
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - id: deploy
-      uses: bitovi/github-actions-node-app-to-aws-vm@v0.1.0
+      uses: bitovi/github-actions-deploy-docker-to-ec2@v0.1.0
       with:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID}}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
@@ -74,10 +74,16 @@ jobs:
 
 
 ## Contributing
-We would love for you to contribute to [`bitovi/github-actions-node-app-to-aws-vm`](hhttps://github.com/bitovi/github-actions-node-app-to-aws-vm).   [Issues](https://github.com/bitovi/github-actions-node-app-to-aws-vm/issues) and [Pull Requests](https://github.com/bitovi/github-actions-node-app-to-aws-vm/pulls) are welcome!
+We would love for you to contribute to [`bitovi/github-actions-deploy-docker-to-ec2`](hhttps://github.com/bitovi/github-actions-deploy-docker-to-ec2).   [Issues](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/issues) and [Pull Requests](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/pulls) are welcome!
 
 ## License
-The scripts and documentation in this project are released under the [MIT License](https://github.com/bitovi/github-actions-github-actions-node-app-to-aws-vm/blob/main/LICENSE).
+The scripts and documentation in this project are released under the [MIT License](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/blob/main/LICENSE).
 
 ## Provided by Bitovi
 [Bitovi](https://www.bitovi.com/) is a proud supporter of Open Source software.
+
+
+## Need help?
+Bitovi has consultants that can help.  Drop into [Bitovi's Community Slack](https://www.bitovi.com/community/slack), and talk to us in the `#devops` channel!
+
+Need DevOps Consulting Services?  Head over to https://www.bitovi.com/devops-consulting, and book a free consultation.
