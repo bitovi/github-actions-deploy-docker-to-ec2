@@ -65,7 +65,8 @@ jobs:
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
         aws_session_token: ${{ secrets.AWS_SESSION_TOKEN}}
         aws_default_region: us-east-1
-        domain: bitovi.com
+        domain_name: bitovi.com
+        sub_domain: app
         tf_state_bucket: my-terraform-state-bucket
         dot_env: ${{ secrets.DOT_ENV }}
         app_port: 3000
