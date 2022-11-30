@@ -17,7 +17,7 @@ resource "aws_instance" "server" {
   # ubuntu
   ami                         = "ami-052efd3df9dad4825"
   instance_type               = var.ec2_instance_type
-  associate_public_ip_address = true
+  associate_public_ip_address = var.ec2_instance_public_ip
   security_groups             = [aws_security_group.ec2_security_group.name]
   key_name                    = aws_key_pair.aws_key.key_name
   monitoring                  = true

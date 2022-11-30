@@ -38,6 +38,11 @@ variable "ec2_instance_type" {
   default = "t2.small"
   description = "Instance type for the EC2 instance"
 }
+variable "ec2_instance_public_ip" {
+  type = string
+  default = "false"
+  description = "Attach public IP to the EC2 instance"
+}
 variable "security_group_name" {
   type = string
   default = "SG for deployment"
