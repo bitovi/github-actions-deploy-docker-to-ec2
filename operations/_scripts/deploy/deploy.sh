@@ -11,6 +11,15 @@ GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 # Generate the tf state bucket
 export TF_STATE_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_tf_state_bucket.sh | xargs)"
 
+
+echo 'DEBUGGING GITHUB_IDENTIFIER'
+GITHUB_IDENTIFIER_SS="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier_supershort.sh)"
+echo "GITHUB_IDENTIFIER_SS"
+echo $GITHUB_IDENTIFIER_SS
+exit 0
+
+
+
 # Generate subdomain
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_subdomain.sh
 
