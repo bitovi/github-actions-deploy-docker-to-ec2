@@ -40,7 +40,7 @@ resource "aws_s3_bucket_acl" "lb_access_logs_acl" {
 
 resource "aws_elb" "vm_ssl" {
   count              = local.fqdn_provided ? 1 : 0
-  name               = "${var.aws_resource_identifier}"
+  name               = "${var.aws_resource_identifier_supershort}"
   security_groups    = [aws_security_group.ec2_security_group.id]
   availability_zones = [aws_instance.server.availability_zone]
 
@@ -72,13 +72,13 @@ resource "aws_elb" "vm_ssl" {
   connection_draining_timeout = 400
 
   tags = {
-    Name = "${var.aws_resource_identifier}"
+    Name = "${var.aws_resource_identifier_supershort}"
   }
 }
 
 resource "aws_elb" "vm" {
   count              = local.fqdn_provided ? 0 : 1
-  name               = "${var.aws_resource_identifier}"
+  name               = "${var.aws_resource_identifier_supershort}"
   security_groups    = [aws_security_group.ec2_security_group.id]
   availability_zones = [aws_instance.server.availability_zone]
 
@@ -109,6 +109,6 @@ resource "aws_elb" "vm" {
   connection_draining_timeout = 400
 
   tags = {
-    Name = "${var.aws_resource_identifier}"
+    Name = "${var.aws_resource_identifier_supershort}"
   }
 }

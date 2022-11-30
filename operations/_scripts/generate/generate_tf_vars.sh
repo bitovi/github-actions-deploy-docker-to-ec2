@@ -22,6 +22,7 @@ else
 fi
 
 GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh)"
+GITHUB_IDENTIFIER_SS="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier_supershort.sh)"
 echo "DEBUGGING"
 echo "GITHUB_IDENTIFIER"
 echo $GITHUB_IDENTIFIER
@@ -58,6 +59,8 @@ security_group_name = \"${GITHUB_IDENTIFIER}\"
 ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\"
 
 aws_resource_identifier = \"${GITHUB_IDENTIFIER}\"
+
+aws_resource_identifier_supershort = \"${GITHUB_IDENTIFIER_SS}\"
 
 sub_domain_name = \"${SUB_DOMAIN}\"
 

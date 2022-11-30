@@ -4,10 +4,15 @@ set -e
 
 IDENTIFIER="$1"
 final_id=""
+MAX_IDENTIFIER_LENGTH=$2
+
+if [ -z $MAX_IDENTIFIER_LENGTH ]; then
+  MAX_IDENTIFIER_LENGTH=60
+fi
 
 # if identifier is less than or equal to 60, shorten
 IDENTIFIER_LENGTH=${#IDENTIFIER}
-if (( $IDENTIFIER_LENGTH < 60 )) ; then
+if (( $IDENTIFIER_LENGTH < $MAX_IDENTIFIER_LENGTH )) ; then
   echo "$IDENTIFIER"
   exit 0
 fi
