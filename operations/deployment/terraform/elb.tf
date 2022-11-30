@@ -54,7 +54,7 @@ resource "aws_elb" "vm_ssl" {
     instance_protocol  = "tcp"
     lb_port            = var.app_port
     lb_protocol        = "ssl"
-    ssl_certificate_id = data.aws_acm_certificate.issued.arn
+    ssl_certificate_id = data.aws_acm_certificate.issued[0].arn
   }
 
   health_check {
