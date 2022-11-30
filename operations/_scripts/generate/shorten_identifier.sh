@@ -56,11 +56,11 @@ if [[ $IDENTIFIER =~ $re ]]; then
       current_match_last_character=${current_match: -1}
       # gete match length
       current_match_length=${#current_match}
-      current_match_replace_length=$(expr $current_match_length - 2)
       
       if (( $current_match_length <= 3 )) ; then
         current_replace="${current_match}"
       else
+        current_match_replace_length=$(expr $current_match_length - 2)
         current_replace="${current_match_first_character}${current_match_replace_length}${current_match_last_character}"
       fi
       # echo "current_match_first_character"
@@ -80,6 +80,7 @@ if [[ $IDENTIFIER =~ $re ]]; then
       IDENTIFIER=$(echo ${IDENTIFIER} | sed -e "s/${BASH_REMATCH[1]}//")
     done
   done
+  echo "DEBUGGING - final id"
   echo "$final_id"
 else
   echo "$IDENTIFIER"
