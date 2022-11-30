@@ -2,8 +2,6 @@
 
 set -ex
 
-echo "DEBUGGING"
-echo "in shorten_identifier.sh"
 IDENTIFIER="$1"
 final_id=""
 MAX_IDENTIFIER_LENGTH=$2
@@ -12,9 +10,6 @@ MAX_IDENTIFIER_LENGTH=$2
 if [ -z $MAX_IDENTIFIER_LENGTH ]; then
   MAX_IDENTIFIER_LENGTH=60
 fi
-
-echo "MAX_IDENTIFIER_LENGTH"
-echo $MAX_IDENTIFIER_LENGTH
 
 # if identifier is less than or equal to 60, shorten
 IDENTIFIER_LENGTH=${#IDENTIFIER}
@@ -80,7 +75,6 @@ if [[ $IDENTIFIER =~ $re ]]; then
       IDENTIFIER=$(echo ${IDENTIFIER} | sed -e "s/${BASH_REMATCH[1]}//")
     done
   done
-  echo "DEBUGGING - final id"
   echo "$final_id"
 else
   echo "$IDENTIFIER"
