@@ -58,8 +58,11 @@ if [[ $IDENTIFIER =~ $re ]]; then
       current_match_length=${#current_match}
       current_match_replace_length=$(expr $current_match_length - 2)
       
-      current_replace="${current_match_first_character}${current_match_replace_length}${current_match_last_character}"
-
+      if (( $current_match_length <= 3 )) ; then
+        current_replace="${current_match}"
+      else
+        current_replace="${current_match_first_character}${current_match_replace_length}${current_match_last_character}"
+      fi
       # echo "current_match_first_character"
       # echo $current_match_first_character
       # echo "current_match_last_character"
