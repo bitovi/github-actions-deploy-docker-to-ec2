@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 GITHUB_ORG_NAME=$(echo $GITHUB_REPOSITORY | sed 's/\/.*//')
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 IDENTIFIER="$1"
 final_id=""
