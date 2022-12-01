@@ -115,9 +115,9 @@ resource "aws_elb" "vm" {
 
 output "lb_public_dns" {
   description = "Public DNS address of the LB"
-  value       = aws_elb.vm.dns_name
+  value       = aws_elb.vm[0].dns_name
 }
 output "ssl_lb_public_dns" {
   description = "Public DNS address of the SSL LB"
-  value       = aws_elb.vm_ssl.dns_name
+  value       = aws_elb.vm_ssl[0].dns_name
 }
