@@ -29,6 +29,7 @@ resource "aws_instance" "server" {
 }
 
 output "instance_public_dns" {
+  count       = var.ec2_instance_public_ip ? 1 : 0
   description = "Public DNS address of the EC2 instance"
   value       = aws_instance.server.public_dns
 }
