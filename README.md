@@ -1,11 +1,13 @@
 # Docker to AWS VM
 
-GitHub action to deploy any Docker-based app to an AWS VM (EC2) using Docker and Docker Compose.
+GitHub action to deploy any [Docker](https://www.bitovi.com/academy/learn-docker.html)-based app to an AWS VM (EC2) using Docker and Docker Compose.
 
 The action will copy this repo to the VM and then run `docker-compose up`.
 
 ## Requirements
 Your app needs a `Dockerfile` and a `docker-compose.yaml` file.
+
+> For more details on setting up Docker and Docker Compose, check out Bitovi's Academy Course: [Learn Docker](https://www.bitovi.com/academy/learn-docker.html)
 
 For envirnoment variables in your app, provide a `.env` file in GitHub Secrets named `DOT_ENV` and hook it up in your `docker-compose.yaml` file like:
 ```
@@ -14,28 +16,6 @@ services:
   app:
     env_file: .env
 ```
-
-## Customizing
-
-### Inputs
-
-The following inputs can be used as `step.with` keys
-
-| Name             | Type    | Description                        |
-|------------------|---------|------------------------------------|
-| `checkout`          | T/F  | Set to `false` if the code is already checked out (Default is `true`) (Optional) |
-| `aws_access_key_id` | String | AWS access key ID |
-| `aws_secret_access_key` | String | AWS secret access key |
-| `aws_session_token` | String | AWS session token |
-| `aws_default_region` | String | AWS default region |
-| `domain_name` | String | Define the root domain name for the application. e.g. bitovi.com' |
-| `sub_domain` | String | Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}` |
-| `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state |
-| `dot_env` | String | `.env` file to be used with the app |
-| `app_port` | String | port to expose for the app |
-| `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}` |
-| `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` |
-| `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources. |
 
 ## Example usage
 
@@ -73,11 +53,33 @@ jobs:
 
 ```
 
+## Customizing
+
+### Inputs
+
+The following inputs can be used as `step.with` keys
+
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `checkout`          | T/F  | Set to `false` if the code is already checked out (Default is `true`) (Optional) |
+| `aws_access_key_id` | String | AWS access key ID |
+| `aws_secret_access_key` | String | AWS secret access key |
+| `aws_session_token` | String | AWS session token |
+| `aws_default_region` | String | AWS default region |
+| `domain_name` | String | Define the root domain name for the application. e.g. bitovi.com' |
+| `sub_domain` | String | Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}` |
+| `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state |
+| `dot_env` | String | `.env` file to be used with the app |
+| `app_port` | String | port to expose for the app |
+| `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}` |
+| `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` |
+| `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources. |
+
 ## Made with BitOps
 [BitOps](https://bitops.sh) allows you to define Infrastructure-as-Code for multiple tools in a central place.  This action uses a BitOps [Operations Repository](https://bitops.sh/operations-repo-structure/) to set up the necessary Terraform and Ansible to create infrastructure and deploy to it.
 
 ## Contributing
-We would love for you to contribute to [`bitovi/github-actions-deploy-docker-to-ec2`](hhttps://github.com/bitovi/github-actions-deploy-docker-to-ec2).   [Issues](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/issues) and [Pull Requests](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/pulls) are welcome!
+We would love for you to contribute to [bitovi/github-actions-deploy-docker-to-ec2](https://github.com/bitovi/github-actions-deploy-docker-to-ec2).   [Issues](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/issues) and [Pull Requests](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/pulls) are welcome!
 
 ## License
 The scripts and documentation in this project are released under the [MIT License](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/blob/main/LICENSE).
