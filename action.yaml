@@ -40,6 +40,11 @@ inputs:
     description: 'Set to "true" to Destroy the stack'
   aws_resource_identifier:
     description: 'Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources.'
+  domain_name:
+    description: 'Define the root domain name for the application. e.g. app.com'
+    required: true
+  sub_domain:
+    description: 'Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}`'
 outputs:
   vm_url:
     description: "The URL of the generated app"
@@ -68,6 +73,9 @@ runs:
         EC2_INSTANCE_PUBLIC_IP: ${{ inputs.ec2_instance_public_ip }}
         STACK_DESTROY: ${{ inputs.stack_destroy }}
         AWS_RESOURCE_IDENTIFIER: ${{ inputs.aws_resource_identifier }}
+        DOMAIN_NAME: ${{ inputs.domain_name }}
+        SUB_DOMAIN: ${{ inputs.sub_domain }}
+        BITOPS_FAST_FAIL: true
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
