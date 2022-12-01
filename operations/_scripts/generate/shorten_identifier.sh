@@ -4,10 +4,16 @@ set -e
 
 IDENTIFIER="$1"
 final_id=""
+MAX_IDENTIFIER_LENGTH=$2
+
+
+if [ -z $MAX_IDENTIFIER_LENGTH ]; then
+  MAX_IDENTIFIER_LENGTH=60
+fi
 
 # if identifier is less than or equal to 60, shorten
 IDENTIFIER_LENGTH=${#IDENTIFIER}
-if (( $IDENTIFIER_LENGTH < 60 )) ; then
+if (( $IDENTIFIER_LENGTH < $MAX_IDENTIFIER_LENGTH )) ; then
   echo "$IDENTIFIER"
   exit 0
 fi
@@ -45,10 +51,13 @@ if [[ $IDENTIFIER =~ $re ]]; then
       current_match_last_character=${current_match: -1}
       # gete match length
       current_match_length=${#current_match}
-      current_match_replace_length=$(expr $current_match_length - 2)
       
-      current_replace="${current_match_first_character}${current_match_replace_length}${current_match_last_character}"
-
+      if (( $current_match_length <= 3 )) ; then
+        current_replace="${current_match}"
+      else
+        current_match_replace_length=$(expr $current_match_length - 2)
+        current_replace="${current_match_first_character}${current_match_replace_length}${current_match_last_character}"
+      fi
       # echo "current_match_first_character"
       # echo $current_match_first_character
       # echo "current_match_last_character"
