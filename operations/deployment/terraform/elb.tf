@@ -116,10 +116,5 @@ resource "aws_elb" "vm" {
 output "lb_public_dns" {
   count              = local.fqdn_provided ? 0 : 1
   description = "Public DNS address of the LB"
-  value       = aws_elb.vm[0].dns_name
-}
-output "ssl_lb_public_dns" {
-  count              = local.fqdn_provided ? 1 : 0
-  description = "Public DNS address of the SSL LB"
-  value       = aws_elb.vm_ssl[0].dns_name
+  value       = "${ local.fqdn_provided ? aws_elb.vm_ssl[0].dns_name : aws_elb.vm[0].dns_name }"
 }
