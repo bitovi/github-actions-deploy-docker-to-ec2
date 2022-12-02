@@ -57,4 +57,4 @@ docker run --rm --name bitops \
 -e TF_STATE_BUCKET="${TF_STATE_BUCKET}" \
 -e DEFAULT_FOLDER_NAME="_default" \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
-bitovi/bitops:2.2.0
+bitovi/bitops:2.2.1
