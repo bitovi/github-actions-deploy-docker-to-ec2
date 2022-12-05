@@ -3,6 +3,16 @@ variable "app_port" {
   default = "3000"
   description = "app port"
 }
+variable "lb_port" {
+  type = string
+  default = ""
+  description = "Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided"
+}
+variable "lb_healthcheck" {
+  type = string
+  default = ""
+  description = "Load balancer health check string. Defaults to HTTP:app_port"
+}
 variable "app_repo_name" {
   type = string
   description = "GitHub Repo Name"
