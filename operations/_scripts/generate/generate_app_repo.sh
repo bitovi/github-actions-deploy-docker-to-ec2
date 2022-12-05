@@ -11,6 +11,7 @@ mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/ansible/app/${GITHUB_REPO_
 
 TARGET_PATH="$GITHUB_WORKSPACE"
 if [ -n "$APP_DIRECTORY" ]; then
+    echo "APP_DIRECTORY: $APP_DIRECTORY"
     TARGET_PATH="${TARGET_PATH}/${APP_DIRECTORY}"
 fi
 
