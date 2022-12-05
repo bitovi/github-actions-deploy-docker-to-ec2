@@ -42,6 +42,8 @@ inputs:
     required: true
   sub_domain:
     description: 'Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}`'
+  app_directory:
+    description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo.'
 outputs:
   vm_url:
     description: "The URL of the generated app"
@@ -72,6 +74,7 @@ runs:
         DOMAIN_NAME: ${{ inputs.domain_name }}
         SUB_DOMAIN: ${{ inputs.sub_domain }}
         BITOPS_FAST_FAIL: true
+        APP_DIRECTORY: ${{ inputs.app_directory }}
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
