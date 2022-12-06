@@ -71,6 +71,8 @@ The following inputs can be used as `step.with` keys
 | `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state |
 | `dot_env` | String | `.env` file to be used with the app |
 | `app_port` | String | port to expose for the app |
+| `lb_port` | String | Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided |
+| `lb_healthcheck` | String | Load balancer health check string. Defaults to HTTP:app_port |
 | `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}` |
 | `ec2_instance_public_ip` | Boolean | Adds a public IP to the EC2 instance. Defaults to `false`. (App is exposed through an ELB) |
 | `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` |
