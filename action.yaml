@@ -31,6 +31,12 @@ inputs:
     description: 'Port to expose for the app'
     default: "80"
     required: false
+  lb_port:
+    description: 'Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided'
+    required: false
+  lb_healthcheck: 
+    description: 'Load balancer health check string. Defaults to HTTP:app_port'
+    required: false
   ec2_instance_profile:
     description: 'The AWS IAM instance profile to use for the EC2 instance'
   ec2_instance_public_ip:
@@ -71,6 +77,8 @@ runs:
         TF_STATE_BUCKET: ${{ inputs.tf_state_bucket }}
         DOT_ENV: ${{ inputs.dot_env }}
         APP_PORT: ${{ inputs.app_port }}
+        LB_PORT: ${{ inputs.lb_port }}
+        LB_HEALTHCHECK: ${{ inputs.lb_healthcheck }}
         EC2_INSTANCE_PROFILE: ${{ inputs.ec2_instance_profile }}
         EC2_INSTANCE_PUBLIC_IP: ${{ inputs.ec2_instance_public_ip }}
         STACK_DESTROY: ${{ inputs.stack_destroy }}

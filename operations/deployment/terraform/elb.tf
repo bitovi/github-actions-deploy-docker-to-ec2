@@ -52,7 +52,7 @@ resource "aws_elb" "vm_ssl" {
   listener {
     instance_port      = var.app_port
     instance_protocol  = "tcp"
-    lb_port            = var.app_port
+    lb_port            = var.lb_port != "" ? var.lb_port : 443
     lb_protocol        = "ssl"
     ssl_certificate_id = data.aws_acm_certificate.issued[0].arn
   }
@@ -61,7 +61,7 @@ resource "aws_elb" "vm_ssl" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "HTTP:${var.app_port}/"
+    target              = var.lb_healthcheck != "" ? var.lb_healthcheck : "HTTP:${var.app_port}/"
     interval            = 30
   }
 
@@ -90,7 +90,7 @@ resource "aws_elb" "vm" {
   listener {
     instance_port      = var.app_port
     instance_protocol  = "tcp"
-    lb_port            = var.app_port
+    lb_port            = var.lb_port != "" ? var.lb_port : 80
     lb_protocol        = "tcp"
   }
 
@@ -98,7 +98,7 @@ resource "aws_elb" "vm" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "HTTP:${var.app_port}/"
+    target              = var.lb_healthcheck != "" ? var.lb_healthcheck : "HTTP:${var.app_port}/"
     interval            = 30
   }
 

@@ -41,8 +41,11 @@ if [ -z "${EC2_INSTANCE_PROFILE}" ]; then
 fi
 
 echo "
-# the name of the operations repo environment directory
 app_port = \"$APP_PORT\"
+
+lb_port = \"$LB_PORT\"
+
+lb_healthcheck = \"$LB_HEALTHCHECK\"
 
 # the name of the operations repo environment directory
 ops_repo_environment = \"deployment\"
