@@ -33,6 +33,9 @@ inputs:
     required: false
   ec2_instance_profile:
     description: 'The AWS IAM instance profile to use for the EC2 instance'
+  ec2_instance_public_ip:
+    description: 'Adds a public IP to the EC2 instance. Defaults to false'
+    required: false
   stack_destroy:
     description: 'Set to "true" to Destroy the stack'
   aws_resource_identifier:
@@ -69,6 +72,7 @@ runs:
         DOT_ENV: ${{ inputs.dot_env }}
         APP_PORT: ${{ inputs.app_port }}
         EC2_INSTANCE_PROFILE: ${{ inputs.ec2_instance_profile }}
+        EC2_INSTANCE_PUBLIC_IP: ${{ inputs.ec2_instance_public_ip }}
         STACK_DESTROY: ${{ inputs.stack_destroy }}
         AWS_RESOURCE_IDENTIFIER: ${{ inputs.aws_resource_identifier }}
         DOMAIN_NAME: ${{ inputs.domain_name }}

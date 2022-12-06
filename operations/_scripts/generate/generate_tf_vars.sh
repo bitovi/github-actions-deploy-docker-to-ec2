@@ -66,6 +66,8 @@ security_group_name = \"${GITHUB_IDENTIFIER}\"
 
 ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\"
 
+ec2_instance_public_ip = \"${EC2_INSTANCE_PUBLIC_IP}\"
+
 aws_resource_identifier = \"${GITHUB_IDENTIFIER}\"
 
 aws_resource_identifier_supershort = \"${GITHUB_IDENTIFIER_SS}\"
