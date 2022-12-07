@@ -38,7 +38,7 @@ inputs:
   aws_resource_identifier:
     description: 'Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources.'
   additional_tags:
-    description: 'A list of additional tags that will be included on created resources'
+    description: 'A list of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
 outputs:
   vm_url:
     description: "The URL of the generated app"
