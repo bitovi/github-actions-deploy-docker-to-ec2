@@ -24,14 +24,20 @@ fi
 GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh)"
 echo "GITHUB_IDENTIFIER: [$GITHUB_IDENTIFIER]"
 
+if [ -z "$SUB_DOMAIN" ]; then
+  SUB_DOMAIN="$GITHUB_IDENTIFIER"
+fi
 
 if [ -z "${EC2_INSTANCE_PROFILE}" ]; then
   EC2_INSTANCE_PROFILE="${GITHUB_IDENTIFIER}"
 fi
 
 echo "
-# the name of the operations repo environment directory
 app_port = \"$APP_PORT\"
+
+lb_port = \"$LB_PORT\"
+
+lb_healthcheck = \"$LB_HEALTHCHECK\"
 
 # the name of the operations repo environment directory
 ops_repo_environment = \"deployment\"
@@ -55,6 +61,14 @@ security_group_name = \"${GITHUB_IDENTIFIER}\"
 
 ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\"
 
+ec2_instance_public_ip = \"${EC2_INSTANCE_PUBLIC_IP}\"
+
 aws_resource_identifier = \"${GITHUB_IDENTIFIER}\"
+
+aws_resource_identifier_supershort = \"${GITHUB_IDENTIFIER_SS}\"
+
+sub_domain_name = \"${SUB_DOMAIN}\"
+
+domain_name = \"${DOMAIN_NAME}\"
 
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
