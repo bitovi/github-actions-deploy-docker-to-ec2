@@ -75,6 +75,14 @@ if [[ $IDENTIFIER =~ $re ]]; then
       IDENTIFIER=$(echo ${IDENTIFIER} | sed -e "s/${BASH_REMATCH[1]}//")
     done
   done
+  # If final length exceeds limit - get the firts part, last part, and create a hash in the middle
+  if [ ${#final_id} -gt $MAX_IDENTIFIER_LENGTH ]; then
+    max_length=$(( $MAX_IDENTIFIER_LENGTH - 8 ))
+    part1=$(echo $final_id | cut -d "-" -f 1)
+    part2=$(echo $final_id | cut -c 5- | rev | cut -c 5- | rev | md5sum | cut -c 1-$max_length)
+    part3=$(echo $final_id | rev | cut -d "-" -f 1 | rev)
+    final_id="$part1-$part2-$part3"
+  fi
   echo "$final_id"
 else
   echo "$IDENTIFIER"
