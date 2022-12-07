@@ -8,10 +8,7 @@ resource "aws_security_group" "ec2_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    merge(
-      Name = "${var.aws_resource_identifier}",
-      var.additional_tags
-  )
+    Name = "${var.aws_resource_identifier}-sg"
   }
 }
 

@@ -24,10 +24,7 @@ resource "aws_instance" "server" {
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
 
   tags = {
-    merge(
-      Name = "${var.aws_resource_identifier} - Instance",
-      var.additional_tags
-  )
+    Name = "${var.aws_resource_identifier} - Instance"
   }
 }
 
