@@ -29,8 +29,8 @@ inputs:
     required: false
   app_port:
     description: 'Port to expose for the app'
-    default: "80"
     required: false
+    default: '80'
   lb_port:
     description: 'Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided'
     required: false
@@ -42,6 +42,7 @@ inputs:
   ec2_instance_public_ip:
     description: 'Adds a public IP to the EC2 instance. Defaults to false'
     required: false
+    default: 'false'
   stack_destroy:
     description: 'Set to "true" to Destroy the stack'
   aws_resource_identifier:
