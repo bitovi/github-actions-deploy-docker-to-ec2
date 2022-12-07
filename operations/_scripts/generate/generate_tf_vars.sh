@@ -22,15 +22,7 @@ else
 fi
 
 GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh)"
-
-
-echo "DEBUGGING"
-echo "before GITHUB_IDENTIFIER_SS"
-GITHUB_IDENTIFIER_SS="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier_supershort.sh)"
-echo "GITHUB_IDENTIFIER"
-echo $GITHUB_IDENTIFIER
-echo "GITHUB_IDENTIFIER_SS"
-echo $GITHUB_IDENTIFIER_SS
+echo "GITHUB_IDENTIFIER: [$GITHUB_IDENTIFIER]"
 
 if [ -z "$SUB_DOMAIN" ]; then
   SUB_DOMAIN="$GITHUB_IDENTIFIER"
