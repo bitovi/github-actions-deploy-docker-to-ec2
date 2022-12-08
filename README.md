@@ -68,13 +68,13 @@ The following inputs can be used as `step.with` keys
 | `aws_default_region` | String | AWS default region |
 | `domain_name` | String | Define the root domain name for the application. e.g. bitovi.com' |
 | `sub_domain` | String | Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}` |
-| `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state |
+| `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state. Will be deleted if stack_destroy set to true |
 | `dot_env` | String | `.env` file to be used with the app |
 | `app_port` | String | port to expose for the app |
 | `lb_port` | String | Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided |
 | `lb_healthcheck` | String | Load balancer health check string. Defaults to HTTP:app_port |
 | `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}` |
-| `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` |
+| `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` - Will delete the tf_state_bucket after destroy. |
 | `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources. |
 | `app_directory` | String | Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo. |
 

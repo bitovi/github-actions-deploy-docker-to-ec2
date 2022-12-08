@@ -22,7 +22,7 @@ inputs:
     required: true
     default: 'us-east-1'
   tf_state_bucket:
-    description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-{branch}-tf-state`'
+    description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-{branch}-tf-state`. Will be deleted with stack_destroy.'
     required: false
   dot_env:
     description: '`.env` file to be used with the app'
@@ -40,7 +40,7 @@ inputs:
   ec2_instance_profile:
     description: 'The AWS IAM instance profile to use for the EC2 instance'
   stack_destroy:
-    description: 'Set to "true" to Destroy the stack'
+    description: 'Set to "true" to Destroy the stack. Will delete tf_state_bucket after destroy.'
   aws_resource_identifier:
     description: 'Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources.'
   domain_name:
