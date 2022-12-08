@@ -74,7 +74,6 @@ The following inputs can be used as `step.with` keys
 | `lb_port` | String | Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided |
 | `lb_healthcheck` | String | Load balancer health check string. Defaults to HTTP:app_port |
 | `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}` |
-| `ec2_instance_public_ip` | Boolean | Adds a public IP to the EC2 instance. Defaults to `false`. (App is exposed through an ELB) |
 | `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` |
 | `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources. |
 | `app_directory` | String | Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo. |
