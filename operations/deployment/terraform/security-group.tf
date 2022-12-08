@@ -37,8 +37,8 @@ resource "aws_security_group_rule" "ingress_lb_port" {
   count       = var.lb_port != var.app_port ? 1 : 0 
   type        = "ingress"
   description = "${var.aws_resource_identifier} - Port"
-  from_port   = var.lb_port != "" ? var.lb_port : ( local.fqdn_provided ? 443 : 80 )
-  to_port     = tonumber(var.app_port)
+  from_port   = tonumber(var.lb_port != "" ? var.lb_port : ( local.fqdn_provided ? 443 : 80 ))
+  to_port     = tonumber(var.lb_port != "" ? var.lb_port : ( local.fqdn_provided ? 443 : 80 ))
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
   security_group_id = aws_security_group.ec2_security_group.id
