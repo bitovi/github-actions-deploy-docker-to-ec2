@@ -11,6 +11,11 @@ GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 # Generate the tf state bucket
 export TF_STATE_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_tf_state_bucket.sh | xargs)"
 
+
+
+# Generate subdomain
+/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_subdomain.sh
+
 # Generate the provider.tf file
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_provider.sh
 
@@ -27,7 +32,6 @@ export TF_STATE_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gene
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
 
 
-echo "DEBUGGING - in deploy.sh"
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars"
@@ -56,5 +60,6 @@ docker run --rm --name bitops \
 -e TERRAFORM_DESTROY="${TERRAFORM_DESTROY}" \
 -e TF_STATE_BUCKET="${TF_STATE_BUCKET}" \
 -e DEFAULT_FOLDER_NAME="_default" \
+-e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
 bitovi/bitops:2.1.0
