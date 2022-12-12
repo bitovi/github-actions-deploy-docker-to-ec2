@@ -17,7 +17,7 @@ fi
 
 echo "
 terraform:
-    cli: {}
-    options:
+    cli:
         stack-action: ${CONFIG_STACK_ACTION}
+    options: {}
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/bitops.config.yaml"
