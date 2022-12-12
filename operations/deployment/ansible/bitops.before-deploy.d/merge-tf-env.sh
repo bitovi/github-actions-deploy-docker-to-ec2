@@ -7,7 +7,6 @@ DOTENV_FILE="${BITOPS_ENVROOT}/ansible/app.env"
 # tf dotenv file
 TF_DOTENV_FILE="${BITOPS_ENVROOT}/terraform/tf.env"
 
-echo "DEBUGGING"
 echo "cat DOTENV_FILE ($DOTENV_FILE)"
 cat $DOTENV_FILE
 
