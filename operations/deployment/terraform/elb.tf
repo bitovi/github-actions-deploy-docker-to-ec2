@@ -7,6 +7,8 @@ data "aws_elb_service_account" "main" {}
 resource "aws_s3_bucket" "lb_access_logs" {
   bucket = var.lb_access_bucket_name
 
+  force_destroy = true
+
   policy = <<POLICY
 {
   "Id": "Policy",
