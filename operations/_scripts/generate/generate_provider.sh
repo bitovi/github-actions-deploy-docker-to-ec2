@@ -33,12 +33,10 @@ provider \"aws\" {
   region = \"${AWS_DEFAULT_REGION}\"
   profile = \"default\"
   default_tags {
-    tags = {
-      merge(
-        local.aws_tags,
-        var.additional_tags
-      )
-    }
+    tags = merge(
+      local.aws_tags,
+      var.additional_tags
+    )
   }
 }
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/provider.tf"
