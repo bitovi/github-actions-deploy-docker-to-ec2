@@ -50,6 +50,8 @@ inputs:
     description: 'Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}`'
   app_directory:
     description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo.'
+  additional_tags:
+    description: 'A list of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
 outputs:
   vm_url:
     description: "The URL of the generated app"
@@ -83,6 +85,7 @@ runs:
         SUB_DOMAIN: ${{ inputs.sub_domain }}
         BITOPS_FAST_FAIL: true
         APP_DIRECTORY: ${{ inputs.app_directory }}
+        ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh

@@ -88,3 +88,9 @@ variable "domain_name" {
   description = "root domain name without any subdomains"
   default = ""
 }
+
+variable "additional_tags" {
+  type = map(string)
+  description = "A list of strings that will be added to created resources"
+  default = ""
+}
