@@ -70,5 +70,5 @@ sub_domain_name = \"${SUB_DOMAIN}\"
 domain_name = \"${DOMAIN_NAME}\"
 
 additional_tags = \"${ADDITIONAL_TAGS}\"
-
+#
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
