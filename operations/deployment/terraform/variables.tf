@@ -90,6 +90,7 @@ variable "domain_name" {
 }
 
 variable "additional_tags" {
-  type = map(string)
+  type = string
   description = "A list of strings that will be added to created resources"
+  default = "{}"
 }

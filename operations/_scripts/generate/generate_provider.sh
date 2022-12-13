@@ -35,7 +35,7 @@ provider \"aws\" {
   default_tags {
     tags = merge(
       local.aws_tags,
-      var.additional_tags
+      jsondecode(var.additional_tags)
     )
   }
 }
