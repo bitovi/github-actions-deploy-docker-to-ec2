@@ -52,6 +52,8 @@ inputs:
     description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo.'
   additional_tags:
     description: 'A list of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+    default: '{}'
 outputs:
   vm_url:
     description: "The URL of the generated app"
