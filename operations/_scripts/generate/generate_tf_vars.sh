@@ -38,7 +38,7 @@ IFS=',' read -ra ADDR <<< "$ADDITIONAL_TAGS"
 for i in "${ADDR[@]}"; do
 
     IFS='=' read -r key val <<< "$i"
-    ADDITIONAL_TAGS_LIST+="\"$key\": \"$val\","
+    ADDITIONAL_TAGS_LIST+="\"$key\"= \"$val\","
 done
 
 echo "
@@ -78,6 +78,6 @@ sub_domain_name = \"${SUB_DOMAIN}\"
 
 domain_name = \"${DOMAIN_NAME}\"
 
-additional_tags = {$( IFS=','; echo "${ADDITIONAL_TAGS_LIST[*]}" )}
+additional_tags = \"$( IFS=','; echo "${ADDITIONAL_TAGS_LIST[*]}" )\"
 
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
