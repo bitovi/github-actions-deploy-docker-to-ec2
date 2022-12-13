@@ -35,8 +35,9 @@ provider \"aws\" {
   default_tags {
     tags = merge(
       local.aws_tags,
-      jsondecode(var.additional_tags)
+      var.additional_tags
     )
   }
 }
+
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/provider.tf"
