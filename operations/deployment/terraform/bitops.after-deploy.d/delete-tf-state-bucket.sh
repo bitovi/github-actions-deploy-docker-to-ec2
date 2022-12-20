@@ -6,6 +6,6 @@ if [[ $TERRAFORM_DESTROY = true ]] ; then
 fi
 
 
-ls -lah
-echo "FULL TREE"
-tree /
+ls -lah /opt
+ls -lah /opt/bitops_deployment
+find / -iname bo-out.env
