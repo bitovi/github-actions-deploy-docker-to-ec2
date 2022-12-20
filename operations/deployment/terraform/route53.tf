@@ -36,5 +36,5 @@ locals {
 }
 
 locals {
-  url = local.fqdn_provided ? "${var.sub_domain_name}.${var.domain_name}" : aws_elb.vm[0].dns_name
+  url = local.fqdn_provided ? "https://${var.sub_domain_name}.${var.domain_name}" : "http://${aws_elb.vm[0].dns_name}"
 }
