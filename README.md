@@ -24,22 +24,21 @@ Create `.github/workflow/deploy.yaml` with the following to build on push.
 ```yaml
 on:
   push:
-    branches:
-      - "main"
+    branches: [ main ]
 
 permissions:
   contents: read
-  # id-token: write
 
 jobs:
-  deploy:
-    # environment:
-    #   name: github-pages
-    #   url: ${{ steps.build-publish.outputs.page_url }}
+  EC2-Deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref_name }}
+      url: ${{ steps.deploy.outputs.vm_url }}
     steps:
     - id: deploy
-      uses: bitovi/github-actions-deploy-docker-to-ec2@v0.2.0
+      name: Deploy
+      uses: bitovi/github-actions-deploy-docker-to-ec2@v0.4.1
       with:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID}}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
@@ -52,6 +51,16 @@ jobs:
         app_port: 3000
         additional_tags: "{\"key1\": \"value1\",\"key2\": \"value2\"}"
 
+    - if: ${{ steps.deploy.outputs.vm_url != '' }}
+      name: Print result created
+      run: |
+        echo "## VM Created! :rocket:" >> $GITHUB_STEP_SUMMARY
+        echo " ${{ steps.deploy.outputs.vm_url }}" >> $GITHUB_STEP_SUMMARY
+    - if: ${{ steps.deploy.outputs.vm_url == '' }}
+      name: Print result destroyed
+      run: |
+        echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
+        echo "Buckets and whole infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
 ```
 
 ## Customizing

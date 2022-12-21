@@ -67,6 +67,7 @@ runs:
       uses: actions/checkout@v3
 
     - name: Deploy with BitOps
+      id: deploy
       shell: bash
       env:
         GITHUB_ACTION_PATH: ${{ github.action_path }}
@@ -91,3 +92,5 @@ runs:
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
+        echo "running operations/_scripts/deploy/export_vars.sh"
+        $GITHUB_ACTION_PATH/operations/_scripts/deploy/export_vars.sh
