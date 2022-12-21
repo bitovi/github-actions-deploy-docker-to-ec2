@@ -32,8 +32,9 @@ permissions:
 jobs:
   EC2-Deploy:
     runs-on: ubuntu-latest
-    outputs:
-      vm_url: ${{ steps.deploy.vm_url }}
+    environment:
+      name: ${{ github.ref_name }}
+      url: ${{ steps.deploy.outputs.vm_url }}
     steps:
     - id: deploy
       uses: bitovi/github-actions-deploy-docker-to-ec2@v0.4.1
