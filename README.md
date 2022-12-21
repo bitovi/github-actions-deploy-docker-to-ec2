@@ -24,22 +24,16 @@ Create `.github/workflow/deploy.yaml` with the following to build on push.
 ```yaml
 on:
   push:
-    branches:
-      - "main"
-
-permissions:
-  contents: read
-  # id-token: write
+    branches: [ main ]
 
 jobs:
-  deploy:
-    # environment:
-    #   name: github-pages
-    #   url: ${{ steps.build-publish.outputs.page_url }}
+  EC2-Deploy:
     runs-on: ubuntu-latest
+    outputs:
+      vm_url: ${{ steps.deploy.vm_url }}
     steps:
     - id: deploy
-      uses: bitovi/github-actions-deploy-docker-to-ec2@v0.2.0
+      uses: bitovi/github-actions-deploy-docker-to-ec2@42-surface-dns-records
       with:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID}}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
@@ -52,6 +46,14 @@ jobs:
         app_port: 3000
         additional_tags: "{\"key1\": \"value1\",\"key2\": \"value2\"}"
 
+    - if: ${{ steps.deploy.outputs.vm_url != '' }}
+      run: |
+        echo "## VM Created! :rocket:" >> $GITHUB_STEP_SUMMARY
+        echo " ${{ steps.deploy.outputs.vm_url }}" >> $GITHUB_STEP_SUMMARY
+    - if: ${{ steps.deploy.outputs.vm_url == '' }}
+      run: |
+        echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
+        echo "Buckets and whole infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
 ```
 
 ## Customizing
