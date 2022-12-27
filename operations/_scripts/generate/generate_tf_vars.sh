@@ -67,6 +67,8 @@ aws_resource_identifier = \"${GITHUB_IDENTIFIER}\"
 
 aws_resource_identifier_supershort = \"${GITHUB_IDENTIFIER_SS}\"
 
+aws_secret_env = \"${AWS_SECRET_ENV}\"
+
 sub_domain_name = \"${SUB_DOMAIN}\"
 
 domain_name = \"${DOMAIN_NAME}\"
