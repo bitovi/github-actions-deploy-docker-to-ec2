@@ -8,8 +8,11 @@ The action will copy this repo to the VM and then run `docker-compose up`.
 Your app needs a `Dockerfile` and a `docker-compose.yaml` file.
 
 > For more details on setting up Docker and Docker Compose, check out Bitovi's Academy Course: [Learn Docker](https://www.bitovi.com/academy/learn-docker.html)
+>
+## Environment variables
 
-For envirnoment variables in your app, provide a `.env` file in GitHub Secrets named `DOT_ENV` and hook it up in your `docker-compose.yaml` file like:
+For envirnoment variables in your app, you can provide a `repo_env` file in your repo, a `.env` file in GitHub Secrets named `DOT_ENV`, or an AWS Secret. Then hook it up in your `docker-compose.yaml` file like:
+
 ```
 version: '3.9'
 services:
@@ -17,11 +20,40 @@ services:
     env_file: .env
 ```
 
+These environment variables are merged to the .env file quoted in the following order:
+ - Terraform passed env vars ( This is not optional nor customizable )
+ - Repository checked-in env vars - repo_env file as default. (KEY=VALUE style)
+ - Github Secret - Create a secret named DOT_ENV - (KEY=VALUE style)
+ - AWS Secret - JSON style like '{"key":"value"}'
+
 ## Example usage
 
 Create `.github/workflow/deploy.yaml` with the following to build on push.
 
+### Basic example
 ```yaml
+name: Basic deploy
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  EC2-Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - id: deploy
+        uses: bitovi/github-actions-deploy-docker-to-ec2@v0.4.1
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID_PTO}}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PTO}}
+          aws_default_region: us-east-1
+          dot_env: ${{ secrets.DOT_ENV }}
+```
+
+### Advanced example
+
+```yaml
+name: Advanced deploy
 on:
   push:
     branches: [ main ]
@@ -79,9 +111,9 @@ The following inputs can be used as `step.with` keys
 | `domain_name` | String | Define the root domain name for the application. e.g. bitovi.com' |
 | `sub_domain` | String | Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}` |
 | `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state. Will be deleted if stack_destroy set to true |
-| `repo_env` | String | `.env` file containing environment variables to be used with the app. Name defaults to `repo_env`. Check **Secrets merging** note |
-| `dot_env` | String | `.env` file to be used with the app. This is the name of the [Github secret](https://docs.github.com/es/actions/security-guides/encrypted-secrets). Check **Secrets merging** note |
-| `aws_secret_env` | String | Secret name to pull environment variables from AWS Secret Manager. Check **Secrets merging** note |
+| `repo_env` | String | `.env` file containing environment variables to be used with the app. Name defaults to `repo_env`. Check **SEnvironment variables** note |
+| `dot_env` | String | `.env` file to be used with the app. This is the name of the [Github secret](https://docs.github.com/es/actions/security-guides/encrypted-secrets). Check **SEnvironment variables** note |
+| `aws_secret_env` | String | Secret name to pull environment variables from AWS Secret Manager. Check **SEnvironment variables** note |
 | `app_port` | String | port to expose for the app |
 | `lb_port` | String | Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided |
 | `lb_healthcheck` | String | Load balancer health check string. Defaults to HTTP:app_port |
@@ -104,16 +136,6 @@ For some specific resources, we have a 32 characters limit. If the identifier le
 ### S3 buckets naming
 
 Buckets names can be made of up to 63 characters. If the length allows us to add -tf-state, we will do so. If not, a simple -tf will be added.
-
-## Secrets merging
-
-We allow three sources to generate the docker .env file. An env file from the repo, a Github secret, and a AWS Secret.
-
-These secrets are merged in the following order:
- - Terraform passed env vars ( This is not optional nor customizable )
- - Repository checked-in env vars
- - Github Secret DOT_ENV
- - AWS Secret
 
 ## Made with BitOps
 [BitOps](https://bitops.sh) allows you to define Infrastructure-as-Code for multiple tools in a central place.  This action uses a BitOps [Operations Repository](https://bitops.sh/operations-repo-structure/) to set up the necessary Terraform and Ansible to create infrastructure and deploy to it.
