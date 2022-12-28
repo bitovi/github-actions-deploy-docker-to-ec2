@@ -16,3 +16,7 @@ if [ -n "$APP_DIRECTORY" ]; then
 fi
 
 cp -rf "$TARGET_PATH"/* "${GITHUB_ACTION_PATH}/operations/deployment/ansible/app/${GITHUB_REPO_NAME}/"
+
+echo "Copying checked in env file from repo to Ansible deployment path"
+
+cp "$TARGET_PATH/$REPO_ENV" "${GITHUB_ACTION_PATH}/operations/deployment/ansible/repo.env"

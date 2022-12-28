@@ -79,15 +79,17 @@ The following inputs can be used as `step.with` keys
 | `domain_name` | String | Define the root domain name for the application. e.g. bitovi.com' |
 | `sub_domain` | String | Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}` |
 | `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state. Will be deleted if stack_destroy set to true |
-| `dot_env` | String | `.env` file to be used with the app |
+| `repo_env` | String | `.env` file containing environment variables to be used with the app. Name defaults to `repo_env`. Check **Secrets merging** note |
+| `dot_env` | String | `.env` file to be used with the app. This is the name of the [Github secret](https://docs.github.com/es/actions/security-guides/encrypted-secrets). Check **Secrets merging** note |
+| `aws_secret_env` | String | Secret name to pull environment variables from AWS Secret Manager. Check **Secrets merging** note |
 | `app_port` | String | port to expose for the app |
 | `lb_port` | String | Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided |
 | `lb_healthcheck` | String | Load balancer health check string. Defaults to HTTP:app_port |
 | `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}` |
 | `ec2_instance_type` | String | The AWS IAM instance type to use. Default is t2.small. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference |
-| `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` - Will delete the tf_state_bucket after destroy. |
+| `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` - Will delete the tf_state and elb_logs bucket after the destroy action runs. |
 | `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources. |
-| `app_directory` | String | Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo. |
+| `app_directory` | String | Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance. Default is the root of the repo. |
 | `additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
 
 ## Note about resource identifiers
@@ -101,7 +103,17 @@ For some specific resources, we have a 32 characters limit. If the identifier le
 
 ### S3 buckets naming
 
-Buckets name can be made of up to 63 characters. If the length allows us to add -tf-state, we will do so. If not, a simple -tf will be added.
+Buckets names can be made of up to 63 characters. If the length allows us to add -tf-state, we will do so. If not, a simple -tf will be added.
+
+## Secrets merging
+
+We allow three sources to generate the docker .env file. An env file from the repo, a Github secret, and a AWS Secret.
+
+These secrets are merged in the following order:
+ - Terraform passed env vars ( This is not optional nor customizable )
+ - Repository checked-in env vars
+ - Github Secret DOT_ENV
+ - AWS Secret
 
 ## Made with BitOps
 [BitOps](https://bitops.sh) allows you to define Infrastructure-as-Code for multiple tools in a central place.  This action uses a BitOps [Operations Repository](https://bitops.sh/operations-repo-structure/) to set up the necessary Terraform and Ansible to create infrastructure and deploy to it.

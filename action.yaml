@@ -24,6 +24,10 @@ inputs:
   tf_state_bucket:
     description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-{branch}-tf-state`. Will be deleted with stack_destroy.'
     required: false
+  repo_env:
+    description: 'File containing environment variables to be used with the app'
+    required: false
+    default: 'repo_env'
   dot_env:
     description: '`.env` file to be used with the app'
     required: false
@@ -85,6 +89,7 @@ runs:
         AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
         AWS_DEFAULT_REGION: ${{ inputs.aws_default_region }}
         TF_STATE_BUCKET: ${{ inputs.tf_state_bucket }}
+        REPO_ENV: ${{ inputs.repo_env }}
         DOT_ENV: ${{ inputs.dot_env }}
         AWS_SECRET_ENV: ${{ inputs.aws_secret_env }}
         APP_PORT: ${{ inputs.app_port }}

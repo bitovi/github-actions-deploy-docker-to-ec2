@@ -10,7 +10,7 @@ locals {
 
 resource "local_file" "tf-secretdotenv" {
   count = local.secret_provided ? 1 : 0
-  filename = format("%s/%s", abspath(path.root), "tf-secret.env")
+  filename = format("%s/%s", abspath(path.root), "aws.env")
   content  = local.secret_provided ? "${local.s3_secret_string}\n" : ""
 }
 
