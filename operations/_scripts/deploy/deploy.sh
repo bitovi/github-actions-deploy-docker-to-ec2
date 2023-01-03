@@ -61,6 +61,7 @@ docker run --rm --name bitops \
 -e TERRAFORM_DESTROY="${TERRAFORM_DESTROY}" \
 -e ANSIBLE_SKIP_DEPLOY="${ANSIBLE_SKIP_DEPLOY}" \
 -e TF_STATE_BUCKET="${TF_STATE_BUCKET}" \
+-e TF_STATE_BUCKET_DESTROY="${TF_STATE_BUCKET_DESTROY}" \
 -e DEFAULT_FOLDER_NAME="_default" \
 -e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \

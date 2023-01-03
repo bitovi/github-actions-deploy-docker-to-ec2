@@ -22,8 +22,12 @@ inputs:
     required: true
     default: 'us-east-1'
   tf_state_bucket:
-    description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-{branch}-tf-state`. Will be deleted with stack_destroy.'
+    description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-{branch}-tf-state`'
     required: false
+  tf_state_bucket_destroy:
+    description: 'Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed'
+    required: false
+    default: 'false'
   repo_env:
     description: 'File containing environment variables to be used with the app'
     required: false
@@ -52,7 +56,7 @@ inputs:
     required: false
     default: 't2.small'
   stack_destroy:
-    description: 'Set to "true" to Destroy the stack. Will delete tf_state_bucket after destroy.'
+    description: 'Set to "true" to Destroy the stack. Will delete the elb_logs bucket after the destroy action runs.'
   aws_resource_identifier:
     description: 'Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources.'
   domain_name:
@@ -89,6 +93,7 @@ runs:
         AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
         AWS_DEFAULT_REGION: ${{ inputs.aws_default_region }}
         TF_STATE_BUCKET: ${{ inputs.tf_state_bucket }}
+        TF_STATE_BUCKET_DESTROY: ${{ inputs.tf_state_bucket_destroy }}
         REPO_ENV: ${{ inputs.repo_env }}
         DOT_ENV: ${{ inputs.dot_env }}
         AWS_SECRET_ENV: ${{ inputs.aws_secret_env }}

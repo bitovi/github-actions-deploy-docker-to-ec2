@@ -110,7 +110,8 @@ The following inputs can be used as `step.with` keys
 | `aws_default_region` | String | AWS default region |
 | `domain_name` | String | Define the root domain name for the application. e.g. bitovi.com' |
 | `sub_domain` | String | Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}` |
-| `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state. Will be deleted if stack_destroy set to true |
+| `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state. |
+| `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. (Default is `true`) |
 | `repo_env` | String | `.env` file containing environment variables to be used with the app. Name defaults to `repo_env`. Check **SEnvironment variables** note |
 | `dot_env` | String | `.env` file to be used with the app. This is the name of the [Github secret](https://docs.github.com/es/actions/security-guides/encrypted-secrets). Check **SEnvironment variables** note |
 | `aws_secret_env` | String | Secret name to pull environment variables from AWS Secret Manager. Check **SEnvironment variables** note |
@@ -119,7 +120,7 @@ The following inputs can be used as `step.with` keys
 | `lb_healthcheck` | String | Load balancer health check string. Defaults to HTTP:app_port |
 | `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}` |
 | `ec2_instance_type` | String | The AWS IAM instance type to use. Default is t2.small. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference |
-| `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` - Will delete the tf_state and elb_logs bucket after the destroy action runs. |
+| `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` - Will delete the elb_logs bucket after the destroy action runs. |
 | `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources. |
 | `app_directory` | String | Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance. Default is the root of the repo. |
 | `additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
