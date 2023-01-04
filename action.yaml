@@ -114,3 +114,23 @@ runs:
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
         echo "running operations/_scripts/deploy/export_vars.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/export_vars.sh
+
+    # output results to GitHub
+    - if: ${{ steps.deploy.outputs.vm_url != '' }}
+      name: Print result created
+      shell: bash
+      run: |
+        echo "## VM Created! :rocket:" >> $GITHUB_STEP_SUMMARY
+        echo " ${{ steps.deploy.outputs.vm_url }}" >> $GITHUB_STEP_SUMMARY
+    - if: ${{ steps.deploy.outputs.vm_url == '' }}
+      name: Print result destroyed
+      shell: bash
+      run: |
+        echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
+        echo "Infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
+    - if: ${{ steps.deploy.outputs.vm_url == '' }} && ${{ inputs.tf_state_bucket_destroy }}
+      name: Print result destroyed
+      shell: bash
+      run: |
+        echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
+        echo "Buckets and infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
