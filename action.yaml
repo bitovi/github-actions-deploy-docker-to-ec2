@@ -73,7 +73,7 @@ inputs:
 outputs:
   vm_url:
     description: "The URL of the generated app"
-    value: ${{ steps.deploy.outputs.vm_url || https://bitovi.com }}
+    value: ${{ steps.deploy.outputs.vm_url || "https://bitovi.com" }}
 
 runs:
   using: 'composite'
