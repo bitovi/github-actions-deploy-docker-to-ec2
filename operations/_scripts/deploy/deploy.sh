@@ -65,4 +65,4 @@ docker run --rm --name bitops \
 -e DEFAULT_FOLDER_NAME="_default" \
 -e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
-bitovi/bitops:2.3.0
+bitovi/bitops:2.2.1

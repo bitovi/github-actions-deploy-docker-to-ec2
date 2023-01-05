@@ -122,13 +122,13 @@ runs:
       run: |
         echo "## VM Created! :rocket:" >> $GITHUB_STEP_SUMMARY
         echo " ${{ steps.deploy.outputs.vm_url }}" >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && ! inputs.tf_state_bucket_destroy }}
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_state_bucket_destroy == 'false' }}
       name: Print result destroyed
       shell: bash
       run: |
         echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
         echo "Infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_state_bucket_destroy }}
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_state_bucket_destroy == 'true' }}
       name: Print result destroyed
       shell: bash
       run: |
