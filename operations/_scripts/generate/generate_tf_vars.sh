@@ -54,7 +54,7 @@ app_branch_name = \"${GITHUB_BRANCH_NAME}\"
 app_install_root = \"/home/ubuntu\"
 
 # logs
-lb_access_bucket_name = \"${GITHUB_IDENTIFIER}-logs\"
+lb_access_bucket_name = \"${LB_LOGS_BUCKET}\"
 
 
 security_group_name = \"${GITHUB_IDENTIFIER}\"
