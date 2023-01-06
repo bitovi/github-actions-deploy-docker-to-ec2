@@ -2,7 +2,7 @@
 
 set -x
 
-
+echo "::group::In Deploy"  
 echo "In deploy.sh"
 
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
@@ -43,8 +43,9 @@ if [ "$STACK_DESTROY" == "true" ]; then
   TERRAFORM_DESTROY="true"
   ANSIBLE_SKIP_DEPLOY="true"
 fi
+echo "::endgroup::"
 
-
+echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
 docker run --rm --name bitops \
 -e AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" \
@@ -63,3 +64,4 @@ docker run --rm --name bitops \
 -e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
 bitovi/bitops:2.2.1
+echo "::endgroup::"
