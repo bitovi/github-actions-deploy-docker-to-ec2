@@ -1,6 +1,8 @@
 #!/bin/bash
 
 if [[ $TF_STATE_BUCKET_DESTROY = true ]] ; then
-  echo "Destroying S3 buket --> $TF_STATE_BUCKET"
+  echo "Destroying TF State S3 bucket --> $TF_STATE_BUCKET"
   aws s3 rb s3://$TF_STATE_BUCKET --force
+else
+  echo "TF State bucket not destroyed --> $TF_STATE_BUCKET"
 fi
