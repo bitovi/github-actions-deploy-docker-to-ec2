@@ -63,7 +63,8 @@ case $1 in
         fi
       fi
       checkBucket $TF_STATE_BUCKET
-      echo $TF_STATE_BUCKET
+      export $TF_STATE_BUCKET
+      echo "$TF_STATE_BUCKET"
 
   ;;
   lb)
@@ -74,6 +75,6 @@ case $1 in
         export LB_LOGS_BUCKET="${GITHUB_IDENTIFIER}-lg"
       fi
       checkBucket $LB_LOGS_BUCKET
-      echo $LB_LOGS_BUCKET
+      echo "$LB_LOGS_BUCKET"
   ;;
 esac
