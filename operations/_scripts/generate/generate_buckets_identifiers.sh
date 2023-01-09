@@ -63,16 +63,15 @@ case $1 in
         fi
       fi
       checkBucket $TF_STATE_BUCKET
-      export $TF_STATE_BUCKET
       echo "$TF_STATE_BUCKET"
 
   ;;
   lb)
       # Generate LB_LOGS_BUCKET ID
       if [[ ${#GITHUB_IDENTIFIER} < 59 ]]; then
-        export LB_LOGS_BUCKET="${GITHUB_IDENTIFIER}-logs"
+        LB_LOGS_BUCKET="${GITHUB_IDENTIFIER}-logs"
       else
-        export LB_LOGS_BUCKET="${GITHUB_IDENTIFIER}-lg"
+        LB_LOGS_BUCKET="${GITHUB_IDENTIFIER}-lg"
       fi
       checkBucket $LB_LOGS_BUCKET
       echo "$LB_LOGS_BUCKET"
