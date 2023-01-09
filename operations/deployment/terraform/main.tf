@@ -13,9 +13,22 @@ resource "aws_iam_instance_profile" "ec2_profile" {
   role = aws_iam_role.ec2_role.name
 }
 
+data "aws_ami" "ubuntu" {
+ most_recent = true
+ filter {
+   name   = "name"
+   values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+ }
+ filter {
+   name   = "virtualization-type"
+   values = ["hvm"]
+ }
+ owners = ["099720109477"]
+}
+
 resource "aws_instance" "server" {
   # ubuntu
-  ami                         = "ami-052efd3df9dad4825"
+  ami                         = var.aws_ami_id != "" ? var.aws_ami_id : data.aws_ami.ubuntu.id
   instance_type               = var.ec2_instance_type
   associate_public_ip_address = var.ec2_instance_public_ip
   security_groups             = [aws_security_group.ec2_security_group.name]
