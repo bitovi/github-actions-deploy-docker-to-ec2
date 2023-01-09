@@ -1,5 +1,8 @@
 #!/bin/bash
 
+### S3 Buckets name must follow AWS rules. Info below.
+### https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html
+
 set -e
 
 GITHUB_IDENTIFIER="$(echo $($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh) | tr '[:upper:]' '[:lower:]')"
@@ -56,6 +59,7 @@ case $1 in
   tf)
       # Generate TF_STATE_BUCKET ID if empty 
       if [ -z "${TF_STATE_BUCKET}" ]; then
+        #  Add trailing id depending on name length - See AWS S3 bucket naming rules
         if [[ ${#GITHUB_IDENTIFIER} < 55 ]]; then
           TF_STATE_BUCKET="${GITHUB_IDENTIFIER}-tf-state"
         else
@@ -68,6 +72,7 @@ case $1 in
   ;;
   lb)
       # Generate LB_LOGS_BUCKET ID
+      #  Add trailing id depending on name length - See AWS S3 bucket naming rules
       if [[ ${#GITHUB_IDENTIFIER} < 59 ]]; then
         LB_LOGS_BUCKET="${GITHUB_IDENTIFIER}-logs"
       else
