@@ -83,6 +83,12 @@ variable "aws_secret_env" {
   description = "Secret name to pull env variables from AWS Secret Manager"
 }
 
+variable "aws_ami_id" {
+  type = string
+  description = "AWS AMI ID image to use for deployment"
+  default = ""
+}
+
 variable "sub_domain_name" {
   type = string
   description = "Subdomain name for DNS record"

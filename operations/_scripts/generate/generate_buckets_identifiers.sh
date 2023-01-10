@@ -1,27 +1,11 @@
 #!/bin/bash
 
+### S3 Buckets name must follow AWS rules. Info below.
+### https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html
+
 set -e
 
 GITHUB_IDENTIFIER="$(echo $($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh) | tr '[:upper:]' '[:lower:]')"
-
-function generateIdentifiers () {
-  # Generate TF_STATE_BUCKET ID if empty 
-  if [ -z "${TF_STATE_BUCKET}" ]; then
-    if [[ ${#GITHUB_IDENTIFIER} < 55 ]]; then
-      TF_STATE_BUCKET="${GITHUB_IDENTIFIER}-tf-state"
-    else
-      TF_STATE_BUCKET="${GITHUB_IDENTIFIER}-tf"
-    fi
-  else
-    export TF_STATE_BUCKET=${TF_STATE_BUCKET}
-  fi
-  # Generate LB_LOGS_BUCKET ID
-  if [[ ${#GITHUB_IDENTIFIER} < 59 ]]; then
-    export LB_LOGS_BUCKET="${GITHUB_IDENTIFIER}-logs"
-  else
-    export LB_LOGS_BUCKET="${GITHUB_IDENTIFIER}-lg"
-  fi
-}
 
 function checkBucket() {
   # check length of bucket name
@@ -71,10 +55,30 @@ function checkBucket() {
   fi
 }
 
-generateIdentifiers
+case $1 in 
+  tf)
+      # Generate TF_STATE_BUCKET ID if empty 
+      if [ -z "${TF_STATE_BUCKET}" ]; then
+        #  Add trailing id depending on name length - See AWS S3 bucket naming rules
+        if [[ ${#GITHUB_IDENTIFIER} < 55 ]]; then
+          TF_STATE_BUCKET="${GITHUB_IDENTIFIER}-tf-state"
+        else
+          TF_STATE_BUCKET="${GITHUB_IDENTIFIER}-tf"
+        fi
+      fi
+      checkBucket $TF_STATE_BUCKET
+      echo "$TF_STATE_BUCKET"
 
-checkBucket $TF_STATE_BUCKET
-checkBucket $LB_LOGS_BUCKET
-
-export TF_STATE_BUCKET=${TF_STATE_BUCKET}
-export LB_LOGS_BUCKET=${LB_LOGS_BUCKET}
+  ;;
+  lb)
+      # Generate LB_LOGS_BUCKET ID
+      #  Add trailing id depending on name length - See AWS S3 bucket naming rules
+      if [[ ${#GITHUB_IDENTIFIER} < 59 ]]; then
+        LB_LOGS_BUCKET="${GITHUB_IDENTIFIER}-logs"
+      else
+        LB_LOGS_BUCKET="${GITHUB_IDENTIFIER}-lg"
+      fi
+      checkBucket $LB_LOGS_BUCKET
+      echo "$LB_LOGS_BUCKET"
+  ;;
+esac
