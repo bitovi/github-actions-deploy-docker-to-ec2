@@ -101,6 +101,7 @@ The following inputs can be used as `step.with` keys
 | `aws_ami_id` | String | AWS AMI ID. Will default to latest Ubuntu 22.04 server image (HVM). Accepts `ami-####` values |
 | `domain_name` | String | Define the root domain name for the application. e.g. bitovi.com' |
 | `sub_domain` | String | Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}` |
+| `root_domain` | Boolean | Deploy application to root domain. Will create root and www records. Defaults to `false` |
 | `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state. |
 | `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. (Default is `false`). `stack_destroy` must also be `true`|
 | `repo_env` | String | `.env` file containing environment variables to be used with the app. Name defaults to `repo_env`. Check **SEnvironment variables** note |
