@@ -99,6 +99,11 @@ variable "domain_name" {
   description = "root domain name without any subdomains"
   default = ""
 }
+variable "root_domain" {
+  type = string
+  description = "deploy to root domain"
+  default = ""
+}
 
 variable "additional_tags" {
   type = map(string)
