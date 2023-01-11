@@ -1,6 +1,6 @@
 data "aws_acm_certificate" "issued" {
   count = local.fqdn_provided ? 1 : 0
-  domain = var.domain_name
+  domain = lookup(var.domain_name, "*.{var.domain_name}", "${var.sub_domain_name}.${var.domain_name}")
 }
 
 data "aws_elb_service_account" "main" {}
