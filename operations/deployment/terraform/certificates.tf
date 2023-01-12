@@ -1,9 +1,3 @@
-data "aws_route53_zone" "selected" {
-  count        = var.domain_name != "" ? 1 : 0
-  name         = "${var.domain_name}."
-  private_zone = false
-}
-
 # Lookup for main domain.
 
 data "aws_acm_certificate" "issued" {
