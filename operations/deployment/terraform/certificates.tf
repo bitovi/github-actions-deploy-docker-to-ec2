@@ -62,7 +62,16 @@ locals {
            : aws_acm_certificate.sub_domain[0].arn
          ) : aws_acm_certificate.root_domain[0].arn
        )
-   )           
+   )
+    cert_exist = (
+     var.cert_arn != "" ? var.cert_arn :
+       ( var.create_root_cert != "true" ? 
+         ( var.create_sub_cert != "true" ? 
+           ( local.fqdn_provided != "" ? "true" : "" )
+           : "true"
+         ) : "true"
+       )
+   )
 }
 
 output "selected_arn" {
