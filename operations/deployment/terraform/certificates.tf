@@ -63,7 +63,7 @@ locals {
          ) : aws_acm_certificate.root_domain[0].arn
        )
    )
-    cert_exist = (
+   cert_should_exist = (
      var.cert_arn != "" ? var.cert_arn :
        ( var.create_root_cert != "true" ? 
          ( var.create_sub_cert != "true" ? 
