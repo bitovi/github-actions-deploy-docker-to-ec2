@@ -4,11 +4,24 @@ GitHub action to deploy any [Docker](https://www.bitovi.com/academy/learn-docker
 
 The action will copy this repo to the VM and then run `docker-compose up`.
 
+## Getting Started Intro Video
+[![Getting Started - Youtube](https://img.youtube.com/vi/oya5LuHUCXc/0.jpg)](https://www.youtube.com/watch?v=oya5LuHUCXc)
+
+
 ## Requirements
+
+1. Files for Docker
+2. An AWS account
+
+### 1. Files for Docker
 Your app needs a `Dockerfile` and a `docker-compose.yaml` file.
 
 > For more details on setting up Docker and Docker Compose, check out Bitovi's Academy Course: [Learn Docker](https://www.bitovi.com/academy/learn-docker.html)
 >
+
+### 2. An AWS account
+You'll need [Access Keys](https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html) from an [AWS account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/)
+
 ## Environment variables
 
 For envirnoment variables in your app, you can provide a `repo_env` file in your repo, a `.env` file in GitHub Secrets named `DOT_ENV`, or an AWS Secret. Then hook it up in your `docker-compose.yaml` file like:
