@@ -77,6 +77,12 @@ domain_name = \"${DOMAIN_NAME}\"
 
 root_domain = \"${ROOT_DOMAIN}\"
 
+cert_arn = \"${CERT_ARN}\"
+
+create_root_cert = \"${CREATE_ROOT_CERT}\"
+
+create_sub_cert = \"${CREATE_SUB_CERT}\"
+
 additional_tags = ${ADDITIONAL_TAGS}
 #
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"

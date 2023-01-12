@@ -85,9 +85,9 @@ jobs:
       name: Deploy
       uses: bitovi/github-actions-deploy-docker-to-ec2@v0.4.1
       with:
-        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID}}
-        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
-        aws_session_token: ${{ secrets.AWS_SESSION_TOKEN}}
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_session_token: ${{ secrets.AWS_SESSION_TOKEN }}
         aws_default_region: us-east-1
         domain_name: bitovi.com
         sub_domain: app
@@ -115,6 +115,9 @@ The following inputs can be used as `step.with` keys
 | `domain_name` | String | Define the root domain name for the application. e.g. bitovi.com' |
 | `sub_domain` | String | Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}` |
 | `root_domain` | Boolean | Deploy application to root domain. Will create root and www records. Defaults to `false` |
+| `cert_arn` | String | Define the certificate ARN to use for the application. **See note ** |
+| `create_root_cert` | Boolean | Generates and manage the root cert for the application. **See note **. Defaults to `false` |
+| `create_sub_cert` | Boolean | Generates and manage the sub-domain certificate for the application. **See note **. Defaults to `false` |
 | `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state. |
 | `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. (Default is `false`). `stack_destroy` must also be `true`|
 | `repo_env` | String | `.env` file containing environment variables to be used with the app. Name defaults to `repo_env`. Check **SEnvironment variables** note |
@@ -142,6 +145,15 @@ For some specific resources, we have a 32 characters limit. If the identifier le
 ### S3 buckets naming
 
 Buckets names can be made of up to 63 characters. If the length allows us to add -tf-state, we will do so. If not, a simple -tf will be added.
+
+## CERTIFICATES - Only for AWS Managed domains with Route53
+
+As a default, the application will be deployed and the ELB public URL will be displayed.
+
+If `domain_name` is defined, we will look up for a certificate with the name of that domain (eg. `example.com`). We expect that certificate to contain both `example.com` and `*.example.com`
+Setting `create_root_cert` to `true`will create this certificate with both `example.com` and `*.example.com` for you, and validate them. (DNS validation.)
+Setting `create_sub_cert` to `true` will create a certificate just for the subdomain, and validate it.
+**Keep in mind that managed domains will be destroyed if stack_destroy is set.**
 
 ## Made with BitOps
 [BitOps](https://bitops.sh) allows you to define Infrastructure-as-Code for multiple tools in a central place.  This action uses a BitOps [Operations Repository](https://bitops.sh/operations-repo-structure/) to set up the necessary Terraform and Ansible to create infrastructure and deploy to it.

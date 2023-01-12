@@ -69,7 +69,19 @@ inputs:
   sub_domain:
     description: 'Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}`'
   root_domain:
-    description: 'Deploy to root domain. Will generate two DNS recrods, one for root, another for www.'
+    description: 'Deploy to root domain. Will generate two DNS recrods, one for root, another for www'
+    required: false
+  cert_arn:
+    description: 'Define the certificate ARN to use for the application'
+    default: ''
+    required: false
+  create_root_cert:
+    description: 'Generates and manage the root cert for the application'
+    default: 'false'
+    required: false
+  create_sub_cert: 
+    description: Generates and manage the sub-domain certificate for the application'
+    default: 'false'
     required: false
   app_directory:
     description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo.'
