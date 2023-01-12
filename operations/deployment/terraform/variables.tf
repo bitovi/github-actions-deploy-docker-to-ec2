@@ -105,6 +105,21 @@ variable "root_domain" {
   default = ""
 }
 
+variable "cert_arn" {
+  type = string
+  default = ""
+}
+
+variable "create_root_cert" {
+  type = string
+  default = ""
+}
+
+variable "create_sub_cert" {
+  type = string
+  default = ""
+}
+
 variable "additional_tags" {
   type = map(string)
   description = "A list of strings that will be added to created resources"
