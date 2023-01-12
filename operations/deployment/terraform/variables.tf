@@ -107,16 +107,19 @@ variable "root_domain" {
 
 variable "cert_arn" {
   type = string
+  description = "Certificate ARN to use"
   default = ""
 }
 
 variable "create_root_cert" {
   type = string
+  description = "deploy to root domain"
   default = ""
 }
 
 variable "create_sub_cert" {
   type = string
+  description = "deploy to root domain"
   default = ""
 }
 

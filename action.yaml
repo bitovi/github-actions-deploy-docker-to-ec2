@@ -73,15 +73,12 @@ inputs:
     required: false
   cert_arn:
     description: 'Define the certificate ARN to use for the application'
-    default: ''
     required: false
   create_root_cert:
     description: 'Generates and manage the root cert for the application'
-    default: 'false'
     required: false
   create_sub_cert: 
     description: Generates and manage the sub-domain certificate for the application'
-    default: 'false'
     required: false
   app_directory:
     description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo.'
@@ -127,6 +124,9 @@ runs:
         DOMAIN_NAME: ${{ inputs.domain_name }}
         SUB_DOMAIN: ${{ inputs.sub_domain }}
         ROOT_DOMAIN: ${{ inputs.root_domain }}
+        CERT_ARN: ${{ inputs.cert_arn }}
+        CREATE_ROOT_CERT: ${{ inputs.create_root_cert }}
+        CREATE_SUB_CERT: ${{ inputs.create_sub_cert }}
         BITOPS_FAST_FAIL: true
         APP_DIRECTORY: ${{ inputs.app_directory }}
         ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
