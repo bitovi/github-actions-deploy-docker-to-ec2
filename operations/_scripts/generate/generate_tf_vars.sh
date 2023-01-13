@@ -24,6 +24,9 @@ fi
 GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh)"
 echo "GITHUB_IDENTIFIER: [$GITHUB_IDENTIFIER]"
 
+GITHUB_IDENTIFIER_SS="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier_supershort.sh)"
+echo "GITHUB_IDENTIFIER SS: [$GITHUB_IDENTIFIER_SS]"
+
 if [ -z "$SUB_DOMAIN" ]; then
   SUB_DOMAIN="$GITHUB_IDENTIFIER"
 fi
