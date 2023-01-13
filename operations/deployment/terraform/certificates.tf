@@ -55,25 +55,16 @@ resource "aws_acm_certificate_validation" "sub_domain" {
 
 locals {
    selected_arn = (
-     var.cert_arn != "" ? var.cert_arn :
-       ( var.create_root_cert != "true" ? 
-         ( var.create_sub_cert != "true" ? 
-           ( local.fqdn_provided != "" ? data.aws_acm_certificate.issued[0].arn : "" )
-           : aws_acm_certificate.sub_domain[0].arn
-         ) : aws_acm_certificate.root_domain[0].arn
-       )
+    var.no_cert == "true" ? "" :
+      ( var.cert_arn != "" ? var.cert_arn :
+        ( var.create_root_cert != "true" ? 
+          ( var.create_sub_cert != "true" ? 
+            ( local.fqdn_provided != "" ? data.aws_acm_certificate.issued[0].arn : "" )
+            : aws_acm_certificate.sub_domain[0].arn
+          ) : aws_acm_certificate.root_domain[0].arn
+        )
+      )
    )
-   cert_should_exist = (
-     var.no_cert != true ?
-       ( var.cert_arn != "" ? var.cert_arn :
-         ( var.create_root_cert != "true" ? 
-           ( var.create_sub_cert != "true" ? 
-             ( local.fqdn_provided != "" ? "true" : "" )
-             : "true"
-           ) : "true"
-         )
-       ) : ""
-   )  
 }
 
 output "selected_arn" {

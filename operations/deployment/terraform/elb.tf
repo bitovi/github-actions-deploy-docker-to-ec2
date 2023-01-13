@@ -36,8 +36,7 @@ resource "aws_s3_bucket_acl" "lb_access_logs_acl" {
 }
 
 resource "aws_elb" "vm_ssl" {
-  #count              = local.fqdn_provided ? ( local.selected_arn != "" ? 1 : 0 ) : 0
-  count              = local.cert_should_exist == "true" ? 1 : 0
+  count              = local.selected_arn != "" ? 1 : 0
   name               = "${var.aws_resource_identifier_supershort}"
   security_groups    = [aws_security_group.ec2_security_group.id]
   availability_zones = [aws_instance.server.availability_zone]
@@ -75,8 +74,7 @@ resource "aws_elb" "vm_ssl" {
 }
 
 resource "aws_elb" "vm" {
-  #count              = local.fqdn_provided ? ( local.selected_arn != "" ? 0 : 1 ) : 1
-  count              = local.cert_should_exist == "true" ? 0 : 1
+  count              = local.selected_arn != "" ? 0 : 1
   name               = "${var.aws_resource_identifier_supershort}"
   security_groups    = [aws_security_group.ec2_security_group.id]
   availability_zones = [aws_instance.server.availability_zone]
