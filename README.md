@@ -161,6 +161,8 @@ Setting `create_sub_cert` to `true` will create a certificate just for the subdo
 
 :warning: **Keep in mind that managed domains will be destroyed if stack_destroy is set to true.** :warning:
 
+To change a certificate (root_cert, sub_cert, ARN or pre-existing root cert), you must first set the no_cert flag to true, run the action, then set the no_cert flag to false with the desired settings and excecute the action again. This is necessary due to a limitation that prevents certificates from being changed while in use by certain resources.
+
 ## Made with BitOps
 [BitOps](https://bitops.sh) allows you to define Infrastructure-as-Code for multiple tools in a central place.  This action uses a BitOps [Operations Repository](https://bitops.sh/operations-repo-structure/) to set up the necessary Terraform and Ansible to create infrastructure and deploy to it.
 
