@@ -1,7 +1,7 @@
 # Lookup for main domain.
 
 data "aws_acm_certificate" "issued" {
-  count = var.create_root_cert != "true" ? ( var.create_sub_cert != "true" ? ( local.fqdn_provided != "" ? 1 : 0 ) : 0 ) : 0
+  count = var.no_cert == "true" ? 0 : ( var.create_root_cert != "true" ? ( var.create_sub_cert != "true" ? ( local.fqdn_provided != "" ? 1 : 0 ) : 0 ) : 0 )
   domain = var.domain_name
 }
 
