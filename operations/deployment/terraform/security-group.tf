@@ -42,10 +42,4 @@ resource "aws_security_group_rule" "ingress_lb_port" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
   security_group_id = aws_security_group.ec2_security_group.id
-
-  depends_on = [
-    data.aws_acm_certificate.issued,
-    aws_acm_certificate.root_domain[0],
-    aws_acm_certificate.sub_domain[0]
-  ]
 }
