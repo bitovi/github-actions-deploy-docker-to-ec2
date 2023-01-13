@@ -73,9 +73,9 @@ resource "aws_elb" "vm_ssl" {
   }
 
   depends_on = [
-    aws_acm_certificate.issued[0].arn,
-    aws_acm_certificate.root_domain[0].arn,
-    aws_acm_certificate.sub_domain[0].arn
+    aws_acm_certificate.issued[0],
+    aws_acm_certificate.root_domain[0],
+    aws_acm_certificate.sub_domain[0]
   ]
 }
 
