@@ -13,8 +13,8 @@ resource "aws_route53_record" "dev" {
   # NOTE: using the array syntax (aws_elb.vm_ssl[0]) because the aws_elb is optional via the count property
   #       which causes the properties to exist as a list
   alias {
-    name                   = aws_elb.vm_ssl[0].dns_name
-    zone_id                = aws_elb.vm_ssl[0].zone_id
+    name                   = local.selected_arn != "" ? aws_elb.vm_ssl[0].dns_name : aws_elb.vm[0].dns_name
+    zone_id                = local.selected_arn != "" ? aws_elb.vm_ssl[0].zone_id : aws_elb.vm[0].zone_id
     evaluate_target_health = true
   }
 }
@@ -26,9 +26,9 @@ resource "aws_route53_record" "root-a" {
   type    = "A"
 
   alias {
-    name                   = aws_elb.vm_ssl[0].dns_name
-    zone_id                = aws_elb.vm_ssl[0].zone_id
-    evaluate_target_health = false
+    name                   = local.selected_arn != "" ? aws_elb.vm_ssl[0].dns_name : aws_elb.vm[0].dns_name
+    zone_id                = local.selected_arn != "" ? aws_elb.vm_ssl[0].zone_id : aws_elb.vm[0].zone_id
+    evaluate_target_health = true
   }
 }
 
@@ -39,9 +39,9 @@ resource "aws_route53_record" "www-a" {
   type    = "A"
 
   alias {
-    name                   = aws_elb.vm_ssl[0].dns_name
-    zone_id                = aws_elb.vm_ssl[0].zone_id
-    evaluate_target_health = false
+    name                   = local.selected_arn != "" ? aws_elb.vm_ssl[0].dns_name : aws_elb.vm[0].dns_name
+    zone_id                = local.selected_arn != "" ? aws_elb.vm_ssl[0].zone_id : aws_elb.vm[0].zone_id
+    evaluate_target_health = true
   }
 }
 
@@ -62,11 +62,12 @@ locals {
 }
 
 locals {
+  protocol = local.selected_arn != "" ? "https://" : "http://"
   public_port = var.lb_port != "" ? ":${var.lb_port}" : ""
   url = (local.fqdn_provided ?
     (var.root_domain == "true" ?
-      "https://${var.domain_name}${local.public_port}" :
-      "https://${var.sub_domain_name}.${var.domain_name}${local.public_port}"
+      "${local.protocol}${var.domain_name}${local.public_port}" :
+      "${local.protocol}${var.sub_domain_name}.${var.domain_name}${local.public_port}"
     ):
     "http://${aws_elb.vm[0].dns_name}${local.public_port}" )
 }
