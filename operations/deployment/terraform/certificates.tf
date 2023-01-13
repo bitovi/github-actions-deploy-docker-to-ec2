@@ -64,14 +64,16 @@ locals {
        )
    )
    cert_should_exist = (
-     var.cert_arn != "" ? var.cert_arn :
-       ( var.create_root_cert != "true" ? 
-         ( var.create_sub_cert != "true" ? 
-           ( local.fqdn_provided != "" ? data.aws_acm_certificate.issued[0].arn : "" )
-           : "true"
-         ) : "true"
-       )
-   )
+     var.no_cert != true ?
+       ( var.cert_arn != "" ? var.cert_arn :
+         ( var.create_root_cert != "true" ? 
+           ( var.create_sub_cert != "true" ? 
+             ( local.fqdn_provided != "" ? "true" : "" )
+             : "true"
+           ) : "true"
+         )
+       ) : ""
+   )  
 }
 
 output "selected_arn" {

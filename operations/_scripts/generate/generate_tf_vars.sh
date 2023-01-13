@@ -83,6 +83,8 @@ create_root_cert = \"${CREATE_ROOT_CERT}\"
 
 create_sub_cert = \"${CREATE_SUB_CERT}\"
 
+no_cert = \"${NO_CERT}\"
+
 additional_tags = ${ADDITIONAL_TAGS}
 #
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
