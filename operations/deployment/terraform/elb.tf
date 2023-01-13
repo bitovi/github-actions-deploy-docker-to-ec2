@@ -71,6 +71,12 @@ resource "aws_elb" "vm_ssl" {
   tags = {
     Name = "${var.aws_resource_identifier_supershort}"
   }
+
+  depends_on = [
+    aws_acm_certificate[0].issued,
+    aws_acm_certificate[0].root_domain,
+    aws_acm_certificate[0].sub_domain
+  ]
 }
 
 resource "aws_elb" "vm" {
