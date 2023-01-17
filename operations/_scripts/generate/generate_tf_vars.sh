@@ -24,6 +24,9 @@ fi
 GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh)"
 echo "GITHUB_IDENTIFIER: [$GITHUB_IDENTIFIER]"
 
+GITHUB_IDENTIFIER_SS="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier_supershort.sh)"
+echo "GITHUB_IDENTIFIER SS: [$GITHUB_IDENTIFIER_SS]"
+
 if [ -z "$SUB_DOMAIN" ]; then
   SUB_DOMAIN="$GITHUB_IDENTIFIER"
 fi
@@ -74,6 +77,16 @@ aws_ami_id = \"${AWS_AMI_ID}\"
 sub_domain_name = \"${SUB_DOMAIN}\"
 
 domain_name = \"${DOMAIN_NAME}\"
+
+root_domain = \"${ROOT_DOMAIN}\"
+
+cert_arn = \"${CERT_ARN}\"
+
+create_root_cert = \"${CREATE_ROOT_CERT}\"
+
+create_sub_cert = \"${CREATE_SUB_CERT}\"
+
+no_cert = \"${NO_CERT}\"
 
 additional_tags = ${ADDITIONAL_TAGS}
 #

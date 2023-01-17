@@ -65,9 +65,24 @@ inputs:
     description: 'Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources.'
   domain_name:
     description: 'Define the root domain name for the application. e.g. app.com'
-    required: true
+    required: false
   sub_domain:
     description: 'Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}`'
+  root_domain:
+    description: 'Deploy to root domain. Will generate two DNS recrods, one for root, another for www'
+    required: false
+  cert_arn:
+    description: 'Define the certificate ARN to use for the application'
+    required: false
+  create_root_cert:
+    description: 'Generates and manage the root cert for the application'
+    required: false
+  create_sub_cert: 
+    description: 'Generates and manage the sub-domain certificate for the application'
+    required: false
+  no_cert:
+    description: 'Makes the application not to use a certificate by disabling certificate lookup.'
+    required: false
   app_directory:
     description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo.'
   additional_tags:
@@ -111,6 +126,11 @@ runs:
         AWS_RESOURCE_IDENTIFIER: ${{ inputs.aws_resource_identifier }}
         DOMAIN_NAME: ${{ inputs.domain_name }}
         SUB_DOMAIN: ${{ inputs.sub_domain }}
+        ROOT_DOMAIN: ${{ inputs.root_domain }}
+        CERT_ARN: ${{ inputs.cert_arn }}
+        CREATE_ROOT_CERT: ${{ inputs.create_root_cert }}
+        CREATE_SUB_CERT: ${{ inputs.create_sub_cert }}
+        NO_CERT: ${{ inputs.no_cert }}
         BITOPS_FAST_FAIL: true
         APP_DIRECTORY: ${{ inputs.app_directory }}
         ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
