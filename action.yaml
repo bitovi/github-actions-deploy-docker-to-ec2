@@ -164,3 +164,4 @@ runs:
       shell: bash
       run: |
         echo "## Workflow failed to run :fire:" >> $GITHUB_STEP_SUMMARY
+        echo "Please check the logs and submit an issue to our Github Action repo" >> $GITHUB_STEP_SUMMARY
