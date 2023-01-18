@@ -59,7 +59,7 @@ locals {
       ( var.cert_arn != "" ? var.cert_arn :
         ( var.create_root_cert != "true" ? 
           ( var.create_sub_cert != "true" ? 
-            ( local.fqdn_provided != "" ? data.aws_acm_certificate.issued[0].arn : "" )
+            ( local.fqdn_provided ? data.aws_acm_certificate.issued[0].arn : "" )
             : aws_acm_certificate.sub_domain[0].arn
           ) : aws_acm_certificate.root_domain[0].arn
         )
@@ -70,7 +70,7 @@ locals {
       ( var.cert_arn != "" ? true :
         ( var.create_root_cert != "true" ? 
           ( var.create_sub_cert != "true" ? 
-            ( local.fqdn_provided != "" ? true : false )
+            ( local.fqdn_provided ? true : false )
             : true
           ) : true
         )
