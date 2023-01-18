@@ -99,6 +99,35 @@ variable "domain_name" {
   description = "root domain name without any subdomains"
   default = ""
 }
+variable "root_domain" {
+  type = string
+  description = "deploy to root domain"
+  default = ""
+}
+
+variable "cert_arn" {
+  type = string
+  description = "Certificate ARN to use"
+  default = ""
+}
+
+variable "create_root_cert" {
+  type = string
+  description = "deploy to root domain"
+  default = ""
+}
+
+variable "create_sub_cert" {
+  type = string
+  description = "deploy to root domain"
+  default = ""
+}
+
+variable "no_cert" {
+  type = string
+  description = "disable cert lookup"
+  default = ""
+}
 
 variable "additional_tags" {
   type = map(string)

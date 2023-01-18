@@ -2,14 +2,15 @@
 
 set -x
 
-echo "::group::In Deploy"  
-echo "In deploy.sh"
+echo "::group::In Deploy"
 
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 
-# Generate buckets identifiers
+# Generate buckets identifiers and check them agains AWS Rules 
 export TF_STATE_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_buckets_identifiers.sh tf | xargs)"
+/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/deploy/check_bucket_name.sh $TF_STATE_BUCKET
 export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_buckets_identifiers.sh lb | xargs)"
+/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/deploy/check_bucket_name.sh $LB_LOGS_BUCKET
 
 # Generate subdomain
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_subdomain.sh
@@ -64,5 +65,5 @@ docker run --rm --name bitops \
 -e DEFAULT_FOLDER_NAME="_default" \
 -e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
-bitovi/bitops:2.2.1
+bitovi/bitops:2.3.0
 echo "::endgroup::"

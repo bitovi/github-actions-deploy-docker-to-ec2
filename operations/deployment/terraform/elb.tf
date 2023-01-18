@@ -1,8 +1,3 @@
-data "aws_acm_certificate" "issued" {
-  count = local.fqdn_provided ? 1 : 0
-  domain = var.domain_name
-}
-
 data "aws_elb_service_account" "main" {}
 resource "aws_s3_bucket" "lb_access_logs" {
   bucket = var.lb_access_bucket_name
@@ -41,7 +36,7 @@ resource "aws_s3_bucket_acl" "lb_access_logs_acl" {
 }
 
 resource "aws_elb" "vm_ssl" {
-  count              = local.fqdn_provided ? 1 : 0
+  count              = local.cert_available ? 1 : 0
   name               = "${var.aws_resource_identifier_supershort}"
   security_groups    = [aws_security_group.ec2_security_group.id]
   availability_zones = [aws_instance.server.availability_zone]
@@ -56,7 +51,7 @@ resource "aws_elb" "vm_ssl" {
     instance_protocol  = "tcp"
     lb_port            = var.lb_port != "" ? var.lb_port : 443
     lb_protocol        = "ssl"
-    ssl_certificate_id = data.aws_acm_certificate.issued[0].arn
+    ssl_certificate_id = local.selected_arn
   }
 
   health_check {
@@ -79,7 +74,7 @@ resource "aws_elb" "vm_ssl" {
 }
 
 resource "aws_elb" "vm" {
-  count              = local.fqdn_provided ? 0 : 1
+  count              = local.cert_available ? 0 : 1
   name               = "${var.aws_resource_identifier_supershort}"
   security_groups    = [aws_security_group.ec2_security_group.id]
   availability_zones = [aws_instance.server.availability_zone]
@@ -117,5 +112,5 @@ resource "aws_elb" "vm" {
 
 output "lb_public_dns" {
   description = "Public DNS address of the LB"
-  value       = "${ local.fqdn_provided ? aws_elb.vm_ssl[0].dns_name : aws_elb.vm[0].dns_name }"
+  value       = "${ local.selected_arn != "" ? aws_elb.vm_ssl[0].dns_name : aws_elb.vm[0].dns_name }"
 }
