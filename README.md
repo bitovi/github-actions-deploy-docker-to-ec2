@@ -57,8 +57,8 @@ jobs:
       - id: deploy
         uses: bitovi/github-actions-deploy-docker-to-ec2@v0.4.1
         with:
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID_PTO}}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY_PTO}}
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_default_region: us-east-1
           dot_env: ${{ secrets.DOT_ENV }}
 ```
@@ -157,11 +157,13 @@ If you wish to set up `domain_name` and disable the certificate lookup, set up `
 
 Setting `create_root_cert` to `true` will create this certificate with both `example.com` and `*.example.com` for you, and validate them. (DNS validation).
 
-Setting `create_sub_cert` to `true` will create a certificate just for the subdomain, and validate it.
+Setting `create_sub_cert` to `true` will create a certificate **just for the subdomain**, and validate it.
 
-:warning: **Keep in mind that managed domains will be destroyed if stack_destroy is set to true.** :warning:
+:warning: **Keep in mind that managed certificates will be destroyed if stack_destroy is set to true.** :warning:
 
-To change a certificate (root_cert, sub_cert, ARN or pre-existing root cert), you must first set the no_cert flag to true, run the action, then set the no_cert flag to false with the desired settings and excecute the action again. This is necessary due to a limitation that prevents certificates from being changed while in use by certain resources.
+To change a certificate (root_cert, sub_cert, ARN or pre-existing root cert), you must first set the `no_cert` flag to true, run the action, then set the `no_cert` flag to false, add the desired settings and excecute the action again. (**This will destroy the first certificate.**)
+
+This is necessary due to a limitation that prevents certificates from being changed while in use by certain resources.
 
 ## Made with BitOps
 [BitOps](https://bitops.sh) allows you to define Infrastructure-as-Code for multiple tools in a central place.  This action uses a BitOps [Operations Repository](https://bitops.sh/operations-repo-structure/) to set up the necessary Terraform and Ansible to create infrastructure and deploy to it.
