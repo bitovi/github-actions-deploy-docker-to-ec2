@@ -159,7 +159,7 @@ Setting `create_root_cert` to `true` will create this certificate with both `exa
 
 Setting `create_sub_cert` to `true` will create a certificate **just for the subdomain**, and validate it.
 
-:warning: **Keep in mind that managed certificates will be destroyed if stack_destroy is set to true** :warning:
+:warning: **Keep in mind that managed certificates will be deleted if stack_destroy is set to true** :warning:
 
 To change a certificate (root_cert, sub_cert, ARN or pre-existing root cert), you must first set the `no_cert` flag to true, run the action, then set the `no_cert` flag to false, add the desired settings and excecute the action again. (**This will destroy the first certificate.**)
 
