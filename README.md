@@ -24,7 +24,7 @@ You'll need [Access Keys](https://docs.aws.amazon.com/powershell/latest/userguid
 
 ## Environment variables
 
-For envirnoment variables in your app, you can provide 
+For envirnoment variables in your app, you can provide:
  - `repo_env` file in your repo
  - `GH_vars` file in GitHub Variables
  - `.env` file in GitHub Secrets
