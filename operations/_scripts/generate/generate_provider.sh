@@ -35,7 +35,7 @@ data \"aws_region\" \"current\" {}
 
 provider \"aws\" {
   region = \"${AWS_DEFAULT_REGION}\"
-  profile = \"default\"
+  #profile = \"default\"
   default_tags {
     tags = merge(
       local.aws_tags,
