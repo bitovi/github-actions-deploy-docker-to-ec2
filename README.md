@@ -25,10 +25,10 @@ You'll need [Access Keys](https://docs.aws.amazon.com/powershell/latest/userguid
 ## Environment variables
 
 For envirnoment variables in your app, you can provide:
- - `repo_env` file in your repo
- - `GH_vars` file in GitHub Variables
- - `.env` file in GitHub Secrets
- - `AWS Secret` in JSON format
+ - `repo_env` - A file in your repo that contains env vars
+ - `ghv_env` - An entry in [Github actions variables](https://docs.github.com/en/actions/learn-github-actions/variables)
+ - `dot_env` - An entry in [Github secrets](https://docs.github.com/es/actions/security-guides/encrypted-secrets)
+ - `aws_secret_env` - The path to a JSON format secret in AWS
  
 Then hook it up in your `docker-compose.yaml` file like:
 
