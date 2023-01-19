@@ -29,7 +29,7 @@ For envirnoment variables in your app, you can provide:
  - `GH_vars` file in GitHub Variables
  - `.env` file in GitHub Secrets
  - `AWS Secret` in JSON format
- - 
+ 
 Then hook it up in your `docker-compose.yaml` file like:
 
 ```
