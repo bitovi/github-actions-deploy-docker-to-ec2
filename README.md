@@ -99,7 +99,7 @@ jobs:
         sub_domain: app
         tf_state_bucket: my-terraform-state-bucket
         dot_env: ${{ secrets.DOT_ENV }}
-        ghv_env: ${{ vars.VARS }}"
+        ghv_env: ${{ vars.VARS }}
         app_port: 3000
         additional_tags: "{\"key1\": \"value1\",\"key2\": \"value2\"}"
 
