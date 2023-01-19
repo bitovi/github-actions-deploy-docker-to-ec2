@@ -2,7 +2,7 @@
 
 set -e
 
-GITHUB_IDENTIFIER="$(echo $($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh) | tr '[:upper:]' '[:lower:]' | tr '_' '-' )"
+GITHUB_IDENTIFIER="$(echo $($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh) | tr '[:upper:]' '[:lower:]' | tr '_' '-' | tr '/' '-' )"
 
 case $1 in 
   tf)
