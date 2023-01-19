@@ -24,7 +24,13 @@ You'll need [Access Keys](https://docs.aws.amazon.com/powershell/latest/userguid
 
 ## Environment variables
 
-For envirnoment variables in your app, you can provide a `repo_env` file in your repo, a `.env` file in GitHub Secrets named `DOT_ENV`, or an AWS Secret. Then hook it up in your `docker-compose.yaml` file like:
+For envirnoment variables in your app, you can provide:
+ - `repo_env` - A file in your repo that contains env vars
+ - `ghv_env` - An entry in [Github actions variables](https://docs.github.com/en/actions/learn-github-actions/variables)
+ - `dot_env` - An entry in [Github secrets](https://docs.github.com/es/actions/security-guides/encrypted-secrets)
+ - `aws_secret_env` - The path to a JSON format secret in AWS
+ 
+Then hook it up in your `docker-compose.yaml` file like:
 
 ```
 version: '3.9'
@@ -93,6 +99,7 @@ jobs:
         sub_domain: app
         tf_state_bucket: my-terraform-state-bucket
         dot_env: ${{ secrets.DOT_ENV }}
+        ghv_env: ${{ vars.VARS }}
         app_port: 3000
         additional_tags: "{\"key1\": \"value1\",\"key2\": \"value2\"}"
 
@@ -121,9 +128,10 @@ The following inputs can be used as `step.with` keys
 | `no_cert` | Boolean | Set this to true if no certificate is present for the domain. **See note **. Defaults to `false` |
 | `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state. |
 | `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. (Default is `false`). `stack_destroy` must also be `true`|
-| `repo_env` | String | `.env` file containing environment variables to be used with the app. Name defaults to `repo_env`. Check **SEnvironment variables** note |
-| `dot_env` | String | `.env` file to be used with the app. This is the name of the [Github secret](https://docs.github.com/es/actions/security-guides/encrypted-secrets). Check **SEnvironment variables** note |
-| `aws_secret_env` | String | Secret name to pull environment variables from AWS Secret Manager. Check **SEnvironment variables** note |
+| `repo_env` | String | `.env` file containing environment variables to be used with the app. Name defaults to `repo_env`. Check **Environment variables** note |
+| `dot_env` | String | `.env` file to be used with the app. This is the name of the [Github secret](https://docs.github.com/es/actions/security-guides/encrypted-secrets). Check **Environment variables** note |
+| `ghv_env` | String | `.env` file to be used with the app. This is the name of the [Github variables](https://docs.github.com/en/actions/learn-github-actions/variables). Check **Environment variables** note |
+| `aws_secret_env` | String | Secret name to pull environment variables from AWS Secret Manager. Check **Environment variables** note |
 | `app_port` | String | port to expose for the app |
 | `lb_port` | String | Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided |
 | `lb_healthcheck` | String | Load balancer health check string. Defaults to HTTP:app_port |
