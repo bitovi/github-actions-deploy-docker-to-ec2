@@ -6,6 +6,8 @@
     recreate: always
     nocache: yes
   register: output
+  become: true
+  become_user: root
 
 - ansible.builtin.debug:
     var: output
