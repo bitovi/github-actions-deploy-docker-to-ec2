@@ -5,7 +5,7 @@ data "aws_route53_zone" "selected" {
 }
 
 resource "aws_route53_record" "dev" {
-  count = local.fqdn_provided ? ( var.root_domain == "true" ? 0 : 1 ) : 0
+  count   = local.fqdn_provided ? (var.root_domain == "true" ? 0 : 1) : 0
   zone_id = data.aws_route53_zone.selected[0].zone_id
   name    = "${var.sub_domain_name}.${var.domain_name}"
   type    = "A"
@@ -20,7 +20,7 @@ resource "aws_route53_record" "dev" {
 }
 
 resource "aws_route53_record" "root-a" {
-  count = local.fqdn_provided ? ( var.root_domain == "true" ? 1 : 0 ) : 0
+  count   = local.fqdn_provided ? (var.root_domain == "true" ? 1 : 0) : 0
   zone_id = data.aws_route53_zone.selected[0].zone_id
   name    = var.domain_name
   type    = "A"
@@ -33,7 +33,7 @@ resource "aws_route53_record" "root-a" {
 }
 
 resource "aws_route53_record" "www-a" {
-  count = local.fqdn_provided ? ( var.root_domain == "true" ? 1 : 0 ) : 0
+  count   = local.fqdn_provided ? (var.root_domain == "true" ? 1 : 0) : 0
   zone_id = data.aws_route53_zone.selected[0].zone_id
   name    = "www.${var.domain_name}"
   type    = "A"
@@ -53,21 +53,21 @@ output "application_public_dns" {
 locals {
   fqdn_provided = (
     (var.domain_name != "") ?
-      (var.sub_domain_name != "" ?
-        true :
-        var.root_domain == "true" ? true : false
-      ):
+    (var.sub_domain_name != "" ?
+      true :
+      var.root_domain == "true" ? true : false
+    ) :
     false
   )
 }
 
 locals {
-  protocol = local.selected_arn != "" ? "https://" : "http://"
+  protocol    = local.selected_arn != "" ? "https://" : "http://"
   public_port = var.lb_port != "" ? ":${var.lb_port}" : ""
   url = (local.fqdn_provided ?
     (var.root_domain == "true" ?
       "${local.protocol}${var.domain_name}${local.public_port}" :
       "${local.protocol}${var.sub_domain_name}.${var.domain_name}${local.public_port}"
-    ):
-    "http://${aws_elb.vm[0].dns_name}${local.public_port}" )
+    ) :
+  "http://${aws_elb.vm[0].dns_name}${local.public_port}")
 }

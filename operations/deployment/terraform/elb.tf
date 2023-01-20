@@ -26,7 +26,7 @@ resource "aws_s3_bucket" "lb_access_logs" {
 POLICY
 
   tags = {
-    Name  = var.lb_access_bucket_name
+    Name = var.lb_access_bucket_name
   }
 }
 
@@ -37,13 +37,13 @@ resource "aws_s3_bucket_acl" "lb_access_logs_acl" {
 
 resource "aws_elb" "vm_ssl" {
   count              = local.cert_available ? 1 : 0
-  name               = "${var.aws_resource_identifier_supershort}"
+  name               = var.aws_resource_identifier_supershort
   security_groups    = [aws_security_group.ec2_security_group.id]
   availability_zones = [aws_instance.server.availability_zone]
 
   access_logs {
-    bucket        = aws_s3_bucket.lb_access_logs.id
-    interval      = 60
+    bucket   = aws_s3_bucket.lb_access_logs.id
+    interval = 60
   }
 
   listener {
@@ -75,20 +75,20 @@ resource "aws_elb" "vm_ssl" {
 
 resource "aws_elb" "vm" {
   count              = local.cert_available ? 0 : 1
-  name               = "${var.aws_resource_identifier_supershort}"
+  name               = var.aws_resource_identifier_supershort
   security_groups    = [aws_security_group.ec2_security_group.id]
   availability_zones = [aws_instance.server.availability_zone]
 
   access_logs {
-    bucket        = aws_s3_bucket.lb_access_logs.id
-    interval      = 60
+    bucket   = aws_s3_bucket.lb_access_logs.id
+    interval = 60
   }
 
   listener {
-    instance_port      = var.app_port
-    instance_protocol  = "tcp"
-    lb_port            = var.lb_port != "" ? var.lb_port : 80
-    lb_protocol        = "tcp"
+    instance_port     = var.app_port
+    instance_protocol = "tcp"
+    lb_port           = var.lb_port != "" ? var.lb_port : 80
+    lb_protocol       = "tcp"
   }
 
   health_check {
@@ -112,5 +112,5 @@ resource "aws_elb" "vm" {
 
 output "lb_public_dns" {
   description = "Public DNS address of the LB"
-  value       = "${ local.selected_arn != "" ? aws_elb.vm_ssl[0].dns_name : aws_elb.vm[0].dns_name }"
+  value       = local.selected_arn != "" ? aws_elb.vm_ssl[0].dns_name : aws_elb.vm[0].dns_name
 }

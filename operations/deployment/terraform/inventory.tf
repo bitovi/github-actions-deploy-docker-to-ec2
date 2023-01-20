@@ -6,9 +6,9 @@ resource "local_sensitive_file" "private_key" {
 
 resource "local_file" "ansible_inventory" {
   content = templatefile("inventory.tmpl", {
-    ip          = aws_instance.server.public_ip,
-    ssh_keyfile = local_sensitive_file.private_key.filename
-    app_repo_name = var.app_repo_name
+    ip               = aws_instance.server.public_ip,
+    ssh_keyfile      = local_sensitive_file.private_key.filename
+    app_repo_name    = var.app_repo_name
     app_install_root = var.app_install_root
   })
   filename = format("%s/%s", abspath(path.root), "inventory.yaml")
