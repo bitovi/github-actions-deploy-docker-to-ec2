@@ -17,7 +17,7 @@ resource "aws_secretsmanager_secret" "keys_sm_secret" {
  
 resource "aws_secretsmanager_secret_version" "keys_sm_secret_version" {
   count     = var.create_keypair_sm_entry ? 1 : 0
-  secret_id = aws_secretsmanager_secret.keys_sm_secret.id
+  secret_id = aws_secretsmanager_secret.keys_sm_secret[0].id
   secret_string = <<EOF
    {
     "key": "public_key",
