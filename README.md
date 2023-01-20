@@ -125,6 +125,7 @@ The following inputs can be used as `step.with` keys
 | `cert_arn` | String | Define the certificate ARN to use for the application. **See note ** |
 | `create_root_cert` | Boolean | Generates and manage the root cert for the application. **See note **. Defaults to `false` |
 | `create_sub_cert` | Boolean | Generates and manage the sub-domain certificate for the application. **See note **. Defaults to `false` |
+| `create_keypair_sm_entry` | Boolean | Generates and manage a secret manager entry that contains the public and private keys created for the ec2 instance. |
 | `no_cert` | Boolean | Set this to true if no certificate is present for the domain. **See note **. Defaults to `false` |
 | `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state. |
 | `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. (Default is `false`). `stack_destroy` must also be `true`|
