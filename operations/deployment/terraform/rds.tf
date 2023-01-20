@@ -6,8 +6,7 @@ module "rds_cluster" {
   engine_version = "11.12"
   instance_class = "db.t3.medium"
   instances = {
-    one = {}
-    2 = {
+    1 = {
       instance_class = "db.t3.medium"
     }
   }
