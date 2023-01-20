@@ -11,10 +11,12 @@ resource "aws_key_pair" "aws_key" {
 
 // Creates a secret manager secret for the public key
 resource "aws_secretsmanager_secret" "keys_sm_secret" {
-   name   = "${var.aws_resource_identifier_supershort}-ec2kp-pub-${random_string.random.result}"
+  count              = var.create_keypair_sm_entry ? 1 : 0
+  name   = "${var.aws_resource_identifier_supershort}-ec2kp-pub-${random_string.random.result}"
 }
  
 resource "aws_secretsmanager_secret_version" "keys_sm_secret_version" {
+  count     = var.create_keypair_sm_entry ? 1 : 0
   secret_id = aws_secretsmanager_secret.keys_sm_secret.id
   secret_string = <<EOF
    {
