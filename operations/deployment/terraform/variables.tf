@@ -123,6 +123,12 @@ variable "create_sub_cert" {
   default = ""
 }
 
+variable "create_keypair_sm_entry" {
+  type = bool
+  description = "y/n create sm entry for ec2 keypair"
+  default = false
+}
+
 variable "no_cert" {
   type = string
   description = "disable cert lookup"
