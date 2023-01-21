@@ -174,32 +174,34 @@ output "security_group_id" {
   value       = module.rds_cluster.security_group_id
 }
 
-provider "cyrilgdn-postgresql" {
-  host            = module.rds_cluster.cluster_endpoint
-  port            = 5432
-  database        = "postgres"
-  username        = module.rds_cluster.cluster_master_username
-  password        = module.rds_cluster.cluster_master_password
-  sslmode         = "require"
-  connect_timeout = 15
-  expected_version = module.rds_cluster.engine_version
-  superuser        = var.superuser
-  alias            = "yc-postgresql-root"
-}
+# do we need db to be created and priviliges to be granted ? 
 
-resource "time_sleep" "wait_seconds" {
-  create_duration = 180 #var.create_duration_wait_seconds
-  depends_on      = [module.rds_cluster]
-}
+# provider "cyrilgdn-postgresql" {
+#   host            = module.rds_cluster.cluster_endpoint
+#   port            = 5432
+#   database        = "postgres"
+#   username        = module.rds_cluster.cluster_master_username
+#   password        = module.rds_cluster.cluster_master_password
+#   sslmode         = "require"
+#   connect_timeout = 15
+#   expected_version = module.rds_cluster.engine_version
+#   superuser        = var.superuser
+#   alias            = "yc-postgresql-root"
+# }
 
-resource "postgresql_database" "my_db" {
-providers = {
-    postgresql = cyrilgdn-postgresql.yc-postgresql-root
-  }  
-  name              = "my_db"
-  owner             = "my_role"
-  template          = "template0"
-  lc_collate        = "C"
-  connection_limit  = -1
-  allow_connections = true
-}
+# resource "time_sleep" "wait_seconds" {
+#   create_duration = 180 #var.create_duration_wait_seconds
+#   depends_on      = [module.rds_cluster]
+# }
+
+# resource "postgresql_database" "my_db" {
+# providers = {
+#     postgresql = cyrilgdn-postgresql.yc-postgresql-root
+#   }  
+#   name              = "my_db"
+#   owner             = "my_role"
+#   template          = "template0"
+#   lc_collate        = "C"
+#   connection_limit  = -1
+#   allow_connections = true
+# }

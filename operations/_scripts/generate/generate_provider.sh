@@ -21,7 +21,7 @@ terraform {
       source  = \"hashicorp/random\"
       version = \">= 2.2\"
     }
-    cyrilgdn-postgresq = {
+    cyrilgdn-postgresql = {
       source = \"cyrilgdn/postgresql\"
       version = \"1.18.0\"
     }
