@@ -3,7 +3,7 @@ module "rds_cluster" {
   version        = "v7.6.0"
   name           = var.aws_resource_identifier
   engine         = "aurora-postgresql"
-  engine_version = "11.12"
+  engine_version = "11.13"
   instance_class = "db.t3.medium"
   instances = {
     1 = {
