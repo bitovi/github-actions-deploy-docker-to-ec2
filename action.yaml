@@ -37,7 +37,10 @@ inputs:
     required: false
     default: 'repo_env'
   dot_env:
-    description: '`.env` file to be used with the app'
+    description: '`.env` file to be used with the app from Github secrets'
+    required: false
+  ghv_env:
+    description: '`.env` file to be used with the app from Github variables'
     required: false
   aws_secret_env:
     description: 'Secret name to pull env variables from AWS Secret Manager'
@@ -127,7 +130,8 @@ runs:
         TF_STATE_BUCKET: ${{ inputs.tf_state_bucket }}
         TF_STATE_BUCKET_DESTROY: ${{ inputs.tf_state_bucket_destroy }}
         REPO_ENV: ${{ inputs.repo_env }}
-        DOT_ENV: ${{ inputs.dot_env }}
+        GHS_ENV: ${{ inputs.dot_env }}
+        GHV_ENV: ${{ inputs.ghv_env }}
         AWS_SECRET_ENV: ${{ inputs.aws_secret_env }}
         APP_PORT: ${{ inputs.app_port }}
         LB_PORT: ${{ inputs.lb_port }}
@@ -180,5 +184,5 @@ runs:
       shell: bash
       run: |
         echo "## Workflow failed to run :fire:" >> $GITHUB_STEP_SUMMARY
-        echo "Please check the logs and submit an issue to our Github Action repo" >> $GITHUB_STEP_SUMMARY
-
+        echo "Please check the logs for possible errors." >> $GITHUB_STEP_SUMMARY
+        echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY

@@ -6,7 +6,7 @@ set -e
 echo "BitOps Ansible before script: Merge Terraform Enviornment Variables..."
 
 # Merging order
-order=tf,repo,ghs,aws
+order=tf,repo,ghv,ghs,aws
 
 # Ansible dotenv file -> The final destination of all
 DOTENV_FILE="${BITOPS_ENVROOT}/ansible/app.env"
@@ -17,7 +17,10 @@ TF_DOTENV_FILE="${BITOPS_ENVROOT}/terraform/tf.env"
 # Repo env file
 REPO_ENV_FILE="${BITOPS_ENVROOT}/ansible/repo.env"
 
-# GH Secrets env file
+# GH Variables env file
+GHV_ENV_FILE="${BITOPS_ENVROOT}/ansible/ghv.env"
+
+# GH Secrets  env file
 GHS_ENV_FILE="${BITOPS_ENVROOT}/ansible/ghs.env"
 
 # TF AWS dotenv file
@@ -52,12 +55,16 @@ function process {
       # Code to be executed for option2
       merge $REPO_ENV_FILE "checked-in"
       ;;
-    ghs)
+    ghv)
       # Code to be executed for option3
+      merge $GHV_ENV_FILE "GH-Vars"
+      ;;
+    ghs)
+      # Code to be executed for option4
       merge $GHS_ENV_FILE "GH-Secret"
       ;;
     tf)
-      # Code to be executed for option3
+      # Code to be executed for option5
       merge $TF_DOTENV_FILE "Terraform"
       ;;
     *)
