@@ -11,6 +11,11 @@ else
   GITHUB_BRANCH_NAME=${GITHUB_REF_NAME}
 fi
 
+# remove '/' from branch name
+echo "debugging GITHUB_BRANCH_NAME($GITHUB_BRANCH_NAME) before remove slash"
+GITHUB_BRANCH_NAME="$(echo $GITHUB_BRANCH_NAME | tr '/' '-')"
+echo "debugging GITHUB_BRANCH_NAME($GITHUB_BRANCH_NAME) after remove slash"
+
 if [ -z "$AWS_RESOURCE_IDENTIFIER" ]; then
   GITHUB_IDENTIFIER="${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}"
   GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/shorten_identifier.sh ${GITHUB_IDENTIFIER})"
