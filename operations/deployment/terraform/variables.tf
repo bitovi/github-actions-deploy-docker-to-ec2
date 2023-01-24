@@ -129,6 +129,27 @@ variable "no_cert" {
   default     = ""
 }
 
+variable "enable_postgres" {
+  type        = string
+  description = "deploy a postgres database"
+  default     = ""
+}
+variable "postgres_engine" {
+  type        = string
+  description = "The engine to use for postgres.  Defaults to `aurora-postgresql`.  For more details, see: https://aws.amazon.com/rds/, https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
+  default     = "aurora-postgresql"
+}
+variable "postgres_engine_version" {
+  type        = string
+  description = "The version of the engine to use for postgres.  Defaults to `11.13`."
+  default     = "11.13"
+}
+variable "postgres_instance_class" {
+  type        = string
+  description = "The size of the db instances.  For more details, see: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html, https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
+  default     = "db.t3.medium"
+}
+
 variable "additional_tags" {
   type        = map(string)
   description = "A list of strings that will be added to created resources"

@@ -88,6 +88,11 @@ create_sub_cert = \"${CREATE_SUB_CERT}\"
 
 no_cert = \"${NO_CERT}\"
 
+enable_postgres = \"${ENABLE_POSTGRES}\"
+postgres_engine = \"${POSTGRES_ENGINE}\"
+postgres_engine_version = \"${POSTGRES_ENGINE_VERSION}\"
+postgres_instance_class = \"${POSTGRES_INSTANCE_CLASS}\"
+
 additional_tags = ${ADDITIONAL_TAGS}
 #
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"

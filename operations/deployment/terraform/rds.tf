@@ -2,17 +2,19 @@ module "rds_cluster" {
   source         = "terraform-aws-modules/rds-aurora/aws"
   version        = "v7.6.0"
   name           = var.aws_resource_identifier
-  engine         = "aurora-postgresql"
-  engine_version = "11.13"
-  instance_class = "db.t3.medium"
+  engine         = var.postgres_engine
+  engine_version = var.postgres_engine_version
+  instance_class = var.postgres_instance_class
   instances = {
     1 = {
-      instance_class = "db.t3.medium"
+      instance_class = var.postgres_instance_class
     }
   }
-  vpc_id                 = local.vpc_id #"vpc-081abe910edab4281"
-  subnets                = local.subnets # "subnet-05d768eabcd7591ea", "subnet-082c8c6a0f81405d3"]
-  allowed_cidr_blocks    = [local.vpc_cidr] #["172.31.0.0/16"]
+  # Todo: handle vpc/networking explicitly
+  # vpc_id                 = var.vpc_id
+  # subnets                = var.subnets
+  # allowed_cidr_blocks    = [var.vpc_cidr]
+
   storage_encrypted      = true
   monitoring_interval    = 60
   create_db_subnet_group = true

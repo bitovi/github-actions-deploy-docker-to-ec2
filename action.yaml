@@ -89,6 +89,18 @@ inputs:
     description: 'A list of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
     default: '{}'
+  enable_postgres:
+    description: Set to "true" to enable a postgres database
+    required: false
+  postgres_engine: 
+    required: false
+    default: 'aurora-postgresql'
+  postgres_engine_version: 
+    required: false
+    default: '11.13'
+  postgres_instance_class:
+    required: false
+    default: 'db.t3.medium'
 outputs:
   vm_url:
     description: "The URL of the generated app"
@@ -134,6 +146,10 @@ runs:
         BITOPS_FAST_FAIL: true
         APP_DIRECTORY: ${{ inputs.app_directory }}
         ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
+        ENABLE_POSTGRES: ${{ inputs.enable_postgres }}
+        POSTGRES_ENGINE:  ${{ inputs.postgres_engine }}
+        POSTGRES_ENGINE_VERSION:  ${{ inputs.postgres_engine_version }}
+        POSTGRES_INSTANCE_CLASS: ${{ inputs.postgres_instance_class }}
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
