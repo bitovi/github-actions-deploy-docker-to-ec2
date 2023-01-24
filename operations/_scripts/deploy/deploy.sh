@@ -47,14 +47,6 @@ if [ "$STACK_DESTROY" == "true" ]; then
 fi
 echo "::endgroup::"
 
-echo "debugging"
-GITHUB_IDENTIFIER="$(echo $($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh) | tr '[:upper:]' '[:lower:]' | tr '_' '-' | tr '/' '-' )"
-echo "GITHUB_IDENTIFIER: $GITHUB_IDENTIFIER"
-
-echo "enddebugging"
-exit 0
-
-
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
 docker run --rm --name bitops \
