@@ -72,7 +72,7 @@ inputs:
   sub_domain:
     description: 'Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}`'
   root_domain:
-    description: 'Deploy to root domain. Will generate two DNS recrods, one for root, another for www'
+    description: 'Deploy to root domain. Will generate two DNS records, one for root, another for www'
     required: false
   cert_arn:
     description: 'Define the certificate ARN to use for the application'
@@ -139,6 +139,9 @@ runs:
         APP_DIRECTORY: ${{ inputs.app_directory }}
         ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
       run: |
+        cd $GITHUB_ACTION_PATH
+        git clone https://github.com/bitovi/github-actions-commons.git
+        cp -R github-actions-commons/operations/_scripts $GITHUB_ACTION_PATH/operations/
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
         echo "running operations/_scripts/deploy/export_vars.sh"
