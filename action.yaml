@@ -96,14 +96,21 @@ inputs:
     description: Set to "true" to enable a postgres database
     required: false
   postgres_engine: 
+    description: Which Database engine to use
     required: false
     default: 'aurora-postgresql'
-  postgres_engine_version: 
+  postgres_engine_version:
+    description: Specify Postgres version 
     required: false
     default: '11.13'
   postgres_instance_class:
+    description: Define the size of the instances in the DB cluster
     required: false
     default: 'db.t3.medium'
+  postgres_subnets:
+    description: Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`
+    required: false
+    default: ''
 outputs:
   vm_url:
     description: "The URL of the generated app"
@@ -154,6 +161,7 @@ runs:
         POSTGRES_ENGINE:  ${{ inputs.postgres_engine }}
         POSTGRES_ENGINE_VERSION:  ${{ inputs.postgres_engine_version }}
         POSTGRES_INSTANCE_CLASS: ${{ inputs.postgres_instance_class }}
+        POSTGRES_SUBNETS: ${{ inputs.postgres_subnets }}
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh

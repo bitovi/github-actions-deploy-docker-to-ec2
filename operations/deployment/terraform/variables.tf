@@ -149,6 +149,11 @@ variable "postgres_instance_class" {
   description = "The size of the db instances.  For more details, see: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html, https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
   default     = "db.t3.medium"
 }
+variable "postgres_subnets" {
+  type        = list
+  description = "The list of subnet ids to use for postgres. For more details, see: https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
+  default.    = []
+}
 
 variable "additional_tags" {
   type        = map(string)

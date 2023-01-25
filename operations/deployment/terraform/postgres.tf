@@ -12,8 +12,8 @@ module "rds_cluster" {
   }
   # Todo: handle vpc/networking explicitly
   # vpc_id                 = var.vpc_id
-  # subnets                = var.subnets
   # allowed_cidr_blocks    = [var.vpc_cidr]
+  subnets                = var.postgres_subnets
 
   storage_encrypted      = true
   monitoring_interval    = 60

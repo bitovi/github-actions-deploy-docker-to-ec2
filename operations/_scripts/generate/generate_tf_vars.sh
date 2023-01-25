@@ -11,6 +11,25 @@ set -e
 
 echo "In generate_tf_vars.sh"
 
+# convert 'a,b,c'
+# to '["a","b","c"]'
+comma_str_to_tf_array () {
+  local IFS=','
+  local str=$1
+
+  local out=""
+  local first_item_flag="1"
+  for item in $str; do
+    if [ -z $first_item_flag ]; then
+      out="${out},"
+    fi
+    first_item_flag=""
+
+    item="$(echo $item | xargs)"
+    out="${out}\"${item}\""
+  done
+  echo "[${out}]"
+}
 
 GITHUB_ORG_NAME=$(echo $GITHUB_REPOSITORY | sed 's/\/.*//')
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
@@ -34,6 +53,12 @@ fi
 
 if [ -z "${EC2_INSTANCE_PROFILE}" ]; then
   EC2_INSTANCE_PROFILE="${GITHUB_IDENTIFIER}"
+fi
+
+POSTGRES_SUBNETS_TF=""
+if [ -n $POSTGRES_SUBNETS ]; then
+  POSTGRES_SUBNETS_TF="postgres_subnet = "
+  POSTGRES_SUBNETS_TF="${POSTGRES_SUBNETS_TF}$(comma_str_to_tf_array $POSTGRES_SUBNETS)"
 fi
 
 echo "
@@ -93,6 +118,8 @@ enable_postgres = \"${ENABLE_POSTGRES}\"
 postgres_engine = \"${POSTGRES_ENGINE}\"
 postgres_engine_version = \"${POSTGRES_ENGINE_VERSION}\"
 postgres_instance_class = \"${POSTGRES_INSTANCE_CLASS}\"
+
+${POSTGRES_SUBNETS_TF}
 
 additional_tags = ${ADDITIONAL_TAGS}
 #
