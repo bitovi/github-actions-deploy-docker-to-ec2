@@ -152,7 +152,7 @@ variable "postgres_instance_class" {
 variable "postgres_subnets" {
   type        = list
   description = "The list of subnet ids to use for postgres. For more details, see: https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
-  default.    = []
+  default     = []
 }
 
 variable "additional_tags" {
