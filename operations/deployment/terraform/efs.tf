@@ -35,3 +35,19 @@ module "efs" {
     create_replication_configuration = var.create_replication_configuration
     replication_configuration_destination = var.replication_configuration_destination
 }
+
+
+# Whitelist the EFS security group for the EC2 Security Group
+resource "aws_security_group_rule" "ingress_http" {
+  type        = "ingress"
+  description = "${var.aws_resource_identifier} - EFS"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "all"
+  source_security_group_id = module.efs[0].security_group_id
+  security_group_id = aws_security_group.ec2_security_group.id
+}
+
+output "EFS" {
+  value = module.efs[0].dns_name
+}
