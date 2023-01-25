@@ -57,7 +57,7 @@ fi
 
 POSTGRES_SUBNETS_TF=""
 if [ -n $POSTGRES_SUBNETS ]; then
-  POSTGRES_SUBNETS_TF="postgres_subnet = "
+  POSTGRES_SUBNETS_TF="postgres_subnets = "
   POSTGRES_SUBNETS_TF="${POSTGRES_SUBNETS_TF}$(comma_str_to_tf_array $POSTGRES_SUBNETS)"
 fi
 
