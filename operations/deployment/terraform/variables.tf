@@ -129,6 +129,57 @@ variable "no_cert" {
   default = ""
 }
 
+
+## -- EFS -- ##
+variable "mount_efs" {
+  type = bool
+  default = false
+}
+
+variable "create_efs" {
+  type = bool
+  default = false
+}
+
+variable "transition_to_inactive" {
+    type = string
+    default = "AFTER_30_DAYS"
+}
+
+variable "transition_to_primary_storage_class" {
+    type = string
+    default = "AFTER_1_ACCESS"
+}
+
+variable "zone_mapping"{
+    type = map(object({
+        subnet_id = string
+        security_groups = list(string)
+    }))
+    nullable = true
+    default  = null
+}
+
+variable "enable_backup_policy" {
+    type = bool
+    default = false
+}
+
+variable "create_replication_configuration" {
+    type = string
+    default = false
+}
+
+variable "replication_configuration_destination" {
+    type = object({
+        region = string
+    })
+    default = {
+        region = ""
+    }
+}
+## -- --- -- ##
+
 variable "additional_tags" {
   type = map(string)
   description = "A list of strings that will be added to created resources"
