@@ -21,6 +21,9 @@ resource "aws_security_group_rule" "ingress_http" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
   security_group_id = aws_security_group.ec2_security_group.id
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_security_group_rule" "ingress_ssh" {
@@ -31,6 +34,9 @@ resource "aws_security_group_rule" "ingress_ssh" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
   security_group_id = aws_security_group.ec2_security_group.id
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_security_group_rule" "ingress_lb_port" {
@@ -42,4 +48,7 @@ resource "aws_security_group_rule" "ingress_lb_port" {
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
   security_group_id = aws_security_group.ec2_security_group.id
+  lifecycle {
+    create_before_destroy = true
+  }
 }
