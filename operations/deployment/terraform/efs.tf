@@ -39,6 +39,7 @@ module "efs" {
 
 # Whitelist the EFS security group for the EC2 Security Group
 resource "aws_security_group_rule" "ingress_efs" {
+  count = var.create_efs ? 1 : 0
   type        = "ingress"
   description = "${var.aws_resource_identifier} - EFS"
   from_port   = 443
