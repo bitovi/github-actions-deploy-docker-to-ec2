@@ -38,7 +38,7 @@ module "efs" {
 
 
 # Whitelist the EFS security group for the EC2 Security Group
-resource "aws_security_group_rule" "ingress_http" {
+resource "aws_security_group_rule" "ingress_efs" {
   type        = "ingress"
   description = "${var.aws_resource_identifier} - EFS"
   from_port   = 443
