@@ -108,7 +108,7 @@ inputs:
     required: false
     default: 'db.t3.medium'
   postgres_subnets:
-    description: Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`
+    description: 'Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`'
     required: false
     default: ''
 outputs:
