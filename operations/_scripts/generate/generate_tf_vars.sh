@@ -125,3 +125,8 @@ ${POSTGRES_SUBNETS_TF}
 additional_tags = ${ADDITIONAL_TAGS}
 #
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
+
+
+echo "debugging"
+echo "full tfvars"
+cat "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
