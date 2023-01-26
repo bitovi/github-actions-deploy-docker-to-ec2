@@ -71,3 +71,7 @@ locals {
     ):
     "http://${aws_elb.vm[0].dns_name}${local.public_port}" )
 }
+
+output "vm_url" {
+  value = local.vm_url
+}
