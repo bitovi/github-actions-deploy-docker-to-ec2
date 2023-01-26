@@ -34,12 +34,13 @@ module "efs" {
     # Replication configuration
     create_replication_configuration = var.create_replication_configuration
     replication_configuration_destination = var.replication_configuration_destination
+    depends_on = [aws_security_group.ec2_security_group]
 }
 
 
 # Whitelist the EFS security group for the EC2 Security Group
 resource "aws_security_group_rule" "ingress_efs" {
-  count = var.create_efs ? 1 : 0
+  count = var.mount_efs ? 1 : 0
   type        = "ingress"
   description = "${var.aws_resource_identifier} - EFS"
   from_port   = 443
@@ -47,7 +48,6 @@ resource "aws_security_group_rule" "ingress_efs" {
   protocol    = "all"
   source_security_group_id = module.efs[0].security_group_id
   security_group_id = aws_security_group.ec2_security_group.id
-  create_duration = "1m"
 }
 
 output "efs_url" {
