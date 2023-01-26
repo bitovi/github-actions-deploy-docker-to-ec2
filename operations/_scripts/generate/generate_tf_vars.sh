@@ -92,6 +92,8 @@ mount_efs = \"${MOUNT_EFS}\"
 
 create_efs = \"${CREATE_EFS}\"
 
+zone_mapping = \"${EFS_ZONE_MAPPING}\"
+
 additional_tags = ${ADDITIONAL_TAGS}
 #
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"

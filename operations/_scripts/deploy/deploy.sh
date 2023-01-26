@@ -6,6 +6,8 @@ echo "::group::In Deploy"
 
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 
+echo "EFS_ZONE_MAPPING: [$EFS_ZONE_MAPPING]"
+
 # Generate buckets identifiers and check them agains AWS Rules 
 export TF_STATE_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_buckets_identifiers.sh tf | xargs)"
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/deploy/check_bucket_name.sh $TF_STATE_BUCKET
