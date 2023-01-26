@@ -50,5 +50,5 @@ resource "aws_security_group_rule" "ingress_efs" {
 }
 
 output "EFS" {
-  value = module.efs[0].dns_name
+  value = length(module.efs) > 0 ? module.efs[0].dns_name : null 
 }
