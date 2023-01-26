@@ -121,6 +121,9 @@ outputs:
   vm_url:
     description: "The URL of the generated app"
     value: ${{ steps.deploy.outputs.vm_url }}
+  efs_url:
+    description: "The URL of the generated app"
+    value: ${{ steps.deploy.outputs.vm_url }}
 
 runs:
   using: 'composite'
