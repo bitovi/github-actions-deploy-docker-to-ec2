@@ -36,7 +36,7 @@ resource "aws_security_group_rule" "ingress_ssh" {
 resource "aws_security_group_rule" "ingress_lb_port" {
   count       = var.lb_port != var.app_port ? 1 : 0 
   type        = "ingress"
-  description = "${var.aws_resource_identifier} - Port"
+  description = "${var.aws_resource_identifier} - lb Port"
   from_port   = tonumber(var.lb_port != "" ? var.lb_port : ( local.cert_available ?  443 : 80 ) )
   to_port     = tonumber(var.lb_port != "" ? var.lb_port : ( local.cert_available ?  443 : 80 ) )
   protocol    = "tcp"
