@@ -47,7 +47,7 @@ resource "aws_security_group_rule" "ingress_efs" {
   protocol    = "all"
   source_security_group_id = module.efs[0].security_group_id
   security_group_id = aws_security_group.ec2_security_group.id
-  depends_on = [module.efs]
+  create_duration = "1m"
 }
 
 output "efs_url" {
