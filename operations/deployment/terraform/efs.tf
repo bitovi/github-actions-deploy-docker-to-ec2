@@ -1,8 +1,14 @@
 locals {
   default_zone_mapping = { "": {"subnet_id": "", "security_groups": [""]}}
-
+  default_availability_zones = {
+    "a": {
+      "subnet_id": data.aws_subnet.default.id, 
+      "security_groups": [data.aws_security_group.default.id]
+    }
+  }
+  
+  // The reason the conditional is needed is because zone_mapping can't be null for the local creation.
   zone_mapping = var.zone_mapping == null ? local.default_zone_mapping : var.zone_mapping
-
   availability_zones = {
     for k, val in local.zone_mapping : "${data.aws_region.current.name}${k}" => val
   }
@@ -26,8 +32,8 @@ module "efs" {
     bypass_policy_lockout_safety_check = false
 
     # Mount targets / security group
-    mount_targets = var.zone_mapping == null ? {} : local.availability_zones
-    
+    mount_targets = var.zone_mapping == null ? local.default_availability_zones : local.availability_zones
+
     # Backup policy
     enable_backup_policy = var.enable_backup_policy
 
@@ -40,7 +46,7 @@ module "efs" {
 
 # Whitelist the EFS security group for the EC2 Security Group
 resource "aws_security_group_rule" "ingress_efs" {
-  count = var.mount_efs ? 1 : 0
+  count = var.create_efs ? 1 : 0
   type        = "ingress"
   description = "${var.aws_resource_identifier} - EFS"
   from_port   = 443
