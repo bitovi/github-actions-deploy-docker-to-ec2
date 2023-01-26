@@ -73,5 +73,5 @@ locals {
 }
 
 output "vm_url" {
-  value = local.vm_url
+  value = local.url
 }
