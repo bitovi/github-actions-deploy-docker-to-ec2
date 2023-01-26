@@ -23,6 +23,9 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 # Generate terraform variables
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_tf_vars.sh
 
+echo "EFS_ZONE_MAPPING: [$EFS_ZONE_MAPPING]"
+cat "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
+
 # Generate dot_env
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_dot_env.sh
 
