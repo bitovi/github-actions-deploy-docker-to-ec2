@@ -49,6 +49,6 @@ resource "aws_security_group_rule" "ingress_efs" {
   security_group_id = aws_security_group.ec2_security_group.id
 }
 
-output "EFS" {
+output "efs_url" {
   value = length(module.efs) > 0 ? module.efs[0].dns_name : null 
 }
