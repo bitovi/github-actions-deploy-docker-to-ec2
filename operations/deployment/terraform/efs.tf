@@ -77,3 +77,7 @@ resource "aws_security_group_rule" "ingress_nfs_efs" {
 output "efs_url" {
   value = local.efs_url
 }
+
+output "efs_ip" {
+  value = local.efs_ip
+}
