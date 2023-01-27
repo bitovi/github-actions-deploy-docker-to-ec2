@@ -10,7 +10,8 @@
     - 'virtualenv'
     - 'python3-setuptools'
     - 'nfs-kernel-server'
-    - 'amzn-efs-utils'
+    - 'git'
+    - 'binutils'
 
 - name: Add Docker GPG apt Key
   apt_key:

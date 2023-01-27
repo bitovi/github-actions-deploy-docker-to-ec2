@@ -1,5 +1,18 @@
 # Mount EFS
 
+
+- name: Cloning amazon-efs-utils from GitHub
+  ansible.builtin.git:
+    repo: 'https://github.com/aws/efs-utils'
+    dest: /srv/checkout
+
+- name: Build amazon-efs-utils
+  ansible.builtin.shell: |
+    cd /srv/checkout/efs-utils
+    ./build-deb.sh
+    apt-get -y install ./build/amazon-efs-utils*deb
+  become: yes
+
 - name: mount efs
   ansible.builtin.shell: |
     cd {{ app_install_root }}/{{ app_repo_name }}
