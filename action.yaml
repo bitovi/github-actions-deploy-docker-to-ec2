@@ -146,13 +146,10 @@ runs:
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
         echo "running operations/_scripts/deploy/export_vars.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/export_vars.sh
+        echo "exporting generated files"
+        cp -r $GITHUB_ACTION_PATH/operations/deployment/ ../deployment
 
     # Release
-    - if: ${{ inputs.create_release }}
-      name: testing
-      run: |
-        ls ${{ github.action_path }}
-        ls ${{ github.action_path }}/operations/deployment/
     - if: ${{ inputs.create_release }}
       name: Archive Release
       uses: thedoctor0/zip-release@0.7.0
@@ -160,7 +157,20 @@ runs:
         type: 'zip'
         filename: 'release.zip'
         exclusions: '*.git* /*node_modules/* .editorconfig'
-        path: ${{ github.action_path }}/operations/deployment/
+        path: ../deployment
+    - if: ${{ inputs.create_release }}
+      name: testing
+      run: |
+        ls ${{ github.action_path }}
+        echo "|----------------------------|"
+        ls ${{ github.action_path }}/operations/deployment/
+        echo "|----------------------------|"
+        ls .
+        echo "|----------------------------|"
+        ls ..
+        echo "|----------------------------|"
+        ls ../..
+      shell: bash
     - if: ${{ inputs.create_release }}
       name: Create a GitHub release
       uses: ncipollo/release-action@v1
