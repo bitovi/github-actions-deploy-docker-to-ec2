@@ -83,7 +83,7 @@ inputs:
     default: false
   efs_zone_mapping:
     description: "A list of zone_codes and targetted. Objects(subnet_target+security_groups). Example: {\"zone_code\": { \"subnet_id\": \"subnet-abc123\", \"security_groups\": [\"sg-abc123\"]}"
-
+    default: null
   # Stack management
   stack_destroy:
     description: 'Set to "true" to Destroy the stack. Will delete the elb_logs bucket after the destroy action runs.'
