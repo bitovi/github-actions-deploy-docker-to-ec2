@@ -10,4 +10,4 @@
   ansible.builtin.shell: |
     ls .
   become: true
-  chdir: "{{ app_install_root }}/{{ app_repo_name }}"
+  #chdir: "{{ app_install_root }}/{{ app_repo_name }}"
