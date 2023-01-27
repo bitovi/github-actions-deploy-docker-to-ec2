@@ -81,6 +81,7 @@ variable "aws_resource_identifier_supershort" {
 variable "aws_secret_env" {
   type = string
   description = "Secret name to pull env variables from AWS Secret Manager"
+  default = ""
 }
 
 variable "aws_ami_id" {
