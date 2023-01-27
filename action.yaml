@@ -8,6 +8,9 @@ inputs:
     description: 'Specifies if this action should checkout the code'
     required: false
     default: 'true'
+  create_release:
+    description: 'Compress resulting terraform and ansible files and create a new release'
+    default: false
   aws_access_key_id:
     description: 'AWS access key ID'
     required: true
@@ -144,6 +147,14 @@ runs:
         echo "running operations/_scripts/deploy/export_vars.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/export_vars.sh
 
+    - if: ${{ inputs.create_release }}
+      name: Compress and Release
+      uses: fnkr/github-action-ghr@v1.3
+      with:
+        GHR_PATH: ${{ github.action_path }}/operations/deployment/
+        GHR_COMPRESS: gz
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
     # output results to GitHub
     - if: ${{ success() && steps.deploy.outputs.vm_url != '' }}
       name: Print result created
