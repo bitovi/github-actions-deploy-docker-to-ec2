@@ -50,7 +50,7 @@ variable "ec2_instance_type" {
 }
 variable "ec2_instance_public_ip" {
   type = bool
-  default = "true"
+  default = true
   description = "Attach public IP to the EC2 instance"
 }
 variable "security_group_name" {
