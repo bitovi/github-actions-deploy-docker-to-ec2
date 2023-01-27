@@ -157,27 +157,14 @@ runs:
         type: 'zip'
         filename: 'release.zip'
         exclusions: '*.git* /*node_modules/* .editorconfig'
-        path: ../deployment
-    - if: ${{ inputs.create_release }}
-      name: testing
-      run: |
-        ls ${{ github.action_path }}
-        echo "|----------------------------|"
-        ls ${{ github.action_path }}/operations/deployment/
-        echo "|----------------------------|"
-        ls .
-        echo "|----------------------------|"
-        ls ..
-        echo "|----------------------------|"
-        ls ../..
-      shell: bash
+        path: ./deployment
+        directory: ../
     - if: ${{ inputs.create_release }}
       name: Create a GitHub release
       uses: ncipollo/release-action@v1
       with:
         allowUpdates: true
-        artifacts: ${{ github.action_path }}/operations/deployment/
-        artifactContentType: gz
+        artifacts: ../release.zip
         draft: true
         generateReleaseNotes: true
         name: ${{ github.ref_name }} branch
