@@ -49,7 +49,7 @@ variable "ec2_instance_type" {
   description = "Instance type for the EC2 instance"
 }
 variable "ec2_instance_public_ip" {
-  type = boolean
+  type = bool
   default = "true"
   description = "Attach public IP to the EC2 instance"
 }
