@@ -45,6 +45,10 @@ module "efs" {
     depends_on = [aws_security_group.ec2_security_group]
 }
 
+locals {
+  efs_url = length(module.efs) > 0 ? module.efs[0].dns_name : null
+}
+
 
 # Whitelist the EFS security group for the EC2 Security Group
 resource "aws_security_group_rule" "ingress_efs" {
@@ -59,5 +63,5 @@ resource "aws_security_group_rule" "ingress_efs" {
 }
 
 output "efs_url" {
-  value = length(module.efs) > 0 ? module.efs[0].dns_name : null 
+  value = local.efs_url
 }
