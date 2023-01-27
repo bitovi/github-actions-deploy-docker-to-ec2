@@ -2,7 +2,27 @@ locals {
   default_zone_mapping = { "": {"subnet_id": "", "security_groups": [""]}}
   default_availability_zones = {
     "a": {
-      "subnet_id": data.aws_subnet.default.id, 
+      "subnet_id": data.aws_subnet.defaulta.id, 
+      "security_groups": [data.aws_security_group.default.id]
+    }
+    "b": {
+      "subnet_id": data.aws_subnet.defaultb.id, 
+      "security_groups": [data.aws_security_group.default.id]
+    }
+    "c": {
+      "subnet_id": data.aws_subnet.defaultc.id, 
+      "security_groups": [data.aws_security_group.default.id]
+    }
+    "d": {
+      "subnet_id": data.aws_subnet.defaultd.id, 
+      "security_groups": [data.aws_security_group.default.id]
+    }
+    "e": {
+      "subnet_id": data.aws_subnet.defaulte.id, 
+      "security_groups": [data.aws_security_group.default.id]
+    }
+    "f": {
+      "subnet_id": data.aws_subnet.defaultf.id, 
       "security_groups": [data.aws_security_group.default.id]
     }
   }
