@@ -1,5 +1,11 @@
 # Mount EFS
 
+- name: Install required system packages
+  apt: name={{ item }} state=latest update_cache=yes
+  loop:
+    - 'nfs-kernel-server'
+    - 'git'
+    - 'binutils'
 
 - name: Cloning amazon-efs-utils from GitHub
   ansible.builtin.git:
