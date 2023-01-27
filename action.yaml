@@ -157,6 +157,7 @@ runs:
       with:
         tag: ${{ github.ref  }} 
         name: ${{ github.ref }}
+        skipIfReleaseExists: true
     
     - if: ${{ inputs.create_release }}
       name: Compress and Release
@@ -164,7 +165,7 @@ runs:
       env:
         GHR_PATH: ${{ github.action_path }}/operations/deployment/
         GHR_COMPRESS: gz
-        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
         GHR_REPLACE: true
     
     # output results to GitHub
