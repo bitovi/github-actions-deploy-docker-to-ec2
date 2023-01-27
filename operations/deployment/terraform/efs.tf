@@ -47,6 +47,7 @@ module "efs" {
 
 locals {
   efs_url = length(module.efs) > 0 ? module.efs[0].dns_name : ""
+  efs_ip = length(module.efs) > 0 ? module.efs[0].mount_targets[0] : ""
 }
 
 
@@ -70,7 +71,7 @@ resource "aws_security_group_rule" "ingress_nfs_efs" {
   from_port   = 443
   to_port     = 443
   protocol    = "all"
-  source_security_group_id = aws_security_group.ec2_security_group.idmodule.efs[0].security_group_id
+  source_security_group_id = aws_security_group.ec2_security_group.id
   security_group_id = module.efs[0].security_group_id
 }
 
@@ -78,6 +79,6 @@ output "efs_url" {
   value = local.efs_url
 }
 
-output "efs_ip" {
-  value = local.efs_ip
-}
+# output "efs_ip" {
+#   value = local.efs_ip
+# }
