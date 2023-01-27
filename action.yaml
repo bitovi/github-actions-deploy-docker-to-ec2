@@ -11,8 +11,6 @@ inputs:
   create_release:
     description: 'Compress resulting terraform and ansible files and create a new release'
     default: false
-  github_token:
-    description: "A GITUB_TOKEN with the `content: write` permissions"
   aws_access_key_id:
     description: 'AWS access key ID'
     required: true

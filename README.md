@@ -113,7 +113,8 @@ The following inputs can be used as `step.with` keys
 
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `checkout`          | Boolean | Set to `false` if the code is already checked out (Default is `true`) (Optional) |
+| `checkout` | Boolean | Set to `false` if the code is already checked out (Default is `true`) (Optional) |
+| `create_release` | Boolean | Set to `true` to create a new release based on the branch name with gz compressed files of the generated IaC. (Default is `false`) (Optional) |
 | `aws_access_key_id` | String | AWS access key ID |
 | `aws_secret_access_key` | String | AWS secret access key |
 | `aws_session_token` | String | AWS session token |
