@@ -4,12 +4,11 @@
 - name: Cloning amazon-efs-utils from GitHub
   ansible.builtin.git:
     repo: 'https://github.com/aws/efs-utils'
-    dest: /srv/checkout
   become: yes
 
 - name: Build amazon-efs-utils
   ansible.builtin.shell: |
-    cd /srv/checkout/efs-utils
+    cd ./efs-utils
     ./build-deb.sh
     apt-get -y install ./build/amazon-efs-utils*deb
   become: yes
