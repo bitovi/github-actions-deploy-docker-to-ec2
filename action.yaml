@@ -54,7 +54,7 @@ inputs:
     required: false
     default: ''
   
-  # Applicatoin
+  # Application
   app_port:
     description: 'Port to expose for the app'
     required: false
