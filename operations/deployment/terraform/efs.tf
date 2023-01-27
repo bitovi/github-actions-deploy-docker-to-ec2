@@ -12,6 +12,8 @@ locals {
   availability_zones = {
     for k, val in local.zone_mapping : "${data.aws_region.current.name}${k}" => val
   }
+
+  mount_efs = var.mount_efs ? 1 : (var.create_efs ? 1 : 0)
 }
 
 module "efs" {
