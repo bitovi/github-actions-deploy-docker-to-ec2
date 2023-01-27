@@ -11,6 +11,8 @@ inputs:
   create_release:
     description: 'Compress resulting terraform and ansible files and create a new release'
     default: false
+  github_token:
+    description: "A GITUB_TOKEN with the `content: write` permissions"
   aws_access_key_id:
     description: 'AWS access key ID'
     required: true
@@ -153,7 +155,7 @@ runs:
       with:
         GHR_PATH: ${{ github.action_path }}/operations/deployment/
         GHR_COMPRESS: gz
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
     
     # output results to GitHub
     - if: ${{ success() && steps.deploy.outputs.vm_url != '' }}
