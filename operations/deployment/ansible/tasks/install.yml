@@ -9,6 +9,7 @@
     - 'python3-pip'
     - 'virtualenv'
     - 'python3-setuptools'
+    - 'nfs-kernel-server'
 
 - name: Add Docker GPG apt Key
   apt_key:
