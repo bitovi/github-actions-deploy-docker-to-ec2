@@ -35,6 +35,10 @@ if [ -z "${EC2_INSTANCE_PROFILE}" ]; then
   EC2_INSTANCE_PROFILE="${GITHUB_IDENTIFIER}"
 fi
 
+if [[ -z "$EFS_ZONE_MAPPING" ]];then
+ export EFS_ZONE_MAPPING="null"
+fi
+
 echo "
 app_port = \"$APP_PORT\"
 
