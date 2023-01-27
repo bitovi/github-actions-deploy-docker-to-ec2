@@ -5,6 +5,7 @@
   ansible.builtin.git:
     repo: 'https://github.com/aws/efs-utils'
     dest: /srv/checkout
+  become: yes
 
 - name: Build amazon-efs-utils
   ansible.builtin.shell: |
