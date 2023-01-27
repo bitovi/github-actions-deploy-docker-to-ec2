@@ -156,7 +156,7 @@ runs:
       with:
         type: 'zip'
         filename: 'release.zip'
-        exclusions: '*.git* /*node_modules/* .editorconfig'
+        exclusions: '*.git* /*node_modules/* .editorconfig ghs.env inventory.yaml'
         path: ./deployment
         directory: ../
     - if: ${{ inputs.create_release }}
