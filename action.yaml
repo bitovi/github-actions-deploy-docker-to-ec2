@@ -149,6 +149,19 @@ runs:
 
     # Release
     - if: ${{ inputs.create_release }}
+      name: testing
+      run: |
+        ls ${{ github.action_path }}
+        ls ${{ github.action_path }}/operations/deployment/
+    - if: ${{ inputs.create_release }}
+      name: Archive Release
+      uses: thedoctor0/zip-release@0.7.0
+      with:
+        type: 'zip'
+        filename: 'release.zip'
+        exclusions: '*.git* /*node_modules/* .editorconfig'
+        path: ${{ github.action_path }}/operations/deployment/
+    - if: ${{ inputs.create_release }}
       name: Create a GitHub release
       uses: ncipollo/release-action@v1
       with:
