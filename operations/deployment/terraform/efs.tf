@@ -46,7 +46,7 @@ module "efs" {
 }
 
 locals {
-  efs_url = length(module.efs) > 0 ? module.efs[0].dns_name : null
+  efs_url = length(module.efs) > 0 ? module.efs[0].dns_name : ""
 }
 
 
