@@ -165,6 +165,7 @@ runs:
         GHR_PATH: ${{ github.action_path }}/operations/deployment/
         GHR_COMPRESS: gz
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+        GHR_REPLACE: true
     
     # output results to GitHub
     - if: ${{ success() && steps.deploy.outputs.vm_url != '' }}
