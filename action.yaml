@@ -149,24 +149,19 @@ runs:
         echo "running operations/_scripts/deploy/export_vars.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/export_vars.sh
 
-
     # Release
     - if: ${{ inputs.create_release }}
       name: Create a GitHub release
       uses: ncipollo/release-action@v1
       with:
-        tag: ${{ github.ref  }} 
+        allowUpdates: true
+        artifacts: ${{ github.action_path }}/operations/deployment/
+        artifactContentType: gz
+        draft: true
+        generateReleaseNotes: true
         name: ${{ github.ref }}
-        skipIfReleaseExists: true
-    
-    - if: ${{ inputs.create_release }}
-      name: Compress and Release
-      uses: fnkr/github-action-ghr@v1.3
-      env:
-        GHR_PATH: ${{ github.action_path }}/operations/deployment/
-        GHR_COMPRESS: gz
-        GITHUB_TOKEN: ${{ inputs.github_token }}
-        GHR_REPLACE: true
+        replacesArtifacts: true
+        tag: ${{ github.ref  }} 
     
     # output results to GitHub
     - if: ${{ success() && steps.deploy.outputs.vm_url != '' }}
