@@ -152,7 +152,7 @@ runs:
     - if: ${{ inputs.create_release }}
       name: Compress and Release
       uses: fnkr/github-action-ghr@v1.3
-      with:
+      env:
         GHR_PATH: ${{ github.action_path }}/operations/deployment/
         GHR_COMPRESS: gz
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
