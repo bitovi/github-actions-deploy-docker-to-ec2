@@ -140,7 +140,7 @@ runs:
         ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
       run: |
         cd $GITHUB_ACTION_PATH
-        git clone -b mybranch --feature-commonscripts https://github.com/bitovi/github-actions-commons.git
+        git clone https://github.com/bitovi/github-actions-commons.git
         cp -R github-actions-commons/operations/_scripts $GITHUB_ACTION_PATH/operations/
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
