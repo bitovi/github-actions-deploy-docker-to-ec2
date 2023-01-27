@@ -58,11 +58,7 @@ inputs:
   app_port:
     description: 'Port to expose for the app'
     required: false
-    default: '80'
-  app_directory:
-    description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo.'
-  
-  # Load Balancer
+    default: '3000'
   lb_port:
     description: 'Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided'
     required: false
