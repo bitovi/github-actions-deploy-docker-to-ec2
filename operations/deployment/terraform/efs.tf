@@ -62,6 +62,10 @@ resource "aws_security_group_rule" "ingress_efs" {
   security_group_id = aws_security_group.ec2_security_group.id
 }
 
+data "aws_security_group" "efs" {
+  id = module.efs[0].security_group_id
+}
+
 # Whitelist the EFS security group for the EC2 Security Group
 resource "aws_security_group_rule" "ingress_nfs_efs" {
   count = var.create_efs ? 1 : 0
@@ -71,7 +75,7 @@ resource "aws_security_group_rule" "ingress_nfs_efs" {
   to_port     = 443
   protocol    = "all"
   source_security_group_id = aws_security_group.ec2_security_group.id
-  security_group_id = module.efs[0].security_group_id
+  security_group_id = data.aws_security_group.efs.id
 }
 
 output "efs_url" {
