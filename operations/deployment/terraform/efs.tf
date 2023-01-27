@@ -47,7 +47,6 @@ module "efs" {
 
 locals {
   efs_url = length(module.efs) > 0 ? module.efs[0].dns_name : ""
-  efs_ip = length(module.efs) > 0 ? module.efs[0].mount_targets[0] : ""
 }
 
 
@@ -78,7 +77,3 @@ resource "aws_security_group_rule" "ingress_nfs_efs" {
 output "efs_url" {
   value = local.efs_url
 }
-
-# output "efs_ip" {
-#   value = local.efs_ip
-# }
