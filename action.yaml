@@ -149,6 +149,15 @@ runs:
         echo "running operations/_scripts/deploy/export_vars.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/export_vars.sh
 
+
+    # Release
+    - if: ${{ inputs.create_release }}
+      name: Create a GitHub release
+      uses: ncipollo/release-action@v1
+      with:
+        tag: ${GITHUB_REF##*/}
+        name: Release ${GITHUB_REF##*/}
+    
     - if: ${{ inputs.create_release }}
       name: Compress and Release
       uses: fnkr/github-action-ghr@v1.3
