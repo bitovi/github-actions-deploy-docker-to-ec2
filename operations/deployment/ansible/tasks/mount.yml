@@ -4,7 +4,7 @@
 - name: Cloning amazon-efs-utils from GitHub
   ansible.builtin.git:
     repo: 'https://github.com/aws/efs-utils'
-    dest: /home/ubuntu/
+    dest: /home/ubuntu/efs-utils
   become: yes
 
 - name: Build amazon-efs-utils
