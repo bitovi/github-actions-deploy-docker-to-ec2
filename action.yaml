@@ -159,9 +159,9 @@ runs:
         artifactContentType: gz
         draft: true
         generateReleaseNotes: true
-        name: ${{ github.ref }}
+        name: ${{ github.ref_name }} branch
         replacesArtifacts: true
-        tag: ${{ github.ref  }} 
+        tag: ${{ github.ref_name  }}
     
     # output results to GitHub
     - if: ${{ success() && steps.deploy.outputs.vm_url != '' }}
