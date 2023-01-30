@@ -111,41 +111,42 @@ jobs:
 
 The following inputs can be used as `step.with` keys
 
-| Name             | Type    | Description                        | default |
-|------------------|---------|------------------------------------|---------|
-| `checkout` | Boolean | Set to `false` if the code is already checked out (Optional) |true|
-| `create_release` | Boolean | Set to `true` to create a new release based on the branch name with gz compressed files of the generated IaC. (Optional) |false|
-| `aws_access_key_id` | String | AWS access key ID ||
-| `aws_secret_access_key` | String | AWS secret access key ||
-| `aws_session_token` | String | AWS session token ||
-| `aws_default_region` | String | AWS default region ||
-| `aws_ami_id` | String | AWS AMI ID. Accepts `ami-####` values | latest Ubuntu 22.04 server image (HVM)|
-| `domain_name` | String | Define the root domain name for the application. e.g. bitovi.com' ||
-| `sub_domain` | String | Define the sub-domain part of the URL. | `${org}-${repo}-{branch}` |
-| `root_domain` | Boolean | Deploy application to root domain. Will create root and www records. |false|
-| `cert_arn` | String | Define the certificate ARN to use for the application. **See note ** ||
-| `create_root_cert` | Boolean | Generates and manage the root cert for the application. **See note **. |false|
-| `create_sub_cert` | Boolean | Generates and manage the sub-domain certificate for the application. **See note **. |false|
-| `no_cert` | Boolean | Set this to true if no certificate is present for the domain. **See note **. |false|
-| `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state. ||
-| `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed.|false - `stack_destroy` must also be `true`|
-| `repo_env` | String | `.env` file containing environment variables to be used with the app. Name defaults to `repo_env`. Check **Environment variables** note ||
-| `dot_env` | String | `.env` file to be used with the app. This is the name of the [Github secret](https://docs.github.com/es/actions/security-guides/encrypted-secrets). Check **Environment variables** note ||
-| `ghv_env` | String | `.env` file to be used with the app. This is the name of the [Github variables](https://docs.github.com/en/actions/learn-github-actions/variables). Check **Environment variables** note ||
-| `aws_secret_env` | String | Secret name to pull environment variables from AWS Secret Manager. Check **Environment variables** note |
-| `app_port` | String | port to expose for the app ||
-| `lb_port` | String | Load balancer listening port. |80 if NO FQDN provided, 443 if FQDN provided|
-| `lb_healthcheck` | String | Load balancer health check string. |HTTP:app_port|
-| `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. |`${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`|
-| `ec2_instance_type` | String | The AWS IAM instance type to use. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference |t2.small|
-| `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` - Will delete the elb_logs bucket after the destroy action runs. ||
-| `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment. Use with destroy to destroy specific resources. |`${org}-{repo}-{branch}`|
-| `app_directory` | String | Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance. |app repo root|
-| `additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.||
+| Name             | Type    | Default | Description                        |
+|------------------|---------|---------|------------------------------------|
+| `checkout` | Boolean | true | Set to `false` if the code is already checked out (Optional) |
+| `create_release` | Boolean | false | Set to `true` to create a new release based on the branch name with gz compressed files of the generated IaC. (Optional) |
+| `aws_access_key_id` | String | | AWS access key ID |
+| `aws_secret_access_key` | String | | AWS secret access key |
+| `aws_session_token` | String | | AWS session token |
+| `aws_default_region` | String | us-east-1 | AWS default region |
+| `aws_ami_id` | String | latest Ubuntu 22.04 server image (HVM)| AWS AMI ID. Accepts `ami-####` values . |
+| `domain_name` | String | | Define the root domain name for the application. e.g. bitovi.com' |
+| `sub_domain` | String | `${org}-${repo}-{branch}` | Define the sub-domain part of the URL. |
+| `root_domain` | Boolean | false | Deploy application to root domain. Will create root and www records. |
+| `cert_arn` | String | | Define the certificate ARN to use for the application. **See note ** |
+| `create_root_cert` | Boolean | false | Generates and manage the root cert for the application. **See note **. |
+| `create_sub_cert` | Boolean | false |Generates and manage the sub-domain certificate for the application. **See note **.|
+| `no_cert` | Boolean | false | Set this to true if no certificate is present for the domain. **See note **. |
+| `tf_state_bucket` | String || AWS S3 bucket to use for Terraform state. |
+| `tf_state_bucket_destroy` | Boolean | false - `stack_destroy` must also be `true` |Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed.|
+| `repo_env` | String | repo_env | `.env` file containing environment variables to be used with the app. Name defaults to `repo_env`. Check **Environment variables** note |
+| `dot_env` | String || `.env` file to be used with the app. This is the name of the [Github secret](https://docs.github.com/es/actions/security-guides/encrypted-secrets). Check **Environment variables** note |
+| `ghv_env` | String || `.env` file to be used with the app. This is the name of the [Github variables](https://docs.github.com/en/actions/learn-github-actions/variables). Check **Environment variables** note |
+| `aws_secret_env` | String | | Secret name to pull environment variables from AWS Secret Manager. Check **Environment variables** note |
+| `app_port` | String | 3000 |port to expose for the app |
+| `lb_port` | String | 80 if NO FQDN provided, 443 if FQDN provided| Load balancer listening port. |
+| `lb_healthcheck` | String | HTTP:app_port |Load balancer health check string. |
+| `ec2_instance_profile` | String | [Note about resource identifiers](#note-about-resource-identifiers) | The AWS IAM instance profile to use for the EC2 instance. |
+| `ec2_instance_type` | String | t2.small | The AWS IAM instance type to use. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference |
+| `stack_destroy` | String | false | Set to `true` to destroy the stack. Default is `""` - Will delete the elb_logs bucket after the destroy action runs. |
+| `aws_resource_identifier` | String | `${org}-{repo}-{branch}` |Set to override the AWS resource identifier for the deployment. Use with destroy to destroy specific resources. |
+| `app_directory` | String | app repo root |Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance. |
+| `additional_tags` | JSON || Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
 
 ## Note about resource identifiers
 
-Most resources will contain the tag GITHUB_ORG-GITHUB_REPO-GITHUB_BRANCH, some of them, even the resource name after. 
+Most resources will contain the tag 
+GITHUB_ORG-GITHUB_REPO-GITHUB_BRANCH, some of them, even the resource name after. 
 We limit this to a 60 characters string because some AWS resources have a length limit and short it if needed.
 
 We use the kubernetes style for this. For example, kubernetes -> k(# of characters)s -> k8s. And so you might see some compressions are made.
