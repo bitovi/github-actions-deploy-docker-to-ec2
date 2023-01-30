@@ -140,6 +140,7 @@ The following inputs can be used as `step.with` keys
 | `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` - Will delete the elb_logs bucket after the destroy action runs. |
 | `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources. |
 | `app_directory` | String | Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance. Default is the root of the repo. |
+| `create_efs` | bool | Boolean choice, create EFS resource and mount to the created EC2 instance. |
 | `additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
 
 ## Note about resource identifiers
@@ -172,6 +173,14 @@ Setting `create_sub_cert` to `true` will create a certificate **just for the sub
 To change a certificate (root_cert, sub_cert, ARN or pre-existing root cert), you must first set the `no_cert` flag to true, run the action, then set the `no_cert` flag to false, add the desired settings and excecute the action again. (**This will destroy the first certificate.**)
 
 This is necessary due to a limitation that prevents certificates from being changed while in use by certain resources.
+
+## Adding external datastore (AWS EFS)
+Users looking to add non-ephemeral storage to their created EC2 instance have the following option. 
+
+### Create EFS
+Option 1, users have access to the `create_efs` attribute which will create a EFS resource and mount it to the EC2 instance in the application directory at the path: "app_root/data".
+
+Note: The EFS is fully managed by Terraform. Therefor it will be destroyed upon stack destruction.
 
 ## Made with BitOps
 [BitOps](https://bitops.sh) allows you to define Infrastructure-as-Code for multiple tools in a central place.  This action uses a BitOps [Operations Repository](https://bitops.sh/operations-repo-structure/) to set up the necessary Terraform and Ansible to create infrastructure and deploy to it.
