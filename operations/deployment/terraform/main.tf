@@ -3,9 +3,38 @@ resource "tls_private_key" "key" {
   rsa_bits  = 4096
 }
 
+// Creates an ec2 key pair using the tls_private_key.key public key
 resource "aws_key_pair" "aws_key" {
-  key_name   = "${var.aws_resource_identifier}"
+  key_name   = "${var.aws_resource_identifier_supershort}-ec2kp-${random_string.random.result}"
   public_key = tls_private_key.key.public_key_openssh
+}
+
+// Creates a secret manager secret for the public key
+resource "aws_secretsmanager_secret" "keys_sm_secret" {
+  count              = var.create_keypair_sm_entry ? 1 : 0
+  name   = "${var.aws_resource_identifier_supershort}-sm-${random_string.random.result}"
+}
+ 
+resource "aws_secretsmanager_secret_version" "keys_sm_secret_version" {
+  count     = var.create_keypair_sm_entry ? 1 : 0
+  secret_id = aws_secretsmanager_secret.keys_sm_secret[0].id
+  secret_string = <<EOF
+   {
+    "key": "public_key",
+    "value": "${sensitive(tls_private_key.key.public_key_openssh)}"
+   },
+   {
+    "key": "private_key",
+    "value": "${sensitive(tls_private_key.key.private_key_openssh)}"
+   }
+EOF
+}
+
+resource "random_string" "random" {
+  length    = 5
+  lower     = true
+  special   = false
+  numeric   = false
 }
 
 resource "aws_iam_instance_profile" "ec2_profile" {
@@ -45,4 +74,3 @@ output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
   value       = var.ec2_instance_public_ip ? aws_instance.server.public_dns : "EC2 Instance doesn't have public DNS"
 }
-
