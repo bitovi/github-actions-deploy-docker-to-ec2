@@ -36,7 +36,7 @@ POSTGRES_CLUSTER_ENGINE_VERSION_ACTUAL = ${module.rds_cluster.cluster_engine_ver
 
 # Name for an automatically created database on cluster creation
 # database_name is not set on `aws_rds_cluster` resource if it was not specified, so can't be used in output
-POSTGRES_CLUSTER_DATABASE_NAME = ${module.rds_cluster.cluster_database_name}
+POSTGRES_CLUSTER_DATABASE_NAME = ${module.rds_cluster.cluster_database_name ? module.rds_cluster.cluster_database_name : ""}
 
 # The database port
 POSTGRES_CLUSTER_PORT = ${module.rds_cluster.cluster_port}
