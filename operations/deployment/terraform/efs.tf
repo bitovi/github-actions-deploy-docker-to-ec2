@@ -37,6 +37,7 @@ locals {
 }
 
 module "efs" {
+    prevent_destroy = var.efs_prevent_destroy
     count = var.create_efs ? 1 : 0
     source = "terraform-aws-modules/efs/aws"
 

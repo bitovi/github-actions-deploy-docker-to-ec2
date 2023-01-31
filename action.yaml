@@ -84,6 +84,10 @@ inputs:
   efs_zone_mapping:
     description: "A list of zone_codes and targetted. Objects(subnet_target+security_groups). Example: {\"zone_code\": { \"subnet_id\": \"subnet-abc123\", \"security_groups\": [\"sg-abc123\"]}"
     default: null
+  efs_prevent_destroy:
+    description: "Prevents the EFS from being destroyed if the stack is destroyed."
+    default: false
+
   # Stack management
   stack_destroy:
     description: 'Set to "true" to Destroy the stack. Will delete the elb_logs bucket after the destroy action runs.'
@@ -164,6 +168,7 @@ runs:
         MOUNT_EFS: ${{ inputs.mount_efs }}
         CREATE_EFS: ${{ inputs.create_efs }}
         EFS_ZONE_MAPPING: ${{ inputs.efs_zone_mapping }}
+        EFS_PREVENT_DESTROY: ${{ inputs.efs_prevent_destroy }}
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh

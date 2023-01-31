@@ -98,6 +98,8 @@ create_efs = \"${CREATE_EFS}\"
 
 zone_mapping = ${EFS_ZONE_MAPPING}
 
+efs_prevent_destroy = ${EFS_PREVENT_DESTROY}
+
 additional_tags = ${ADDITIONAL_TAGS}
 #
 " >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"

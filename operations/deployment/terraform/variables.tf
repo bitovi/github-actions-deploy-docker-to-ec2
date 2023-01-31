@@ -178,6 +178,11 @@ variable "replication_configuration_destination" {
         region = ""
     }
 }
+
+variable "efs_prevent_destroy"{
+  type = bool
+  default = false
+}
 ## -- --- -- ##
 
 variable "additional_tags" {
