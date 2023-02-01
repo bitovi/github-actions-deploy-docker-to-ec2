@@ -12,6 +12,10 @@ resource "aws_security_group" "ec2_security_group" {
   }
 }
 
+data "aws_security_group" "ec2_security_group" {
+  id = aws_security_group.ec2_security_group.id
+}
+
 
 resource "aws_security_group_rule" "ingress_http" {
   type        = "ingress"
