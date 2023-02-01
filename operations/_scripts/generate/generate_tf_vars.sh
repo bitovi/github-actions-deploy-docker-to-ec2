@@ -37,6 +37,11 @@ if [ -z "${EC2_INSTANCE_PROFILE}" ]; then
   EC2_INSTANCE_PROFILE="${GITHUB_IDENTIFIER}"
 fi
 
+ec2_instance_type=
+if [[ -n "$EC2_INSTANCE_TYPE" ]];then
+  ec2_instance_type="ec2_instance_type = \"${EC2_INSTANCE_TYPE}\""
+fi
+
 app_port=
 if [[ -n "$APP_PORT" ]];then
   app_port="app_port = \"$APP_PORT\""
@@ -74,38 +79,6 @@ if [[ -n "$ADDITIONAL_TAGS" ]]; then
 fi
 
 # -------------------------------------------------- #
-create_subnet_a=
-if [[ $AWS_DEFAULT_REGION == 'us-east-1' ]] || [[ $AWS_DEFAULT_REGION == 'us-east-2' ]] || [[ $AWS_DEFAULT_REGION == 'us-west-1' ]] || [[ $AWS_DEFAULT_REGION == 'us-west-2' ]]; then
-  create_subnet_a=true
-fi
-
-create_subnet_b=
-if [[ $AWS_DEFAULT_REGION == 'us-east-1' ]] || [[ $AWS_DEFAULT_REGION == 'us-east-2' ]] || [[ $AWS_DEFAULT_REGION == 'us-west-2' ]]; then
-  create_subnet_b=true
-fi
-
-create_subnet_c=
-if [[ $AWS_DEFAULT_REGION == 'us-east-1' ]] || [[ $AWS_DEFAULT_REGION == 'us-east-2' ]] || [[ $AWS_DEFAULT_REGION == 'us-west-1' ]] || [[ $AWS_DEFAULT_REGION == 'us-west-2' ]]; then
-  create_subnet_c=true
-fi
-
-create_subnet_d=
-if [[ $AWS_DEFAULT_REGION == 'us-east-1' ]] || [[ $AWS_DEFAULT_REGION == 'us-west-2' ]]; then
-  create_subnet_d=true
-fi
-
-create_subnet_e=
-if [[ $AWS_DEFAULT_REGION == 'us-east-1' ]]; then
-  create_subnet_e=true
-fi
-
-create_subnet_f=
-if [[ $AWS_DEFAULT_REGION == 'us-east-1' ]]; then
-  create_subnet_f=true
-fi
-
-
-# -------------------------------------------------- #
 
 echo "
 $app_port
@@ -136,7 +109,7 @@ security_group_name = \"${GITHUB_IDENTIFIER}\"
 
 ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\"
 
-ec2_instance_type = \"${EC2_INSTANCE_TYPE}\"
+$ec2_instance_type
 
 aws_resource_identifier = \"${GITHUB_IDENTIFIER}\"
 
