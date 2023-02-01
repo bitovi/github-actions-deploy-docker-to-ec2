@@ -11,7 +11,7 @@ locals {
       "subnet_id": data.aws_subnet.defaultb[0].id, 
       "security_groups": [data.aws_security_group.default.id]
     }
-  }) : {}
+  }) : null
   availability_zonec = length(data.aws_subnet.defaultc) > 0 ? ({
     "c": {
       "subnet_id": data.aws_subnet.defaultc[0].id, 
@@ -23,19 +23,19 @@ locals {
       "subnet_id": data.aws_subnet.defaultd[0].id, 
       "security_groups": [data.aws_security_group.default.id]
     }
-  }) : {}
+  }) : null
   availability_zonee = length(data.aws_subnet.defaulte) > 0 ? ({
     "e": {
       "subnet_id": data.aws_subnet.defaulte[0].id, 
       "security_groups": [data.aws_security_group.default.id]
     }
-  }) : {}
+  }) : null
   availability_zonef = length(data.aws_subnet.defaultf) > 0 ? ({
     "f": {
       "subnet_id": data.aws_subnet.defaultf[0].id, 
       "security_groups": [data.aws_security_group.default.id]
     }
-  }) : {}
+  }) : null
 
   default_availability_zones = merge(local.availability_zonea, local.availability_zoneb, local.availability_zonec, local.availability_zoned, local.availability_zonee, local.availability_zonef)
   
