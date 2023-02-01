@@ -24,6 +24,13 @@ resource "aws_security_group_rule" "ingress_postgres" {
   security_group_id = aws_security_group.pg_security_group.id
 }
 
+data "aws_subnets" "vpc_subnets" {
+  filter {
+    name   = "vpc-id"
+    values = [var.vpc_id ? var.vpc_id : data.aws_vpc.default.id]
+  }
+}
+
 module "rds_cluster" {
   source         = "terraform-aws-modules/rds-aurora/aws"
   version        = "v7.6.0"
@@ -40,7 +47,7 @@ module "rds_cluster" {
     # Todo: handle vpc/networking explicitly
   # vpc_id                 = var.vpc_id
   # allowed_cidr_blocks    = [var.vpc_cidr]
-  subnets                = var.postgres_subnets
+  subnets                = var.postgres_subnets == null ? data.aws_subnets.vpc_subnets.data.ids : var.postgres_subnets
 
   database_name          = var.postgres_database_name
   storage_encrypted      = true
