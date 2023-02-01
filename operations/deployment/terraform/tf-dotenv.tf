@@ -53,7 +53,7 @@ POSTGRES_CLUSTER_MASTER_USERNAME=${module.rds_cluster.cluster_master_username}
 POSTGRES_CLUSTER_HOSTED_ZONE_ID=${module.rds_cluster.cluster_hosted_zone_id}
 
 
-// POSTGRES specific env vars
+# POSTGRES specific env vars
 PG_USER="$POSTGRES_CLUSTER_MASTER_USERNAME"
 PG_PASSWORD="$POSTGRES_CLUSTER_MASTER_PASSWORD"
 PGDATABASE="$POSTGRES_CLUSTER_DATABASE_NAME"
