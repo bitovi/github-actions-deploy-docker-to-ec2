@@ -141,14 +141,10 @@ variable "create_efs" {
   default = false
 }
 
-variable "transition_to_inactive" {
-    type = string
-    default = "AFTER_30_DAYS"
-}
-
-variable "transition_to_primary_storage_class" {
-    type = string
-    default = "AFTER_1_ACCESS"
+variable "create_ha_efs" {
+  type = bool
+  description = "Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)."
+  default = false
 }
 
 variable "zone_mapping"{
@@ -160,9 +156,14 @@ variable "zone_mapping"{
     default  = null
 }
 
-variable "create_subnet_a" {
-  type = bool
-  default = false
+variable "transition_to_inactive" {
+    type = string
+    default = "AFTER_30_DAYS"
+}
+
+variable "transition_to_primary_storage_class" {
+    type = string
+    default = "AFTER_1_ACCESS"
 }
 
 variable "enable_backup_policy" {
@@ -182,11 +183,6 @@ variable "replication_configuration_destination" {
     default = {
         region = ""
     }
-}
-
-variable "efs_prevent_destroy"{
-  type = bool
-  default = false
 }
 ## -- --- -- ##
 

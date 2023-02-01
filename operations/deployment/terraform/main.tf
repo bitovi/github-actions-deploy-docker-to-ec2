@@ -41,8 +41,14 @@ resource "aws_instance" "server" {
   }
 }
 
+data "aws_instance" "server" {
+  filter {
+    name   = "dns-name"
+    values = [ aws_instance.server.public_dns ]
+  }
+}
+
 output "instance_public_dns" {
   description = "Public DNS address of the EC2 instance"
   value       = var.ec2_instance_public_ip ? aws_instance.server.public_dns : "EC2 Instance doesn't have public DNS"
 }
-

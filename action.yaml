@@ -75,18 +75,18 @@ inputs:
     default: 't2.small'
   
   # EFS
+  create_efs:
+    description: Generate and manage an EFS with the application
+    default: false
   mount_efs:
     description: Boolean toogle, mount EFS to EC2
     default: false
-  create_efs:
-    description: Generate and manage an EFS with the application
+  create_ha_efs:
+    description: Boolean toogle, create highly available EFS (creates mount targets in all regions)
     default: false
   efs_zone_mapping:
     description: "A list of zone_codes and targetted. Objects(subnet_target+security_groups). Example: {\"zone_code\": { \"subnet_id\": \"subnet-abc123\", \"security_groups\": [\"sg-abc123\"]}"
     default: null
-  efs_prevent_destroy:
-    description: "Prevents the EFS from being destroyed if the stack is destroyed."
-    default: false
 
   # Stack management
   stack_destroy:
@@ -167,8 +167,8 @@ runs:
         ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
         MOUNT_EFS: ${{ inputs.mount_efs }}
         CREATE_EFS: ${{ inputs.create_efs }}
+        CREATE_HA_EFS: ${{ inputs.create_ha_efs }}
         EFS_ZONE_MAPPING: ${{ inputs.efs_zone_mapping }}
-        EFS_PREVENT_DESTROY: ${{ inputs.efs_prevent_destroy }}
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh

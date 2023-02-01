@@ -47,6 +47,10 @@ if [ "$STACK_DESTROY" == "true" ]; then
 fi
 echo "::endgroup::"
 
+if [[ $GHA_TESTING == "true" ]]; then
+  exit 1
+fi
+
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"
 docker run --rm --name bitops \

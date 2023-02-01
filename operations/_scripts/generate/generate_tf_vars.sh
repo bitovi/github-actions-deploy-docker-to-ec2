@@ -59,18 +59,12 @@ fi
 
 mount_efs=
 if [[ -n "$MOUNT_EFS" ]];then
-  mount_efs="mount_efs = \"${MOUNT_EFS}\""
+  mount_efs="mount_efs = ${MOUNT_EFS}"
 fi
 
 create_efs=
 if [[ -n "$CREATE_EFS" ]];then
   create_efs="create_efs = \"${CREATE_EFS}\""
-fi
-
-
-efs_prevent_destroy=
-if [[ -n "$EFS_PREVENT_DESTROY" ]]; then
-  efs_prevent_destroy="efs_prevent_destroy=${EFS_PREVENT_DESTROY}"
 fi
 
 additional_tags=
@@ -81,68 +75,49 @@ fi
 # -------------------------------------------------- #
 
 echo "
+#-- Application --#
 $app_port
-
-lb_port = \"$LB_PORT\"
-
-lb_healthcheck = \"$LB_HEALTHCHECK\"
-
-# the name of the operations repo environment directory
 ops_repo_environment = \"deployment\"
-
-# provide the name of the repo's org
 app_org_name = \"${GITHUB_ORG_NAME}\"
-
-# provide the name of the repo
 app_repo_name = \"${GITHUB_REPO_NAME}\"
-
 app_branch_name = \"${GITHUB_BRANCH_NAME}\"
-
-# Path on the instance where the app will be cloned (do not include app_repo_name)
 app_install_root = \"/home/ubuntu\"
 
-# logs
+#-- Load Balancer --#
+lb_port = \"$LB_PORT\"
+lb_healthcheck = \"$LB_HEALTHCHECK\"
+
+#-- Logging --#
 lb_access_bucket_name = \"${LB_LOGS_BUCKET}\"
 
-
+#-- Security Groups --#
 security_group_name = \"${GITHUB_IDENTIFIER}\"
 
+#-- EC2 --#
 ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\"
-
 $ec2_instance_type
 
+#-- AWS --#
 aws_resource_identifier = \"${GITHUB_IDENTIFIER}\"
-
 aws_resource_identifier_supershort = \"${GITHUB_IDENTIFIER_SS}\"
-
 aws_secret_env = \"${AWS_SECRET_ENV}\"
-
 aws_ami_id = \"${AWS_AMI_ID}\"
 
+#-- Certificates --#
 $sub_domain_name
-
 $domain_name
-
 root_domain = \"${ROOT_DOMAIN}\"
-
 cert_arn = \"${CERT_ARN}\"
-
 create_root_cert = \"${CREATE_ROOT_CERT}\"
-
 create_sub_cert = \"${CREATE_SUB_CERT}\"
-
 $no_cert
 
+#-- EFS --#
 $mount_efs
-
 $create_efs
-
 $zone_mapping
 
-$create_subnet_a
-
-$efs_prevent_destroy
-
+#-- Tags --#
 $additional_tags
-#
+
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"

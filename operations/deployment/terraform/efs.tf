@@ -1,50 +1,43 @@
 locals {
-  default_zone_mapping = { "": {"subnet_id": "", "security_groups": [""]}}
+  no_zone_mapping = { "": {"subnet_id": "", "security_groups": [""]}}
+  ec2_zone_mapping = {"${data.aws_instance.server.availability_zone}": { "subnet_id": "${data.aws_instance.server.subnet_id}", "security_groups": [aws_security_group.ec2_security_group.id] }}
   
-  availability_zonea = {
-    "a": {
+  auto_ha_availability_zonea = {
+    "${data.aws_region.current.name}a": {
       "subnet_id": data.aws_subnet.defaulta.id, 
       "security_groups": [data.aws_security_group.default.id]
   }}
-  availability_zoneb = length(data.aws_subnet.defaultb) > 0 ? ({
-    "b": {
+  auto_ha_availability_zoneb = length(data.aws_subnet.defaultb) > 0 ? ({
+    "${data.aws_region.current.name}b": {
       "subnet_id": data.aws_subnet.defaultb[0].id, 
       "security_groups": [data.aws_security_group.default.id]
     }
   }) : null
-  availability_zonec = length(data.aws_subnet.defaultc) > 0 ? ({
-    "c": {
+  auto_ha_availability_zonec = length(data.aws_subnet.defaultc) > 0 ? ({
+    "${data.aws_region.current.name}c": {
       "subnet_id": data.aws_subnet.defaultc[0].id, 
       "security_groups": [data.aws_security_group.default.id]
     }
   }) : null
-  availability_zoned = length(data.aws_subnet.defaultd) > 0 ? ({
-    "d": {
+  auto_ha_availability_zoned = length(data.aws_subnet.defaultd) > 0 ? ({
+    "${data.aws_region.current.name}d": {
       "subnet_id": data.aws_subnet.defaultd[0].id, 
       "security_groups": [data.aws_security_group.default.id]
     }
   }) : null
-  availability_zonee = length(data.aws_subnet.defaulte) > 0 ? ({
-    "e": {
+  auto_ha_availability_zonee = length(data.aws_subnet.defaulte) > 0 ? ({
+    "${data.aws_region.current.name}e": {
       "subnet_id": data.aws_subnet.defaulte[0].id, 
       "security_groups": [data.aws_security_group.default.id]
     }
   }) : null
-  availability_zonef = length(data.aws_subnet.defaultf) > 0 ? ({
-    "f": {
+  auto_ha_availability_zonef = length(data.aws_subnet.defaultf) > 0 ? ({
+    "${data.aws_region.current.name}f": {
       "subnet_id": data.aws_subnet.defaultf[0].id, 
       "security_groups": [data.aws_security_group.default.id]
     }
   }) : null
-
-  default_availability_zones = merge(local.availability_zonea, local.availability_zoneb, local.availability_zonec, local.availability_zoned, local.availability_zonee, local.availability_zonef)
-  
-  // The reason the conditional is needed is because zone_mapping can't be null for the local creation.
-  zone_mapping = var.zone_mapping == null ? local.default_zone_mapping : var.zone_mapping
-  availability_zones = {
-    for k, val in local.zone_mapping : "${data.aws_region.current.name}${k}" => val
-  }
-
+  ha_zone_mapping = merge(local.auto_ha_availability_zonea, local.auto_ha_availability_zoneb, local.auto_ha_availability_zonec, local.auto_ha_availability_zoned, local.auto_ha_availability_zonee, local.auto_ha_availability_zonef)
   mount_efs = var.mount_efs ? 1 : (var.create_efs ? 1 : 0)
 }
 
@@ -66,7 +59,7 @@ module "efs" {
     bypass_policy_lockout_safety_check = false
 
     # Mount targets / security group
-    mount_targets = var.zone_mapping == null ? local.default_availability_zones : local.availability_zones
+    mount_targets = var.create_ha_efs == true ? local.ha_zone_mapping : ( length(aws_instance.server) > 0 ? local.ec2_zone_mapping : local.no_zone_mapping)
 
     # Backup policy
     enable_backup_policy = var.enable_backup_policy
@@ -113,4 +106,16 @@ resource "aws_security_group_rule" "ingress_nfs_efs" {
 
 output "efs_url" {
   value = local.efs_url
+}
+
+output "ec2_zone_mapping" {
+  value = local.ec2_zone_mapping
+}
+
+output "no_zone_mapping" {
+  value = local.no_zone_mapping
+}
+
+output "auto_ha_zone_mapping" {
+  value = local.ha_zone_mapping
 }
