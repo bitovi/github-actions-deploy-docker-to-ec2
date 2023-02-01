@@ -120,7 +120,7 @@ enable_postgres = \"${ENABLE_POSTGRES}\"
 postgres_engine = \"${POSTGRES_ENGINE}\"
 postgres_engine_version = \"${POSTGRES_ENGINE_VERSION}\"
 postgres_instance_class = \"${POSTGRES_INSTANCE_CLASS}\"
-
+postgres_database_name = \"${POSTGRES_DATABASE_NAME}\"
 ${POSTGRES_SUBNETS_TF}
 
 additional_tags = ${ADDITIONAL_TAGS}

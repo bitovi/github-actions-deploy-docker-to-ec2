@@ -159,6 +159,11 @@ variable "postgres_subnets" {
   description = "The list of subnet ids to use for postgres. For more details, see: https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
   default     = []
 }
+variable "postgres_database_name" {
+  type        = string
+  description = "The name of the database. will be created if it does not exist."
+  default     = "root"
+}
 
 variable "additional_tags" {
   type        = map(string)

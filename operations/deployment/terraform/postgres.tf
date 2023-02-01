@@ -36,11 +36,13 @@ module "rds_cluster" {
       instance_class = var.postgres_instance_class
     }
   }
-  # Todo: handle vpc/networking explicitly
+
+    # Todo: handle vpc/networking explicitly
   # vpc_id                 = var.vpc_id
   # allowed_cidr_blocks    = [var.vpc_cidr]
   subnets                = var.postgres_subnets
 
+  database_name          = var.postgres_database_name
   storage_encrypted      = true
   monitoring_interval    = 60
   create_db_subnet_group = true
