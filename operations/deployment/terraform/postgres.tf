@@ -1,3 +1,29 @@
+resource "aws_security_group" "pg_security_group" {
+  name        = var.security_group_name
+  description = "SG for ${var.aws_resource_identifier}"
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  tags = {
+    Name = "${var.aws_resource_identifier}"
+  }
+}
+
+
+resource "aws_security_group_rule" "ingress_postgres" {
+  type              = "ingress"
+  description       = "${var.aws_resource_identifier} - pgPort"
+  # TODO: parameterize the ports
+  from_port         = 5432
+  to_port           = 5432
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.pg_security_group.id
+}
+
 module "rds_cluster" {
   source         = "terraform-aws-modules/rds-aurora/aws"
   version        = "v7.6.0"
@@ -19,12 +45,10 @@ module "rds_cluster" {
   monitoring_interval    = 60
   create_db_subnet_group = true
   db_subnet_group_name   = var.aws_resource_identifier
-  create_security_group  = true
-  security_group_egress_rules = {
-    to_cidrs = {
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-  }
+  create_security_group  = false
+  allowed_security_groups = [aws_security_group.pg_security_group.id]
+
+  # TODO: take advantage of iam database auth
   iam_database_authentication_enabled    = true
   master_password                        = random_password.master.result
   create_random_password                 = false
