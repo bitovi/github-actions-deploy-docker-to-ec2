@@ -2,15 +2,7 @@
 
 set -e
 
-
-# TODO: use templating
-#    provide '.tf.tmpl' files in the 'operations/deployment' repo
-#    and iterate over all of them to provide context with something like jinja
-#    Example: https://github.com/mattrobenolt/jinja2-cli
-#    jinja2 some_file.tmpl data.json --format=json
-
 echo "In generate_tf_vars.sh"
-
 
 GITHUB_ORG_NAME=$(echo $GITHUB_REPOSITORY | sed 's/\/.*//')
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
@@ -22,25 +14,101 @@ else
 fi
 
 GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh)"
+GITHUB_IDENTIFIER=$(echo $GITHUB_IDENTIFIER | tr "_" "-")
 echo "GITHUB_IDENTIFIER: [$GITHUB_IDENTIFIER]"
 
 GITHUB_IDENTIFIER_SS="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier_supershort.sh)"
+GITHUB_IDENTIFIER_SS=$(echo $GITHUB_IDENTIFIER_SS | tr "_" "-")
 echo "GITHUB_IDENTIFIER SS: [$GITHUB_IDENTIFIER_SS]"
 
+
+# -------------------------------------------------- #
+domain_name=
+if [ -z "$DOMAIN_NAME" ]; then
+  domain_name="domain_name = \"${DOMAIN_NAME}\""
+fi
+
+sub_domain_name=
 if [ -z "$SUB_DOMAIN" ]; then
-  SUB_DOMAIN="$GITHUB_IDENTIFIER"
+  sub_domain_name="sub_domain = \"$SUB_DOMAIN\""
 fi
 
 if [ -z "${EC2_INSTANCE_PROFILE}" ]; then
   EC2_INSTANCE_PROFILE="${GITHUB_IDENTIFIER}"
 fi
 
-if [[ -z "$EFS_ZONE_MAPPING" ]];then
- export EFS_ZONE_MAPPING="null"
+app_port=
+if [[ -n "$APP_PORT" ]];then
+  app_port="app_port = \"$APP_PORT\""
 fi
 
+no_cert=
+if [[ -n "$NO_CERT" ]];then
+  no_cert="no_cert = ${NO_CERT}"
+fi
+
+efs_zone_mapping=
+if [[ -n "$EFS_ZONE_MAPPING" ]];then
+  efs_zone_mapping="zone_mapping = ${EFS_ZONE_MAPPING}"
+fi
+
+mount_efs=
+if [[ -n "$MOUNT_EFS" ]];then
+  mount_efs="mount_efs = \"${MOUNT_EFS}\""
+fi
+
+create_efs=
+if [[ -n "$CREATE_EFS" ]];then
+  create_efs="create_efs = \"${CREATE_EFS}\""
+fi
+
+
+efs_prevent_destroy=
+if [[ -n "$EFS_PREVENT_DESTROY" ]]; then
+  efs_prevent_destroy="efs_prevent_destroy=${EFS_PREVENT_DESTROY}"
+fi
+
+additional_tags=
+if [[ -n "$ADDITIONAL_TAGS" ]]; then
+  additional_tags="additional_tags = ${ADDITIONAL_TAGS}"
+fi
+
+# -------------------------------------------------- #
+create_subnet_a=
+if [[ $AWS_DEFAULT_REGION == 'us-east-1' ]] || [[ $AWS_DEFAULT_REGION == 'us-east-2' ]] || [[ $AWS_DEFAULT_REGION == 'us-west-1' ]] || [[ $AWS_DEFAULT_REGION == 'us-west-2' ]]; then
+  create_subnet_a=true
+fi
+
+create_subnet_b=
+if [[ $AWS_DEFAULT_REGION == 'us-east-1' ]] || [[ $AWS_DEFAULT_REGION == 'us-east-2' ]] || [[ $AWS_DEFAULT_REGION == 'us-west-2' ]]; then
+  create_subnet_b=true
+fi
+
+create_subnet_c=
+if [[ $AWS_DEFAULT_REGION == 'us-east-1' ]] || [[ $AWS_DEFAULT_REGION == 'us-east-2' ]] || [[ $AWS_DEFAULT_REGION == 'us-west-1' ]] || [[ $AWS_DEFAULT_REGION == 'us-west-2' ]]; then
+  create_subnet_c=true
+fi
+
+create_subnet_d=
+if [[ $AWS_DEFAULT_REGION == 'us-east-1' ]] || [[ $AWS_DEFAULT_REGION == 'us-west-2' ]]; then
+  create_subnet_d=true
+fi
+
+create_subnet_e=
+if [[ $AWS_DEFAULT_REGION == 'us-east-1' ]]; then
+  create_subnet_e=true
+fi
+
+create_subnet_f=
+if [[ $AWS_DEFAULT_REGION == 'us-east-1' ]]; then
+  create_subnet_f=true
+fi
+
+
+# -------------------------------------------------- #
+
 echo "
-app_port = \"$APP_PORT\"
+$app_port
 
 lb_port = \"$LB_PORT\"
 
@@ -78,9 +146,9 @@ aws_secret_env = \"${AWS_SECRET_ENV}\"
 
 aws_ami_id = \"${AWS_AMI_ID}\"
 
-sub_domain_name = \"${SUB_DOMAIN}\"
+$sub_domain_name
 
-domain_name = \"${DOMAIN_NAME}\"
+$domain_name
 
 root_domain = \"${ROOT_DOMAIN}\"
 
@@ -90,16 +158,18 @@ create_root_cert = \"${CREATE_ROOT_CERT}\"
 
 create_sub_cert = \"${CREATE_SUB_CERT}\"
 
-no_cert = \"${NO_CERT}\"
+$no_cert
 
-mount_efs = \"${MOUNT_EFS}\"
+$mount_efs
 
-create_efs = \"${CREATE_EFS}\"
+$create_efs
 
-zone_mapping = ${EFS_ZONE_MAPPING}
+$zone_mapping
 
-efs_prevent_destroy = ${EFS_PREVENT_DESTROY}
+$create_subnet_a
 
-additional_tags = ${ADDITIONAL_TAGS}
+$efs_prevent_destroy
+
+$additional_tags
 #
-" >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
+" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"
