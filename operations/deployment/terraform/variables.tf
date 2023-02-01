@@ -124,9 +124,9 @@ variable "create_sub_cert" {
 }
 
 variable "no_cert" {
-  type = string
+  type = bool
   description = "disable cert lookup"
-  default = ""
+  default = false
 }
 
 
@@ -158,6 +158,11 @@ variable "zone_mapping"{
     }))
     nullable = true
     default  = null
+}
+
+variable "create_subnet_a" {
+  type = bool
+  default = false
 }
 
 variable "enable_backup_policy" {
