@@ -1,6 +1,6 @@
 resource "aws_security_group" "pg_security_group" {
-  name        = var.security_group_name
-  description = "SG for ${var.aws_resource_identifier}"
+  name        = var.security_group_name_pg
+  description = "SG for ${var.aws_resource_identifier} - PG"
   egress {
     from_port   = 0
     to_port     = 0

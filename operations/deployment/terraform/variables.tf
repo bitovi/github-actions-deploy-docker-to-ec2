@@ -58,6 +58,11 @@ variable "security_group_name" {
   default     = "SG for deployment"
   description = "Name of the security group to use"
 }
+variable "security_group_name_pg" {
+  type        = string
+  default     = "SG for postgres deployment"
+  description = "Name of the security group to use for postgres"
+}
 variable "ec2_iam_instance_profile" {
   type        = string
   description = "IAM role for the ec2 instance"

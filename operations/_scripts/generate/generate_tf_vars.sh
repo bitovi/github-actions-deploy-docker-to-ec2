@@ -88,6 +88,8 @@ lb_access_bucket_name = \"${LB_LOGS_BUCKET}\"
 
 security_group_name = \"${GITHUB_IDENTIFIER}\"
 
+security_group_name_pg = \"${GITHUB_IDENTIFIER}-pg\"
+
 ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\"
 
 ec2_instance_type = \"${EC2_INSTANCE_TYPE}\"
