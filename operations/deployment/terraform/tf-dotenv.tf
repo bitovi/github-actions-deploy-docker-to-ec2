@@ -56,7 +56,7 @@ POSTGRES_CLUSTER_HOSTED_ZONE_ID=${module.rds_cluster.cluster_hosted_zone_id}
 # POSTGRES specific env vars
 PG_USER="${module.rds_cluster.cluster_master_username}"
 PG_PASSWORD="${module.rds_cluster.cluster_master_password}"
-PGDATABASE="${module.rds_cluster.cluster_database_name == null ? '' : module.rds_cluster.cluster_database_name}"
+PGDATABASE=${module.rds_cluster.cluster_database_name == null ? "" : module.rds_cluster.cluster_database_name}
 PGPORT="${module.rds_cluster.cluster_port}"
 PGHOST="${module.rds_cluster.cluster_endpoint}"
 EOT
