@@ -24,6 +24,9 @@ resource "aws_security_group_rule" "ingress_postgres" {
   security_group_id = aws_security_group.pg_security_group.id
 }
 
+data "aws_vpc" "default" {
+  default = true
+} 
 data "aws_subnets" "vpc_subnets" {
   filter {
     name   = "vpc-id"
