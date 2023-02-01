@@ -53,7 +53,7 @@ module "rds_cluster" {
     # Todo: handle vpc/networking explicitly
   # vpc_id                 = var.vpc_id
   # allowed_cidr_blocks    = [var.vpc_cidr]
-  subnets                = var.postgres_subnets == null ? data.aws_subnets.vpc_subnets.data.ids : var.postgres_subnets
+  subnets                = var.postgres_subnets == null ? data.aws_subnets.vpc_subnets.ids : var.postgres_subnets
 
   database_name          = var.postgres_database_name
   storage_encrypted      = true
