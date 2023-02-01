@@ -1,31 +1,43 @@
 locals {
   default_zone_mapping = { "": {"subnet_id": "", "security_groups": [""]}}
-  default_availability_zones = {
+  
+  availability_zonea = {
     "a": {
       "subnet_id": data.aws_subnet.defaulta.id, 
       "security_groups": [data.aws_security_group.default.id]
-    }
+  }}
+  availability_zoneb = length(data.aws_subnet.defaultb) > 0 ? ({
     "b": {
-      "subnet_id": data.aws_subnet.defaultb.id, 
+      "subnet_id": data.aws_subnet.defaultb[0].id, 
       "security_groups": [data.aws_security_group.default.id]
     }
+  }) : {}
+  availability_zonec = length(data.aws_subnet.defaultc) > 0 ? ({
     "c": {
-      "subnet_id": data.aws_subnet.defaultc.id, 
+      "subnet_id": data.aws_subnet.defaultc[0].id, 
       "security_groups": [data.aws_security_group.default.id]
     }
+  }) : null
+  availability_zoned = length(data.aws_subnet.defaultd) > 0 ? ({
     "d": {
-      "subnet_id": data.aws_subnet.defaultd.id, 
+      "subnet_id": data.aws_subnet.defaultd[0].id, 
       "security_groups": [data.aws_security_group.default.id]
     }
+  }) : {}
+  availability_zonee = length(data.aws_subnet.defaulte) > 0 ? ({
     "e": {
-      "subnet_id": data.aws_subnet.defaulte.id, 
+      "subnet_id": data.aws_subnet.defaulte[0].id, 
       "security_groups": [data.aws_security_group.default.id]
     }
+  }) : {}
+  availability_zonef = length(data.aws_subnet.defaultf) > 0 ? ({
     "f": {
-      "subnet_id": data.aws_subnet.defaultf.id, 
+      "subnet_id": data.aws_subnet.defaultf[0].id, 
       "security_groups": [data.aws_security_group.default.id]
     }
-  }
+  }) : {}
+
+  default_availability_zones = merge(local.availability_zonea, local.availability_zoneb, local.availability_zonec, local.availability_zoned, local.availability_zonee, local.availability_zonef)
   
   // The reason the conditional is needed is because zone_mapping can't be null for the local creation.
   zone_mapping = var.zone_mapping == null ? local.default_zone_mapping : var.zone_mapping
@@ -37,9 +49,6 @@ locals {
 }
 
 module "efs" {
-    lifecycle {
-      prevent_destroy = var.efs_prevent_destroy
-    }
     count = var.create_efs ? 1 : 0
     source = "terraform-aws-modules/efs/aws"
 
