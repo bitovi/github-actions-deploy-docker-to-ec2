@@ -8,7 +8,7 @@ resource "aws_security_group" "pg_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "${var.aws_resource_identifier}"
+    Name = "${var.aws_resource_identifier}-pg"
   }
 }
 
@@ -46,7 +46,7 @@ module "rds_cluster" {
   create_db_subnet_group = true
   db_subnet_group_name   = var.aws_resource_identifier
   create_security_group  = false
-  allowed_security_groups = [aws_security_group.pg_security_group.id]
+  vpc_security_group_ids = [aws_security_group.pg_security_group.id]
 
   # TODO: take advantage of iam database auth
   iam_database_authentication_enabled    = true
