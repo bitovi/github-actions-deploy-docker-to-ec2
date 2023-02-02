@@ -38,6 +38,7 @@ data "aws_subnets" "vpc_subnets" {
 }
 
 module "rds_cluster" {
+  depends_on     = [data.aws_subnets.vpc_subnets]
   source         = "terraform-aws-modules/rds-aurora/aws"
   version        = "v7.6.0"
   name           = var.aws_resource_identifier
