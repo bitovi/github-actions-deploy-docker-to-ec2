@@ -117,7 +117,7 @@ output "postgres_subnets_input" {
 }
 output "postgres_default_subnet_ids_conditional" {
   description = "var.postgres_subnets == null ? data.aws_subnets.vpc_subnets.ids : var.postgres_subnets"
-  value       = var.postgres_subnets == null ? data.aws_subnets.vpc_subnets.ids : var.postgres_subnets
+  value       = var.postgres_subnets == null || length(var.postgres_subnets) = 0 ? data.aws_subnets.vpc_subnets.ids : var.postgres_subnets
 }
 # aws_db_subnet_group
 output "db_subnet_group_name" {
