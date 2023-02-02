@@ -4,26 +4,26 @@ resource "tls_private_key" "key" {
 }
 
 resource "aws_key_pair" "aws_key" {
-  key_name   = "${var.aws_resource_identifier}"
+  key_name   = var.aws_resource_identifier
   public_key = tls_private_key.key.public_key_openssh
 }
 
 resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "${var.aws_resource_identifier}"
+  name = var.aws_resource_identifier
   role = aws_iam_role.ec2_role.name
 }
 
 data "aws_ami" "ubuntu" {
- most_recent = true
- filter {
-   name   = "name"
-   values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
- }
- filter {
-   name   = "virtualization-type"
-   values = ["hvm"]
- }
- owners = ["099720109477"]
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+  owners = ["099720109477"]
 }
 
 resource "aws_instance" "server" {
@@ -44,7 +44,7 @@ resource "aws_instance" "server" {
 data "aws_instance" "server" {
   filter {
     name   = "dns-name"
-    values = [ aws_instance.server.public_dns ]
+    values = [aws_instance.server.public_dns]
   }
 }
 
