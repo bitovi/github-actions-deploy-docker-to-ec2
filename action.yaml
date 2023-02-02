@@ -84,7 +84,7 @@ inputs:
   enable_efs_backup_policy:
     description: Toggle to indiciate whether the EFS should have a backup policy, default is `false`
   efs_zone_mapping:
-    description: "Zone Mapping in the form of {\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":[\"sg-abc123\"]} }"
+    description: Information on Zone Mapping can be found in the [README.md](README.md#efs-zone-mapping)
   efs_transition_to_inactive:
     description: Indicates how long it takes to transition files to the IA storage class
   replication_configuration_destination:
