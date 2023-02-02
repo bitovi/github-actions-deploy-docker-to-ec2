@@ -56,10 +56,6 @@ resource "aws_efs_file_system" "efs_file_system" {
     transition_to_ia = var.transition_to_inactive
   }
 
-  lifecycle {
-    prevent_destroy = var.prevent_efs_destroy
-  }
-
   tags = {
     Name = "${var.aws_resource_identifier}-efs-modular"
   }
@@ -70,10 +66,6 @@ resource "aws_efs_mount_target" "efs_mount_targets" {
   file_system_id  = aws_efs_file_system.efs_file_system.id
   subnet_id       = each.value["subnet_id"]
   security_groups = each.value["security_groups"]
-
-  lifecycle {
-    prevent_destroy = var.prevent_efs_destroy
-  }
 }
 
 
@@ -83,10 +75,6 @@ resource "aws_efs_replication_configuration" "efs_rep_config" {
 
   destination {
     region = data.aws_region.current.name
-  }
-
-  lifecycle {
-    prevent_destroy = var.prevent_efs_destroy
   }
 }
 
@@ -123,10 +111,6 @@ resource "aws_security_group" "efs_security_group" {
   tags = {
     Name = "${var.aws_resource_identifier}-security-group"
   }
-
-  lifecycle {
-    prevent_destroy = var.prevent_efs_destroy
-  }
 }
 
 # resource "aws_efs_backup_policy" "efs_policy" {
@@ -151,7 +135,7 @@ resource "aws_security_group" "efs_security_group" {
 # }
 
 # -------------------------------------------------------- #
-# These resource are deleted regardless of `var.prevent_efs_destroy`
+# These resource are deleted regardless of `local.prevent_efs_destroy`
 # Whitelist the EFS security group for the EC2 Security Group
 resource "aws_security_group_rule" "ingress_efs_m" {
   count = var.create_efs ? 1 : 0
