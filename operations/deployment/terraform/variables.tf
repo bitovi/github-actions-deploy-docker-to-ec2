@@ -153,6 +153,12 @@ variable create_efs_replica {
   default = false
 }
 
+variable prevent_efs_destroy {
+  type = bool
+  description = "Toggle to indiciate whether the elastic file system should be deleted when the stack is deleted"
+  default = false
+}
+
 variable "zone_mapping"{
     type = map(object({
         subnet_id = string

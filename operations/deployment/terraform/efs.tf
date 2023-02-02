@@ -43,9 +43,6 @@ locals {
   }) : local.no_zone_mapping
     
   mount_efs = var.mount_efs ? 1 : (var.create_efs ? 1 : 0)
-}
-
-locals {    
   mount_target = var.zone_mapping != null ? local.user_zone_mapping : ( var.create_ha_efs == true ? local.ha_zone_mapping : ( length(aws_instance.server) > 0 ? local.ec2_zone_mapping : local.no_zone_mapping ))
 }
 
@@ -59,6 +56,10 @@ resource "aws_efs_file_system" "efs_file_system" {
     transition_to_ia = var.transition_to_inactive
   }
 
+  lifecycle {
+    prevent_destroy = var.prevent_efs_destroy
+  }
+
   tags = {
     Name = "${var.aws_resource_identifier}-efs-modular"
   }
@@ -69,6 +70,10 @@ resource "aws_efs_mount_target" "efs_mount_targets" {
   file_system_id  = aws_efs_file_system.efs_file_system.id
   subnet_id       = each.value["subnet_id"]
   security_groups = each.value["security_groups"]
+
+  lifecycle {
+    prevent_destroy = var.prevent_efs_destroy
+  }
 }
 
 
@@ -78,6 +83,10 @@ resource "aws_efs_replication_configuration" "efs_rep_config" {
 
   destination {
     region = data.aws_region.current.name
+  }
+
+  lifecycle {
+    prevent_destroy = var.prevent_efs_destroy
   }
 }
 
@@ -114,8 +123,35 @@ resource "aws_security_group" "efs_security_group" {
   tags = {
     Name = "${var.aws_resource_identifier}-security-group"
   }
+
+  lifecycle {
+    prevent_destroy = var.prevent_efs_destroy
+  }
 }
 
+# resource "aws_efs_backup_policy" "efs_policy" {
+#   file_system_id = aws_efs_file_system.efs.id
+
+#   backup_policy {
+#     status = "ENABLED"
+#   }
+# }
+
+# resource "aws_efs_file_system_policy" "policy" {
+#   file_system_id = aws_efs_file_system.efs.id
+
+#   bypass_policy_lockout_safety_check = false
+
+#   policy = <<POLICY
+# POLICY
+# }
+
+# resource "aws_efs_access_point" "efs" {
+#   file_system_id = aws_efs_file_system.efs.id
+# }
+
+# -------------------------------------------------------- #
+# These resource are deleted regardless of `var.prevent_efs_destroy`
 # Whitelist the EFS security group for the EC2 Security Group
 resource "aws_security_group_rule" "ingress_efs_m" {
   count = var.create_efs ? 1 : 0
@@ -138,28 +174,6 @@ resource "aws_security_group_rule" "ingress_nfs_efs_m" {
   source_security_group_id = data.aws_security_group.ec2_security_group.id
   security_group_id = aws_security_group.efs_security_group.id
 }
-
-
-# resource "aws_efs_backup_policy" "efs_policy" {
-#   file_system_id = aws_efs_file_system.efs.id
-
-#   backup_policy {
-#     status = "ENABLED"
-#   }
-# }
-
-# resource "aws_efs_file_system_policy" "policy" {
-#   file_system_id = aws_efs_file_system.efs.id
-
-#   bypass_policy_lockout_safety_check = false
-
-#   policy = <<POLICY
-# POLICY
-# }
-
-# resource "aws_efs_access_point" "efs" {
-#   file_system_id = aws_efs_file_system.efs.id
-# }
 
 # -------------------------------------------------------- #
 locals {
