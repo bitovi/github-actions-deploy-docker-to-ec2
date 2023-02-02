@@ -1,6 +1,6 @@
 locals {
   no_zone_mapping = { "": {"subnet_id": "", "security_groups": [""]}}
-  ec2_zone_mapping = {"${data.aws_instance.server.availability_zone}": { "subnet_id": "${data.aws_instance.server.subnet_id}", "security_groups": [data.aws_security_group.ec2_security_group.id] }}
+  ec2_zone_mapping = {"${data.aws_instance.server.availability_zone}": { "subnet_id": "${data.aws_instance.server.subnet_id}", "security_groups": ["${data.aws_security_group.ec2_security_group.id}"] }}
   
   auto_ha_availability_zonea = {
     "${data.aws_region.current.name}a": {
@@ -45,67 +45,125 @@ locals {
   mount_efs = var.mount_efs ? 1 : (var.create_efs ? 1 : 0)
 }
 
-module "efs" {
-    count = var.create_efs ? 1 : 0
-    source = "terraform-aws-modules/efs/aws"
-
-    # File system
-    name           = "${var.aws_resource_identifier}-efs"
-    creation_token = "${var.aws_resource_identifier}-token"
-
-    lifecycle_policy = {
-        transition_to_ia = var.transition_to_inactive
-        transition_to_primary_storage_class = var.transition_to_primary_storage_class
-    }
-
-    # File system policy
-    attach_policy                      = false
-    bypass_policy_lockout_safety_check = false
-
-    # Mount targets / security group
-    mount_targets = var.zone_mapping != null ? local.user_zone_mapping : ( var.create_ha_efs == true ? local.ha_zone_mapping : ( length(aws_instance.server) > 0 ? local.ec2_zone_mapping : local.no_zone_mapping ))
-
-    # Backup policy
-    enable_backup_policy = var.enable_backup_policy
-
-    # Replication configuration
-    create_replication_configuration = var.create_replication_configuration
-    replication_configuration_destination = var.replication_configuration_destination
-    depends_on = [aws_security_group.ec2_security_group]
+locals {    
+  mount_target = var.zone_mapping != null ? local.user_zone_mapping : ( var.create_ha_efs == true ? local.ha_zone_mapping : ( length(aws_instance.server) > 0 ? local.ec2_zone_mapping : local.no_zone_mapping ))
 }
 
-locals {
-  efs_url = length(module.efs) > 0 ? module.efs[0].dns_name : ""
+# -------------------------------------------------------- #
+resource "aws_efs_file_system" "efs_file_system" {
+  # File system
+  creation_token = "${var.aws_resource_identifier}-token-modular"
+  encrypted = true
+
+  lifecycle_policy {
+    transition_to_ia = var.transition_to_inactive
+  }
+
+  tags = {
+    Name = "${var.aws_resource_identifier}-efs-modular"
+  }
 }
 
+resource "aws_efs_mount_target" "efs_mount_targets" {
+  for_each        = local.mount_target
+  file_system_id  = aws_efs_file_system.efs_file_system.id
+  subnet_id       = each.value["subnet_id"]
+  security_groups = each.value["security_groups"]
+}
+
+
+resource "aws_efs_replication_configuration" "efs_rep_config" {
+  count = var.create_efs_replica ? 1 : 0
+  source_file_system_id = aws_efs_file_system.efs_file_system.id
+
+  destination {
+    region = data.aws_region.current.name
+  }
+}
+
+resource "aws_security_group" "efs_security_group" {
+  name = "${var.aws_resource_identifier}-security-group"
+  vpc_id = data.aws_vpc.default.id
+  
+  ingress {
+    description      = "TLS from VPC"
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    description      = "HTTP from VPC"
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+  
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "${var.aws_resource_identifier}-security-group"
+  }
+}
 
 # Whitelist the EFS security group for the EC2 Security Group
-resource "aws_security_group_rule" "ingress_efs" {
+resource "aws_security_group_rule" "ingress_efs_m" {
   count = var.create_efs ? 1 : 0
   type        = "ingress"
   description = "${var.aws_resource_identifier} - EFS"
   from_port   = 443
   to_port     = 443
   protocol    = "all"
-  source_security_group_id = module.efs[0].security_group_id
-  security_group_id = aws_security_group.ec2_security_group.id
+  source_security_group_id = aws_security_group.efs_security_group.id
+  security_group_id = data.aws_security_group.ec2_security_group.id
 }
 
-data "aws_security_group" "efs" {
-  count = var.create_efs ? 1 : 0
-  id = module.efs[0].security_group_id
-}
-
-# Whitelist the EFS security group for the EC2 Security Group
-resource "aws_security_group_rule" "ingress_nfs_efs" {
+resource "aws_security_group_rule" "ingress_nfs_efs_m" {
   count = var.create_efs ? 1 : 0
   type        = "ingress"
   description = "${var.aws_resource_identifier} - NFS EFS"
   from_port   = 443
   to_port     = 443
   protocol    = "all"
-  source_security_group_id = aws_security_group.ec2_security_group.id
-  security_group_id = data.aws_security_group.efs[0].id
+  source_security_group_id = data.aws_security_group.ec2_security_group.id
+  security_group_id = aws_security_group.efs_security_group.id
+}
+
+
+# resource "aws_efs_backup_policy" "efs_policy" {
+#   file_system_id = aws_efs_file_system.efs.id
+
+#   backup_policy {
+#     status = "ENABLED"
+#   }
+# }
+
+# resource "aws_efs_file_system_policy" "policy" {
+#   file_system_id = aws_efs_file_system.efs.id
+
+#   bypass_policy_lockout_safety_check = false
+
+#   policy = <<POLICY
+# POLICY
+# }
+
+# resource "aws_efs_access_point" "efs" {
+#   file_system_id = aws_efs_file_system.efs.id
+# }
+
+# -------------------------------------------------------- #
+locals {
+  efs_url = length(aws_efs_file_system.efs_file_system) > 0 ? aws_efs_file_system.efs_file_system.dns_name : ""
 }
 
 output "efs_url" {
@@ -113,5 +171,5 @@ output "efs_url" {
 }
 
 output "mount_target" {
-  value = var.zone_mapping != null ? local.user_zone_mapping : ( var.create_ha_efs == true ? local.ha_zone_mapping : ( length(aws_instance.server) > 0 ? local.ec2_zone_mapping : local.no_zone_mapping ))
+  value = local.mount_target
 }

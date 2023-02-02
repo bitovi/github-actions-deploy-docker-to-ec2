@@ -147,6 +147,12 @@ variable "create_ha_efs" {
   default = false
 }
 
+variable create_efs_replica {
+  type = bool
+  description = "Toggle to indiciate whether a read-only replica should be created for the EFS primary file system"
+  default = false
+}
+
 variable "zone_mapping"{
     type = map(object({
         subnet_id = string
