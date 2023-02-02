@@ -55,6 +55,8 @@ inputs:
     default: ''
   
   # Application
+  app_directory:
+    description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo.'
   app_port:
     description: 'Port to expose for the app'
     required: false
@@ -121,6 +123,8 @@ inputs:
   no_cert:
     description: 'Makes the application not to use a certificate by disabling certificate lookup.'
     required: false
+  
+
   
   # Terraform
   additional_tags:
