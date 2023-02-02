@@ -1,11 +1,14 @@
 #!/bin/bash
 
 # """
-# This bash script uses Terraform to output the values of environment 
-# variables and store them in a file called bo-out.env. 
-# The script checks if Terraform is being used to destroy the environment, and if not, 
-# it runs Terraform output and removes the quotation marks from the output before storing 
-# it in the bo-out.env file.
+# What
+#   This bash script uses Terraform to output the values of environment 
+#   variables and store them in a file called bo-out.env. 
+#   The script checks if Terraform is being used to destroy the environment, and if not, 
+#   it runs Terraform output and removes the quotation marks from the output before storing 
+#   it in the bo-out.env file.
+# Why
+#   The bo-out.env file is used by Ansible to populate variables passed on by Terraform
 # """
 
 set -x
