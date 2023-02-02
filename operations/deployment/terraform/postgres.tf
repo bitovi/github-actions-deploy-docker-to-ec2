@@ -111,6 +111,14 @@ output "postgres_default_subnet_ids" {
   description = "The subnet ids from the default vpc"
   value       = data.aws_subnets.vpc_subnets.ids
 }
+output "postgres_subnets_input" {
+  description = "The subnet ids input from the user"
+  value       = var.postgres_subnets
+}
+output "postgres_default_subnet_ids_conditional" {
+  description = "var.postgres_subnets == null ? data.aws_subnets.vpc_subnets.ids : var.postgres_subnets"
+  value       = var.postgres_subnets == null ? data.aws_subnets.vpc_subnets.ids : var.postgres_subnets
+}
 # aws_db_subnet_group
 output "db_subnet_group_name" {
   description = "The db subnet group name"
