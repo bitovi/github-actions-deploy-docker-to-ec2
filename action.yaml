@@ -76,18 +76,26 @@ inputs:
   
   # EFS
   create_efs:
-    description: Generate and manage an EFS with the application
-    default: false
-  mount_efs:
-    description: Boolean toogle, mount EFS to EC2
-    default: false
+    description: "Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack"
   create_ha_efs:
-    description: Boolean toogle, create highly available EFS (creates mount targets in all regions)
-    default: false
+    description: Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)
+  create_efs_replica:
+    description: Toggle to indiciate whether a read-only replica should be created for the EFS primary file system
+  enable_efs_backup_policy:
+    description: Toggle to indiciate whether the EFS should have a backup policy, default is `false`
   efs_zone_mapping:
-    description: "A list of zone_codes and targetted. Objects(subnet_target+security_groups). Example: {\"zone_code\": { \"subnet_id\": \"subnet-abc123\", \"security_groups\": [\"sg-abc123\"]}"
-    default: null
-
+    description: "Zone Mapping in the form of {\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":[\"sg-abc123\"]} }"
+  efs_transition_to_inactive:
+    description: Indicates how long it takes to transition files to the IA storage class
+  replication_configuration_destination:
+    description: "AWS Region to target for replication"
+  mount_efs:
+    description: Toggle to indicate whether to mount an existing EFS to the ec2 deployment
+  mount_efs_id:
+    description: ID of existing EFS
+  mount_efs_security_group_id:
+    description: ID of the primary security group used by the existing EFS
+  
   # Stack management
   stack_destroy:
     description: 'Set to "true" to Destroy the stack. Will delete the elb_logs bucket after the destroy action runs.'
@@ -165,10 +173,18 @@ runs:
         BITOPS_FAST_FAIL: true
         APP_DIRECTORY: ${{ inputs.app_directory }}
         ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
-        MOUNT_EFS: ${{ inputs.mount_efs }}
+
         CREATE_EFS: ${{ inputs.create_efs }}
         CREATE_HA_EFS: ${{ inputs.create_ha_efs }}
+        CREATE_EFS_REPLICA: ${{ inputs.create_efs_replica }}
+        ENABLE_EFS_BACKUP_POLICY: ${{ inputs.enable_efs_backup_policy }}
         EFS_ZONE_MAPPING: ${{ inputs.efs_zone_mapping }}
+        EFS_TRANSITION_TO_INACTIVE: ${{ inputs.efs_transition_to_inactive }}
+        EFS_REPLICA_DESTINATION: ${{ inputs.replication_configuration_destination }}
+        MOUNT_EFS: ${{ inputs.mount_efs }}
+        MOUNT_EFS_ID: ${{ inputs.mount_efs_id }}
+        MOUNT_EFS_SECURITY_GROUP_ID: ${{ inputs.mount_efs_security_group_id }}
+
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh

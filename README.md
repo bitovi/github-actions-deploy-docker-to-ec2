@@ -140,7 +140,16 @@ The following inputs can be used as `step.with` keys
 | `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` - Will delete the elb_logs bucket after the destroy action runs. |
 | `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources. |
 | `app_directory` | String | Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance. Default is the root of the repo. |
-| `create_efs` | bool | Boolean choice, create EFS resource and mount to the created EC2 instance. |
+| `create_efs` | bool | Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack |
+| `create_ha_efs` | bool | Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region) |
+| `create_efs_replica` | bool | Toggle to indiciate whether a read-only replica should be created for the EFS primary file system |
+| `enable_efs_backup_policy` | bool | Toggle to indiciate whether the EFS should have a backup policy |
+| `efs_zone_mapping` | JSON | Zone Mapping in the form of {\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":\[\"sg-abc123\"\]} } |
+| `efs_transition_to_inactive` | string | Indicates how long it takes to transition files to the IA storage class |
+| `replication_configuration_destination` | string | AWS Region to target for replication |
+| `mount_efs` | bool | Toggle to indicate whether to mount an existing EFS to the ec2 deployment |
+| `mount_efs_id` | string | ID of existing EFS |
+| `mount_efs_security_group_id` | string | ID of the primary security group used by the existing EFS |
 | `additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
 
 ## Note about resource identifiers
@@ -175,12 +184,26 @@ To change a certificate (root_cert, sub_cert, ARN or pre-existing root cert), yo
 This is necessary due to a limitation that prevents certificates from being changed while in use by certain resources.
 
 ## Adding external datastore (AWS EFS)
-Users looking to add non-ephemeral storage to their created EC2 instance have the following option. 
+Users looking to add non-ephemeral storage to their created EC2 instance have the following options; create a new efs as a part of the ec2 deployment stack, or mounting an existing EFS. 
 
-### Create EFS
+### 1. Create EFS
 Option 1, users have access to the `create_efs` attribute which will create a EFS resource and mount it to the EC2 instance in the application directory at the path: "app_root/data".
 
-Note: The EFS is fully managed by Terraform. Therefor it will be destroyed upon stack destruction.
+> :warning: Be very careful here! The **EFS is fully managed by Terraform**. Therefor **it will be destroyed upon stack destruction**.
+
+### 2. Mount EFS
+Option 2, users have access to the `mount_efs` attribute. Requiring an existing EFS id and primary security group id the existing EFS will be attached to the ec2 security group to allow traffic.
+
+### EFS Zone Mapping
+An example EFS Zone mapping;
+```
+{
+  "a": {
+    "subnet_id": "subnet-foo123",
+    "security_groups: ["sg-foo123", "sg-bar456"]
+  }
+}
+```
 
 ## Made with BitOps
 [BitOps](https://bitops.sh) allows you to define Infrastructure-as-Code for multiple tools in a central place.  This action uses a BitOps [Operations Repository](https://bitops.sh/operations-repo-structure/) to set up the necessary Terraform and Ansible to create infrastructure and deploy to it.

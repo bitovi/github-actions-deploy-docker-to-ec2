@@ -41,13 +41,14 @@ locals {
   user_zone_mapping = var.zone_mapping != null ? ({
     for k, val in var.zone_mapping : "${data.aws_region.current.name}${k}" => val
   }) : local.no_zone_mapping
-    
-  mount_efs = var.mount_efs ? 1 : (var.create_efs ? 1 : 0)
+
   mount_target = var.zone_mapping != null ? local.user_zone_mapping : ( var.create_ha_efs == true ? local.ha_zone_mapping : ( length(aws_instance.server) > 0 ? local.ec2_zone_mapping : local.no_zone_mapping ))
+  mount_efs = var.mount_efs && var.mount_efs_security_group_id != null ? 1 : (var.create_efs ? 1 : 0)
+  mount_efs_warning = var.mount_efs_security_group_id == null ? "To mount EFS specify the EFS ID as well as the primary security group id used by the EFS." : ""
 }
 
 # -------------------------------------------------------- #
-resource "aws_efs_file_system" "efs_file_system" {
+resource "aws_efs_file_system" "efs" {
   # File system
   creation_token = "${var.aws_resource_identifier}-token-modular"
   encrypted = true
@@ -63,19 +64,9 @@ resource "aws_efs_file_system" "efs_file_system" {
 
 resource "aws_efs_mount_target" "efs_mount_targets" {
   for_each        = local.mount_target
-  file_system_id  = aws_efs_file_system.efs_file_system.id
+  file_system_id  = aws_efs_file_system.efs.id
   subnet_id       = each.value["subnet_id"]
   security_groups = each.value["security_groups"]
-}
-
-
-resource "aws_efs_replication_configuration" "efs_rep_config" {
-  count = var.create_efs_replica ? 1 : 0
-  source_file_system_id = aws_efs_file_system.efs_file_system.id
-
-  destination {
-    region = data.aws_region.current.name
-  }
 }
 
 resource "aws_security_group" "efs_security_group" {
@@ -113,13 +104,32 @@ resource "aws_security_group" "efs_security_group" {
   }
 }
 
-# resource "aws_efs_backup_policy" "efs_policy" {
-#   file_system_id = aws_efs_file_system.efs.id
+resource "aws_efs_backup_policy" "efs_policy" {
+  count = var.enable_efs_backup_policy ? 1 : 0
+  file_system_id = aws_efs_file_system.efs.id
 
-#   backup_policy {
-#     status = "ENABLED"
-#   }
-# }
+  backup_policy {
+    status = "ENABLED"
+  }
+}
+
+resource "aws_efs_replication_configuration" "efs_rep_config" {
+  count = var.create_efs_replica && var.replication_configuration_destination == null ? 1 : 0
+  source_file_system_id = aws_efs_file_system.efs.id
+
+  destination {
+    region = data.aws_region.current.name
+  }
+}
+
+resource "aws_efs_replication_configuration" "efs_rep_config_w_dest" {
+  count = var.create_efs_replica && var.replication_configuration_destination != null ? 1 : 0
+  source_file_system_id = aws_efs_file_system.efs.id
+
+  destination {
+    region = var.replication_configuration_destination
+  }
+}
 
 # resource "aws_efs_file_system_policy" "policy" {
 #   file_system_id = aws_efs_file_system.efs.id
@@ -135,9 +145,9 @@ resource "aws_security_group" "efs_security_group" {
 # }
 
 # -------------------------------------------------------- #
-# These resource are deleted regardless of `local.prevent_efs_destroy`
+
 # Whitelist the EFS security group for the EC2 Security Group
-resource "aws_security_group_rule" "ingress_efs_m" {
+resource "aws_security_group_rule" "ingress_ec2_to_efs" {
   count = var.create_efs ? 1 : 0
   type        = "ingress"
   description = "${var.aws_resource_identifier} - EFS"
@@ -148,7 +158,7 @@ resource "aws_security_group_rule" "ingress_efs_m" {
   security_group_id = data.aws_security_group.ec2_security_group.id
 }
 
-resource "aws_security_group_rule" "ingress_nfs_efs_m" {
+resource "aws_security_group_rule" "ingress_efs_to_ec2" {
   count = var.create_efs ? 1 : 0
   type        = "ingress"
   description = "${var.aws_resource_identifier} - NFS EFS"
@@ -160,8 +170,36 @@ resource "aws_security_group_rule" "ingress_nfs_efs_m" {
 }
 
 # -------------------------------------------------------- #
+data "aws_efs_file_system" "mount_efs" {
+  file_system_id = var.mount_efs_id
+}
+
+resource "aws_security_group_rule" "mount_ingress_ec2_to_efs" {
+  count = var.mount_efs_security_group_id != null ? 1 : 0
+  type        = "ingress"
+  description = "${var.aws_resource_identifier} - EFS"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "all"
+  source_security_group_id = var.mount_efs_security_group_id
+  security_group_id = data.aws_security_group.ec2_security_group.id
+}
+
+resource "aws_security_group_rule" "mount_ingress_efs_to_ec2" {
+  count = var.mount_efs_security_group_id != null ? 1 : 0
+  type        = "ingress"
+  description = "${var.aws_resource_identifier} - NFS EFS"
+  from_port   = 443
+  to_port     = 443
+  protocol    = "all"
+  source_security_group_id = data.aws_security_group.ec2_security_group.id
+  security_group_id = var.mount_efs_security_group_id
+}
+
+
+# -------------------------------------------------------- #
 locals {
-  efs_url = length(aws_efs_file_system.efs_file_system) > 0 ? aws_efs_file_system.efs_file_system.dns_name : ""
+  efs_url = length(aws_efs_file_system.efs) > 0 ? aws_efs_file_system.efs.dns_name : ""
 }
 
 output "efs_url" {
@@ -170,4 +208,8 @@ output "efs_url" {
 
 output "mount_target" {
   value = local.mount_target
+}
+
+output mount_efs_info {
+  value = local.mount_efs_warning
 }

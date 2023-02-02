@@ -131,13 +131,9 @@ variable "no_cert" {
 
 
 ## -- EFS -- ##
-variable "mount_efs" {
-  type = bool
-  default = false
-}
-
 variable "create_efs" {
   type = bool
+  description = "Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack."
   default = false
 }
 
@@ -153,11 +149,35 @@ variable create_efs_replica {
   default = false
 }
 
+variable "enable_efs_backup_policy" {
+    type = bool
+    default = false
+    description = "Toggle to indiciate whether the EFS should have a backup policy, default is `false`"
+}
+
+variable "mount_efs" {
+  type = bool
+  description = "Toggle to indicate whether to mount an existing EFS to the ec2 deployment"
+  default = false
+}
+
+variable "mount_efs_id" {
+  type = string
+  description = "ID of existing EFS"
+}
+
+variable "mount_efs_security_group_id" {
+  type = string
+  description = "ID of the primary security group used by the existing EFS"
+  default = null
+}
+
 variable "zone_mapping"{
     type = map(object({
         subnet_id = string
         security_groups = list(string)
     }))
+    description = "Zone Mapping in the form of {\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":[\"sg-abc123\"]} }"
     nullable = true
     default  = null
 }
@@ -165,31 +185,15 @@ variable "zone_mapping"{
 variable "transition_to_inactive" {
     type = string
     default = "AFTER_30_DAYS"
-}
-
-variable "transition_to_primary_storage_class" {
-    type = string
-    default = "AFTER_1_ACCESS"
-}
-
-variable "enable_backup_policy" {
-    type = bool
-    default = false
-}
-
-variable "create_replication_configuration" {
-    type = string
-    default = false
+    description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system#transition_to_ia"
 }
 
 variable "replication_configuration_destination" {
-    type = object({
-        region = string
-    })
-    default = {
-        region = ""
-    }
+    type = string
+    default = null
+    description = "AWS Region to target for replication"
 }
+
 ## -- --- -- ##
 
 variable "additional_tags" {
