@@ -106,6 +106,10 @@ resource "random_password" "master" {
 }
 
 ####
+output "postgres_default_subnet_ids" {
+  description = "The subnet ids from the default vpc"
+  value       = data.aws_subnets.vpc_subnets.ids
+}
 # aws_db_subnet_group
 output "db_subnet_group_name" {
   description = "The db subnet group name"
