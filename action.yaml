@@ -27,7 +27,6 @@ inputs:
   aws_ami_id:
     description: 'AWS AMI ID. Will default to the latest Ubuntu 22.04 server image (HVM) '
     required: false
-    default: ''
   tf_state_bucket:
     description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-{branch}-tf-state`'
     required: false
@@ -60,7 +59,6 @@ inputs:
   app_port:
     description: 'Port to expose for the app'
     required: false
-    default: '3000'
   lb_port:
     description: 'Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided'
     required: false
@@ -74,7 +72,6 @@ inputs:
   ec2_instance_type: 
     description: 'The AWS Instance type'
     required: false
-    default: 't2.small'
   
   # EFS
   create_efs:
@@ -124,13 +121,10 @@ inputs:
     description: 'Makes the application not to use a certificate by disabling certificate lookup.'
     required: false
   
-
-  
   # Terraform
   additional_tags:
     description: 'A list of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
-    default: '{}'
 outputs:
   vm_url:
     description: "The URL of the generated app"

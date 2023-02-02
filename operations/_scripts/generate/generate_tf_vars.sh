@@ -72,44 +72,134 @@ if [[ -n "$ADDITIONAL_TAGS" ]]; then
   additional_tags="additional_tags = ${ADDITIONAL_TAGS}"
 fi
 
+root_domain=
+if [[ -n "$ROOT_DOMAIN" ]]; then
+  root_domain="root_domain = \"${ROOT_DOMAIN}\""
+fi
+
+cert_arn=
+if [[ -n "$CERT_ARN" ]]; then
+  cert_arn="cert_arn = \"${CERT_ARN}\""
+fi
+
+create_root_cert=
+if [[ -n "$CREATE_ROOT_CERT" ]]; then
+  create_root_cert="create_root_cert = \"${CREATE_ROOT_CERT}\""
+fi
+
+create_sub_cert=
+if [[ -n "$CREATE_SUB_CERT" ]]; then
+  create_sub_cert="create_sub_cert = \"${CREATE_SUB_CERT}\""
+fi
+
+aws_resource_identifier=
+if [[ -n "$GITHUB_IDENTIFIER" ]]; then
+  aws_resource_identifier="aws_resource_identifier = \"${GITHUB_IDENTIFIER}\""
+fi
+
+aws_resource_identifier_supershort=
+if [[ -n "$GITHUB_IDENTIFIER_SS" ]]; then
+  aws_resource_identifier_supershort="aws_resource_identifier_supershort = \"${GITHUB_IDENTIFIER_SS}\""
+fi
+
+aws_secret_env=
+if [[ -n "$AWS_SECRET_ENV" ]]; then
+  aws_secret_env="aws_secret_env = \"${AWS_SECRET_ENV}\""
+fi
+
+aws_ami_id=
+if [[ -n "$AWS_AMI_ID" ]]; then
+  aws_ami_id="aws_ami_id = \"${AWS_AMI_ID}\""
+fi
+
+lb_port=
+if [[ -n "$LB_PORT" ]]; then
+  lb_port="lb_port = \"$LB_PORT\""
+fi
+
+lb_healthcheck=
+if [[ -n "$LB_HEALTHCHECK" ]]; then
+  lb_healthcheck="lb_healthcheck = \"$LB_HEALTHCHECK\""
+fi
+
+lb_access_bucket_name=
+if [[ -n "$LB_LOGS_BUCKET" ]]; then
+  lb_access_bucket_name="lb_access_bucket_name = \"${LB_LOGS_BUCKET}\""
+fi
+
+security_group_name=
+if [[ -n "$GITHUB_IDENTIFIER" ]]; then
+  security_group_name="security_group_name = \"${GITHUB_IDENTIFIER}\""
+fi
+
+ec2_iam_instance_profile=
+if [[ -n "$EC2_INSTANCE_PROFILE" ]]; then
+  ec2_iam_instance_profile="ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\""
+fi
+
+ops_repo_environment=
+if [[ -n "$EC2_INSTANCE_PROFILE" ]]; then
+  ops_repo_environment="ops_repo_environment = \"deployment\""
+fi
+
+app_org_name=
+if [[ -n "$EC2_INSTANCE_PROFILE" ]]; then
+  app_org_name="app_org_name = \"${GITHUB_ORG_NAME}\""
+fi
+
+app_repo_name=
+if [[ -n "$EC2_INSTANCE_PROFILE" ]]; then
+  app_repo_name="app_repo_name = \"${GITHUB_REPO_NAME}\""
+fi
+
+app_branch_name=
+if [[ -n "$EC2_INSTANCE_PROFILE" ]]; then
+  app_branch_name="app_branch_name = \"${GITHUB_BRANCH_NAME}\""
+fi
+
+app_install_root=
+if [[ -n "$EC2_INSTANCE_PROFILE" ]]; then
+  app_install_root="app_install_root = \"/home/ubuntu\""
+fi
+
 # -------------------------------------------------- #
 
 echo "
 #-- Application --#
 $app_port
-ops_repo_environment = \"deployment\"
-app_org_name = \"${GITHUB_ORG_NAME}\"
-app_repo_name = \"${GITHUB_REPO_NAME}\"
-app_branch_name = \"${GITHUB_BRANCH_NAME}\"
-app_install_root = \"/home/ubuntu\"
+$ops_repo_environment
+$app_org_name
+$app_repo_name
+$app_branch_name
+$app_install_root
 
 #-- Load Balancer --#
-lb_port = \"$LB_PORT\"
-lb_healthcheck = \"$LB_HEALTHCHECK\"
+$lb_port
+$lb_healthcheck
 
 #-- Logging --#
-lb_access_bucket_name = \"${LB_LOGS_BUCKET}\"
+$lb_access_bucket_name
 
 #-- Security Groups --#
-security_group_name = \"${GITHUB_IDENTIFIER}\"
+$security_group_name
 
 #-- EC2 --#
-ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\"
+$ec2_iam_instance_profile
 $ec2_instance_type
 
 #-- AWS --#
-aws_resource_identifier = \"${GITHUB_IDENTIFIER}\"
-aws_resource_identifier_supershort = \"${GITHUB_IDENTIFIER_SS}\"
-aws_secret_env = \"${AWS_SECRET_ENV}\"
-aws_ami_id = \"${AWS_AMI_ID}\"
+$aws_resource_identifier
+$aws_resource_identifier_supershort
+$aws_secret_env
+$aws_ami_id
 
 #-- Certificates --#
 $sub_domain_name
 $domain_name
-root_domain = \"${ROOT_DOMAIN}\"
-cert_arn = \"${CERT_ARN}\"
-create_root_cert = \"${CREATE_ROOT_CERT}\"
-create_sub_cert = \"${CREATE_SUB_CERT}\"
+$root_domain
+$cert_arn
+$create_root_cert
+$create_sub_cert
 $no_cert
 
 #-- EFS --#
