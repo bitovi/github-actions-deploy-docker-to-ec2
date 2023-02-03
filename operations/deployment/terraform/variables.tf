@@ -81,6 +81,7 @@ variable "aws_resource_identifier_supershort" {
 variable "aws_secret_env" {
   type        = string
   description = "Secret name to pull env variables from AWS Secret Manager"
+  default     = null
 }
 
 variable "aws_ami_id" {
@@ -164,6 +165,7 @@ variable "mount_efs" {
 variable "mount_efs_id" {
   type        = string
   description = "ID of existing EFS"
+  default     = null
 }
 
 variable "mount_efs_security_group_id" {
