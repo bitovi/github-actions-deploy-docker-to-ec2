@@ -171,6 +171,7 @@ resource "aws_security_group_rule" "ingress_efs_to_ec2" {
 
 # -------------------------------------------------------- #
 data "aws_efs_file_system" "mount_efs" {
+  count          = var.mount_efs_id != null ? 1 : 0
   file_system_id = var.mount_efs_id
 }
 
