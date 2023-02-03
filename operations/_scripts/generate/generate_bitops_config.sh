@@ -19,10 +19,10 @@ if [ -n "$TERRAFORM_TARGETS" ]; then
   done
 fi
 
-echo -e "
+printf "
 terraform:
     cli:
-        stack-action: ${CONFIG_STACK_ACTION}
-        $targets
+      stack-action: $CONFIG_STACK_ACTION
+      $targets
     options: {}
-" >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/bitops.config.yaml"
+" > $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml

@@ -20,6 +20,7 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 
 # Generate terraform variables
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_tf_vars.sh
+cat ${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars
 
 # Generate dot_env
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_dot_env.sh
@@ -29,6 +30,8 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 
 # Generate bitops config
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
+ls -al $GITHUB_ACTION_PATH/operations/deployment/terraform/
+cat $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml
 
 
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf"
