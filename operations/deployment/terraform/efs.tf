@@ -46,7 +46,7 @@ locals {
   mount_efs         = var.mount_efs && var.mount_efs_security_group_id != null ? 1 : (var.create_efs ? 1 : 0)
   mount_efs_warning = var.mount_efs_security_group_id == null ? "To mount EFS specify the EFS ID as well as the primary security group id used by the EFS." : ""
 
-  replica_destination   = var.replication_configuration_destination ? var.replication_configuration_destination : data.aws_region.current.name
+  replica_destination   = var.replication_configuration_destination != null ? var.replication_configuration_destination : data.aws_region.current.name
   create_mount_targets  = var.create_efs ? local.mount_target : null
 }
 
