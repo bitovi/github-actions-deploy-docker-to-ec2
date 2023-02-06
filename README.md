@@ -180,6 +180,28 @@ To change a certificate (root_cert, sub_cert, ARN or pre-existing root cert), yo
 
 This is necessary due to a limitation that prevents certificates from being changed while in use by certain resources.
 
+## Postgres
+If `enable_postgres` is set to `true`, this action will deploy an RDS cluster for Postgres.
+
+Specifically, the following resources will be created:
+- AWS Security Group
+  - AWS Security Group Rule - Allows access to the cluster's db port: `5432`
+- AWS RDS Aurora Postgres
+  - Includes a single database (set by the input: `postgres_database_name`. defaults to `root`)
+
+Additional details about the cluster that's created:
+- Automated backups (7 Days)
+  - Backup window 2-3 UTC (GMT)
+- Encrypted Storage
+- Monitoring enabled
+- Sends logs to AWS Cloudwatch
+
+
+Would you like to see additional features?  Create an issue: https://github.com/bitovi/github-actions-deploy-docker-to-ec2/issues/new
+
+
+_For more details, see [operations/deployment/terraform/postgres.tf](operations/deployment/terraform/postgres.tf)_
+
 ## Made with BitOps
 [BitOps](https://bitops.sh) allows you to define Infrastructure-as-Code for multiple tools in a central place.  This action uses a BitOps [Operations Repository](https://bitops.sh/operations-repo-structure/) to set up the necessary Terraform and Ansible to create infrastructure and deploy to it.
 
