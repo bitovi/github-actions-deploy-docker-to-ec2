@@ -111,8 +111,8 @@ jobs:
 
 The following inputs can be used as `step.with` keys
 
-| Name             | Type    | Description                        | Default               |
-|------------------|---------|------------------------------------|-----------------------|
+| Name             | Type    | Description                        | Default     |
+|------------------|---------|------------------------------------|-------------|
 | `checkout`          | Boolean | Set to `false` if the code is already checked out (Optional) | `true` |
 | `aws_access_key_id` | String | AWS access key ID | |
 | `aws_secret_access_key` | String | AWS secret access key | |
@@ -135,7 +135,7 @@ The following inputs can be used as `step.with` keys
 | `app_port` | String | port to expose for the app | 3000 |
 | `lb_port` | String | Load balancer listening port. | 80 if NO FQDN provided, 443 if FQDN provided |
 | `lb_healthcheck` | String | Load balancer health check string. | HTTP:app_port |
-| `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. | `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}` |
+| `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. | `${org}-${repo}-${branch}` |
 | `ec2_instance_type` | String | The AWS IAM instance type to use. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference | `t2.small` |
 | `stack_destroy` | Boolean | Set to `true` to destroy the stack. Will delete the elb_logs bucket after the destroy action runs. | |
 | `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment. Use with destroy to deploy specific resources. |  `${org}-{repo}-{branch}` |
