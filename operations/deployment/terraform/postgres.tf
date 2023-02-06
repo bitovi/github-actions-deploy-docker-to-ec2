@@ -1,4 +1,5 @@
 resource "aws_security_group" "pg_security_group" {
+  count = var.enable_postgres == "true" ? 1 : 0
   name        = var.security_group_name_pg
   description = "SG for ${var.aws_resource_identifier} - PG"
   egress {
@@ -14,6 +15,7 @@ resource "aws_security_group" "pg_security_group" {
 
 
 resource "aws_security_group_rule" "ingress_postgres" {
+  count = var.enable_postgres == "true" ? 1 : 0
   type              = "ingress"
   description       = "${var.aws_resource_identifier} - pgPort"
   # TODO: parameterize the ports
@@ -21,10 +23,11 @@ resource "aws_security_group_rule" "ingress_postgres" {
   to_port           = 5432
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.pg_security_group.id
+  security_group_id = aws_security_group.pg_security_group[0].id
 }
 
 module "rds_cluster" {
+  count = var.enable_postgres == "true" ? 1 : 0
   depends_on     = [data.aws_subnets.vpc_subnets]
   source         = "terraform-aws-modules/rds-aurora/aws"
   version        = "v7.6.0"
@@ -49,7 +52,7 @@ module "rds_cluster" {
   create_db_subnet_group = true
   db_subnet_group_name   = var.aws_resource_identifier
   create_security_group  = false
-  vpc_security_group_ids = [aws_security_group.pg_security_group.id]
+  vpc_security_group_ids = [aws_security_group.pg_security_group[0].id]
 
   # TODO: take advantage of iam database auth
   iam_database_authentication_enabled    = true
@@ -106,111 +109,111 @@ output "aws_rds_postgres_default_subnet_ids_conditional" {
 # aws_db_subnet_group
 output "aws_rds_postgres_subnet_group_name" {
   description = "The db subnet group name"
-  value       = module.rds_cluster.db_subnet_group_name
+  value       = module.rds_cluster[0].db_subnet_group_name
 }
 
 # aws_rds_cluster
 output "aws_rds_postgres_cluster_arn" {
   description = "Amazon Resource Name (ARN) of cluster"
-  value       = module.rds_cluster.cluster_arn
+  value       = module.rds_cluster[0].cluster_arn
 }
 
 output "aws_rds_postgres_cluster_id" {
   description = "The RDS Cluster Identifier"
-  value       = module.rds_cluster.cluster_id
+  value       = module.rds_cluster[0].cluster_id
 }
 
 output "aws_rds_postgres_cluster_resource_id" {
   description = "The RDS Cluster Resource ID"
-  value       = module.rds_cluster.cluster_resource_id
+  value       = module.rds_cluster[0].cluster_resource_id
 }
 
 output "aws_rds_postgres_cluster_members" {
   description = "List of RDS Instances that are a part of this cluster"
-  value       = module.rds_cluster.cluster_members
+  value       = module.rds_cluster[0].cluster_members
 }
 
 output "aws_rds_postgres_cluster_endpoint" {
   description = "Writer endpoint for the cluster"
-  value       = module.rds_cluster.cluster_endpoint
+  value       = module.rds_cluster[0].cluster_endpoint
 }
 
 output "aws_rds_postgres_cluster_reader_endpoint" {
   description = "A read-only endpoint for the cluster, automatically load-balanced across replicas"
-  value       = module.rds_cluster.cluster_reader_endpoint
+  value       = module.rds_cluster[0].cluster_reader_endpoint
 }
 
 output "aws_rds_postgres_cluster_engine_version_actual" {
   description = "The running version of the cluster database"
-  value       = module.rds_cluster.cluster_engine_version_actual
+  value       = module.rds_cluster[0].cluster_engine_version_actual
 }
 
 # database_name is not set on `aws_rds_cluster` resource if it was not specified, so can't be used in output
 output "aws_rds_postgres_cluster_database_name" {
   description = "Name for an automatically created database on cluster creation"
-  value       = module.rds_cluster.cluster_database_name
+  value       = module.rds_cluster[0].cluster_database_name
 }
 
 output "aws_rds_postgres_cluster_port" {
   description = "The database port"
-  value       = module.rds_cluster.cluster_port
+  value       = module.rds_cluster[0].cluster_port
 }
 
 output "aws_rds_postgres_cluster_master_password" {
   description = "The database master password"
-  value       = module.rds_cluster.cluster_master_password
+  value       = module.rds_cluster[0].cluster_master_password
   sensitive   = true
 }
 
 output "aws_rds_postgres_cluster_master_username" {
   description = "The database master username"
-  value       = module.rds_cluster.cluster_master_username
+  value       = module.rds_cluster[0].cluster_master_username
   sensitive   = true
 }
 
 output "aws_rds_postgres_cluster_hosted_zone_id" {
   description = "The Route53 Hosted Zone ID of the endpoint"
-  value       = module.rds_cluster.cluster_hosted_zone_id
+  value       = module.rds_cluster[0].cluster_hosted_zone_id
 }
 
 # aws_rds_cluster_instances
 output "aws_rds_postgres_cluster_instances" {
   description = "A map of cluster instances and their attributes"
-  value       = module.rds_cluster.cluster_instances
+  value       = module.rds_cluster[0].cluster_instances
 }
 
 # aws_rds_cluster_endpoint
 output "aws_rds_postgres_additional_cluster_endpoints" {
   description = "A map of additional cluster endpoints and their attributes"
-  value       = module.rds_cluster.additional_cluster_endpoints
+  value       = module.rds_cluster[0].additional_cluster_endpoints
 }
 
 # aws_rds_cluster_role_association
 output "aws_rds_postgres_cluster_role_associations" {
   description = "A map of IAM roles associated with the cluster and their attributes"
-  value       = module.rds_cluster.cluster_role_associations
+  value       = module.rds_cluster[0].cluster_role_associations
 }
 
 # Enhanced monitoring role
 output "aws_rds_postgres_enhanced_monitoring_iam_role_name" {
   description = "The name of the enhanced monitoring role"
-  value       = module.rds_cluster.enhanced_monitoring_iam_role_name
+  value       = module.rds_cluster[0].enhanced_monitoring_iam_role_name
 }
 
 output "aws_rds_postgres_enhanced_monitoring_iam_role_arn" {
   description = "The Amazon Resource Name (ARN) specifying the enhanced monitoring role"
-  value       = module.rds_cluster.enhanced_monitoring_iam_role_arn
+  value       = module.rds_cluster[0].enhanced_monitoring_iam_role_arn
 }
 
 output "aws_rds_postgres_enhanced_monitoring_iam_role_unique_id" {
   description = "Stable and unique string identifying the enhanced monitoring role"
-  value       = module.rds_cluster.enhanced_monitoring_iam_role_unique_id
+  value       = module.rds_cluster[0].enhanced_monitoring_iam_role_unique_id
 }
 
 # aws_security_group
 output "aws_rds_postgres_security_group_id" {
   description = "The security group ID of the cluster"
-  value       = module.rds_cluster.security_group_id
+  value       = module.rds_cluster[0].security_group_id
 }
 
 # do we need db to be created and priviliges to be granted ? 
