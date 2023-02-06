@@ -142,6 +142,12 @@ The following inputs can be used as `step.with` keys
 | `app_directory` | String | Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance. Default is the root of the repo. |
 | `create_keypair_sm_entry` | Boolean | Generates and manage a secret manager entry that contains the public and private keys created for the ec2 instance. |
 | `additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
+| `enable_postgres` | Boolean | Set to "true" to enable a postgres database |
+| `postgres_engine` | String | Which Database engine to use.  Default: `aurora-postgresql` |
+| `postgres_engine_version` | String | Specify Postgres version.  More information [here](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Updates.20180305.html).  Default: `11.13` |
+| `postgres_instance_class` | String | Define the size of the instances in the DB cluster. Default: `db.t3.medium` |
+| `postgres_subnets` | String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. Default `''` |
+| `postgres_database_name` | String | Specify a database name. Will be created if it does not exist. Default: `root` |
 
 ## Note about resource identifiers
 
