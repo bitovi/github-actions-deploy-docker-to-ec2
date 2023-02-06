@@ -68,7 +68,7 @@ resource "aws_efs_file_system" "efs" {
 resource "aws_efs_mount_target" "efs_mount_targets" {
   count           = var.create_efs ? 1 : 0
   for_each        = local.mount_target
-  file_system_id  = aws_efs_file_system.efs.id
+  file_system_id  = aws_efs_file_system.efs[0].id
   subnet_id       = each.value["subnet_id"]
   security_groups = each.value["security_groups"]
 }
@@ -108,7 +108,7 @@ resource "aws_security_group" "efs_security_group" {
 
 resource "aws_efs_backup_policy" "efs_policy" {
   count          = var.enable_efs_backup_policy && var.create_efs ? 1 : 0
-  file_system_id = aws_efs_file_system.efs.id
+  file_system_id = aws_efs_file_system.efs[0].id
 
   backup_policy {
     status = "ENABLED"
@@ -117,7 +117,7 @@ resource "aws_efs_backup_policy" "efs_policy" {
 
 resource "aws_efs_replication_configuration" "efs_rep_config" {
   count                 = var.create_efs_replica && var.create_efs ? 1 : 0
-  source_file_system_id = aws_efs_file_system.efs.id
+  source_file_system_id = aws_efs_file_system.efs[0].id
 
   destination {
     region = local.replica_destination
@@ -125,7 +125,7 @@ resource "aws_efs_replication_configuration" "efs_rep_config" {
 }
 
 # resource "aws_efs_file_system_policy" "policy" {
-#   file_system_id = aws_efs_file_system.efs.id
+#   file_system_id = aws_efs_file_system.efs[0].id
 
 #   bypass_policy_lockout_safety_check = false
 
@@ -134,7 +134,7 @@ resource "aws_efs_replication_configuration" "efs_rep_config" {
 # }
 
 # resource "aws_efs_access_point" "efs" {
-#   file_system_id = aws_efs_file_system.efs.id
+#   file_system_id = aws_efs_file_system.efs[0].id
 # }
 
 # Whitelist the EFS security group for the EC2 Security Group
@@ -145,7 +145,7 @@ resource "aws_security_group_rule" "ingress_ec2_to_efs" {
   from_port                = 443
   to_port                  = 443
   protocol                 = "all"
-  source_security_group_id = aws_security_group.efs_security_group.id
+  source_security_group_id = aws_security_group.efs_security_group[0].id
   security_group_id        = data.aws_security_group.ec2_security_group.id
 }
 
@@ -157,7 +157,7 @@ resource "aws_security_group_rule" "ingress_efs_to_ec2" {
   to_port                  = 443
   protocol                 = "all"
   source_security_group_id = data.aws_security_group.ec2_security_group.id
-  security_group_id        = aws_security_group.efs_security_group.id
+  security_group_id        = aws_security_group.efs_security_group[0].id
 }
 # ----------------------------------------------------- #
 
