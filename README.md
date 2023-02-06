@@ -191,6 +191,64 @@ This is necessary due to a limitation that prevents certificates from being chan
 ## Postgres
 If `enable_postgres` is set to `true`, this action will deploy an RDS cluster for Postgres.
 
+### Environment variables
+The following environment variables are added to the `.env` file in your app's `docker-compose.yaml` file.
+
+To take advantage of these environment variables, be sure your docker-compose file is referencing the `.env` file like this:
+```
+version: '3.9'
+services:
+  app:
+    # ...
+    env_file: .env
+    # ...
+```
+
+The available environment variables are:
+| Variable | Description |
+|----------|-------------|
+| `POSTGRES_CLUSTER_ENDPOINT` (and `PGHOST`) | Writer endpoint for the cluster |
+| `POSTGRES_CLUSTER_PORT` (and `PGPORT`) | The database port |
+| `POSTGRES_CLUSTER_MASTER_PASSWORD` (and `PG_PASSWORD`) | database root password |
+| `POSTGRES_CLUSTER_MASTER_USERNAME` (and `PG_USER`) | The database master username |
+| `POSTGRES_CLUSTER_DATABASE_NAME` (and `PGDATABASE`) | Name for an automatically created database on cluster creation |
+| `POSTGRES_CLUSTER_ARN` | Amazon Resource Name (ARN) of cluster |
+| `POSTGRES_CLUSTER_ID` | The RDS Cluster Identifier |
+| `POSTGRES_CLUSTER_RESOURCE_ID` | The RDS Cluster Resource ID |
+| `POSTGRES_CLUSTER_READER_ENDPOINT` | A read-only endpoint for the cluster, automatically load-balanced across replicas |
+| `POSTGRES_CLUSTER_ENGINE_VERSION_ACTUAL` | The running version of the cluster database |
+| `POSTGRES_CLUSTER_HOSTED_ZONE_ID`| The Route53 Hosted Zone ID of the endpoint |
+
+### AWS Root Certs
+The AWS root certificate is downloaded and accessible via the `rds-combined-ca-bundle.pem` file in root of your app repo/directory.
+
+### Javascript
+Example JavaScript to make a request to the Postgres cluster:
+
+```js
+const { Client } = require('pg')
+
+// set up client
+const client = new Client({
+  host: process.env.PGHOST,
+  port: process.env.PGPORT,
+  user: process.env.PG_USER,
+  password: process.env.PG_PASSWORD,
+  database: process.env.PGDATABASE,
+  ssl: {
+    ca: fs.readFileSync('rds-combined-ca-bundle.pem').toString()
+  }
+});
+
+// connect and query
+client.connect()
+const result = await client.query('SELECT NOW()');
+await client.end();
+
+console.log(`Hello SQL timestamp: ${result.rows[0].now}`);
+```
+
+### Postgres Infrastructure and Cluster Details
 Specifically, the following resources will be created:
 - AWS Security Group
   - AWS Security Group Rule - Allows access to the cluster's db port: `5432`
@@ -204,11 +262,10 @@ Additional details about the cluster that's created:
 - Monitoring enabled
 - Sends logs to AWS Cloudwatch
 
+> _**For more details**, see [operations/deployment/terraform/postgres.tf](operations/deployment/terraform/postgres.tf)_
 
-Would you like to see additional features?  Create an issue: https://github.com/bitovi/github-actions-deploy-docker-to-ec2/issues/new
+Would you like to see additional features?  [Create an issue](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/issues/new). We love discussing solutions!
 
-
-_For more details, see [operations/deployment/terraform/postgres.tf](operations/deployment/terraform/postgres.tf)_
 
 ## Made with BitOps
 [BitOps](https://bitops.sh) allows you to define Infrastructure-as-Code for multiple tools in a central place.  This action uses a BitOps [Operations Repository](https://bitops.sh/operations-repo-structure/) to set up the necessary Terraform and Ansible to create infrastructure and deploy to it.
