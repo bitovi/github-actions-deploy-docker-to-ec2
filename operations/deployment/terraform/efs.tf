@@ -192,7 +192,9 @@ resource "aws_security_group_rule" "mount_ingress_efs_to_ec2" {
 
 # -------------------------------------------------------- #
 locals {
-  efs_url = length(aws_efs_file_system.efs[0]) > 0 ? aws_efs_file_system.efs[0].dns_name : ""
+  create_efs_url = var.create_efs ? aws_efs_file_system.efs[0].dns_name : ""
+  mount_efs_url = var.mount_efs_id != null ? data.aws_efs_file_system.mount_efs[0].dns_name : ""
+  efs_url = local.create_efs_url != "" ? local.create_efs_url : local.mount_efs_url
 }
 
 output "efs_url" {
