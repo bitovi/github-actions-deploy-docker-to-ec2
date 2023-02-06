@@ -45,11 +45,14 @@ locals {
   mount_target      = var.zone_mapping != null ? local.user_zone_mapping : (var.create_ha_efs == true ? local.ha_zone_mapping : (length(aws_instance.server) > 0 ? local.ec2_zone_mapping : local.no_zone_mapping))
   mount_efs         = var.mount_efs && var.mount_efs_security_group_id != null ? 1 : (var.create_efs ? 1 : 0)
   mount_efs_warning = var.mount_efs_security_group_id == null ? "To mount EFS specify the EFS ID as well as the primary security group id used by the EFS." : ""
+
+  replica_destination = var.replication_configuration_destination ? var.replication_configuration_destination : data.aws_region.current.name
 }
 
-# -------------------------------------------------------- #
+# ---------------------CREATE--------------------------- #
 resource "aws_efs_file_system" "efs" {
   # File system
+  count          = var.create_efs ? 1 : 0
   creation_token = "${var.aws_resource_identifier}-token-modular"
   encrypted      = true
 
@@ -63,6 +66,7 @@ resource "aws_efs_file_system" "efs" {
 }
 
 resource "aws_efs_mount_target" "efs_mount_targets" {
+  count           = var.create_efs ? 1 : 0
   for_each        = local.mount_target
   file_system_id  = aws_efs_file_system.efs.id
   subnet_id       = each.value["subnet_id"]
@@ -70,6 +74,7 @@ resource "aws_efs_mount_target" "efs_mount_targets" {
 }
 
 resource "aws_security_group" "efs_security_group" {
+  count  = var.create_efs ? 1 : 0
   name   = "${var.aws_resource_identifier}-security-group"
   vpc_id = data.aws_vpc.default.id
 
@@ -102,7 +107,7 @@ resource "aws_security_group" "efs_security_group" {
 }
 
 resource "aws_efs_backup_policy" "efs_policy" {
-  count          = var.enable_efs_backup_policy ? 1 : 0
+  count          = var.enable_efs_backup_policy && var.create_efs ? 1 : 0
   file_system_id = aws_efs_file_system.efs.id
 
   backup_policy {
@@ -111,20 +116,11 @@ resource "aws_efs_backup_policy" "efs_policy" {
 }
 
 resource "aws_efs_replication_configuration" "efs_rep_config" {
-  count                 = var.create_efs_replica && var.replication_configuration_destination == null ? 1 : 0
+  count                 = var.create_efs_replica && var.create_efs ? 1 : 0
   source_file_system_id = aws_efs_file_system.efs.id
 
   destination {
-    region = data.aws_region.current.name
-  }
-}
-
-resource "aws_efs_replication_configuration" "efs_rep_config_w_dest" {
-  count                 = var.create_efs_replica && var.replication_configuration_destination != null ? 1 : 0
-  source_file_system_id = aws_efs_file_system.efs.id
-
-  destination {
-    region = var.replication_configuration_destination
+    region = local.replica_destination
   }
 }
 
@@ -140,8 +136,6 @@ resource "aws_efs_replication_configuration" "efs_rep_config_w_dest" {
 # resource "aws_efs_access_point" "efs" {
 #   file_system_id = aws_efs_file_system.efs.id
 # }
-
-# -------------------------------------------------------- #
 
 # Whitelist the EFS security group for the EC2 Security Group
 resource "aws_security_group_rule" "ingress_ec2_to_efs" {
@@ -165,8 +159,9 @@ resource "aws_security_group_rule" "ingress_efs_to_ec2" {
   source_security_group_id = data.aws_security_group.ec2_security_group.id
   security_group_id        = aws_security_group.efs_security_group.id
 }
+# ----------------------------------------------------- #
 
-# -------------------------------------------------------- #
+# ---------------------MOUNT--------------------------- #
 data "aws_efs_file_system" "mount_efs" {
   count          = var.mount_efs_id != null ? 1 : 0
   file_system_id = var.mount_efs_id
