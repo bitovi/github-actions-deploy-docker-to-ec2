@@ -53,7 +53,7 @@ module "rds_cluster" {
 
   # TODO: take advantage of iam database auth
   iam_database_authentication_enabled    = true
-  master_password                        = random_password.master.result
+  master_password                        = random_password.rds.result
   create_random_password                 = false
   apply_immediately                      = true
   skip_final_snapshot                    = true
@@ -89,7 +89,7 @@ module "rds_cluster" {
   }
 }
 
-resource "random_password" "master" {
+resource "random_password" "rds" {
   length = 10
 }
 
