@@ -8,7 +8,7 @@ resource "aws_security_group" "ec2_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "${var.aws_resource_identifier}"
+    Name = "${var.aws_resource_identifier}-instance-sg"
   }
 }
 
