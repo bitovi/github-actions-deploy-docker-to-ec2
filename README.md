@@ -8,6 +8,14 @@ The action will copy this repo to the VM and then run `docker-compose up`.
 [![Getting Started - Youtube](https://img.youtube.com/vi/oya5LuHUCXc/0.jpg)](https://www.youtube.com/watch?v=oya5LuHUCXc)
 
 
+## Need help or have questions?
+This project is supported by [Bitovi, a DevOps Consultancy](https://www.bitovi.com/devops-consulting) and a proud supporter of Open Source software.
+
+You can **get help or ask questions** on our [Slack Community](https://www.bitovi.com/community/slack) (`#devops` channel)
+
+Or, you can hire us for training, consulting, or development. [Set up a free consultation](https://www.bitovi.com/devops-consulting).
+
+
 ## Requirements
 
 1. Files for Docker
@@ -210,12 +218,3 @@ We would love for you to contribute to [bitovi/github-actions-deploy-docker-to-e
 
 ## License
 The scripts and documentation in this project are released under the [MIT License](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/blob/main/LICENSE).
-
-## Provided by Bitovi
-[Bitovi](https://www.bitovi.com/) is a proud supporter of Open Source software.
-
-
-## Need help?
-Bitovi has consultants that can help.  Drop into [Bitovi's Community Slack](https://www.bitovi.com/community/slack), and talk to us in the `#devops` channel!
-
-Need DevOps Consulting Services?  Head over to https://www.bitovi.com/devops-consulting, and book a free consultation.
