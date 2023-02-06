@@ -66,13 +66,6 @@ resource "aws_efs_file_system" "efs" {
   }
 }
 
-resource "aws_efs_mount_target" "efs_mount_targets" {
-  for_each        = local.create_mount_targets
-  file_system_id  = aws_efs_file_system.efs[0].id
-  subnet_id       = each.value["subnet_id"]
-  security_groups = each.value["security_groups"]
-}
-
 resource "aws_security_group" "efs_security_group" {
   count  = var.create_efs ? 1 : 0
   name   = "${var.aws_resource_identifier}-security-group"
@@ -122,6 +115,13 @@ resource "aws_efs_replication_configuration" "efs_rep_config" {
   destination {
     region = local.replica_destination
   }
+}
+
+resource "aws_efs_mount_target" "efs_mount_targets" {
+  for_each        = local.create_mount_targets
+  file_system_id  = aws_efs_file_system.efs[0].id
+  subnet_id       = each.value["subnet_id"]
+  security_groups = concat(each.value["security_groups"], [aws_security_group.efs_security_group[0].id])
 }
 
 # resource "aws_efs_file_system_policy" "policy" {
