@@ -120,7 +120,7 @@ output "aws_rds_postgres_cluster_id" {
   value       = module.rds_cluster.cluster_id
 }
 
-output aws_rds_postgres_cluster_resource_id" {
+output "aws_rds_postgres_cluster_resource_id" {
   description = "The RDS Cluster Resource ID"
   value       = module.rds_cluster.cluster_resource_id
 }
