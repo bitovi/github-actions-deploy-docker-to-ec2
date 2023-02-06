@@ -176,6 +176,8 @@ runs:
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
+        
+        # TODO: need to figure out why failed .tf isn't failing the pipeline
         deploy_exit_code=$?
         echo "deploy_exit_code: $deploy_exit_code"
 
