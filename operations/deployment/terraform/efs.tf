@@ -192,7 +192,7 @@ resource "aws_security_group_rule" "mount_ingress_efs_to_ec2" {
 
 # -------------------------------------------------------- #
 locals {
-  efs_url = length(aws_efs_file_system.efs) > 0 ? aws_efs_file_system.efs.dns_name : ""
+  efs_url = length(aws_efs_file_system.efs[0]) > 0 ? aws_efs_file_system.efs[0].dns_name : ""
 }
 
 output "efs_url" {
