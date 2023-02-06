@@ -49,7 +49,7 @@ inputs:
   app_port:
     description: 'Port to expose for the app'
     required: false
-    default: '80'
+    default: '3000'
   lb_port:
     description: 'Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided'
     required: false
@@ -88,6 +88,10 @@ inputs:
     required: false
   app_directory:
     description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo.'
+  create_keypair_sm_entry:
+    required: false
+    description: "Generates and manages a secret manager entry that contains the public and private keys created for the ec2 instance."
+    default: false
   additional_tags:
     description: 'A list of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
@@ -161,6 +165,7 @@ runs:
         NO_CERT: ${{ inputs.no_cert }}
         BITOPS_FAST_FAIL: true
         APP_DIRECTORY: ${{ inputs.app_directory }}
+        CREATE_KEYPAIR_SM_ENTRY: ${{ inputs.create_keypair_sm_entry }}
         ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
         ENABLE_POSTGRES: ${{ inputs.enable_postgres }}
         POSTGRES_ENGINE:  ${{ inputs.postgres_engine }}

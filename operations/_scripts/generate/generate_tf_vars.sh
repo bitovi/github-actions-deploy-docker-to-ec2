@@ -122,6 +122,7 @@ postgres_engine_version = \"${POSTGRES_ENGINE_VERSION}\"
 postgres_instance_class = \"${POSTGRES_INSTANCE_CLASS}\"
 postgres_database_name = \"${POSTGRES_DATABASE_NAME}\"
 ${POSTGRES_SUBNETS_TF}
+create_keypair_sm_entry = \"${CREATE_KEYPAIR_SM_ENTRY}\"
 
 additional_tags = ${ADDITIONAL_TAGS}
 #

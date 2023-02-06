@@ -165,6 +165,12 @@ variable "postgres_database_name" {
   default     = "root"
 }
 
+variable "create_keypair_sm_entry" {
+  type = bool
+  description = "y/n create sm entry for ec2 keypair"
+  default = false
+}
+
 variable "additional_tags" {
   type        = map(string)
   description = "A list of strings that will be added to created resources"
