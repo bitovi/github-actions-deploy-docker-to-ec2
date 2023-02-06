@@ -24,19 +24,6 @@ resource "aws_security_group_rule" "ingress_postgres" {
   security_group_id = aws_security_group.pg_security_group.id
 }
 
-data "aws_vpc" "default" {
-  default = true
-} 
-data "aws_subnets" "vpc_subnets" {
-  filter {
-    name   = "vpc-id"
-
-    # todo: support a specified vpc id
-    # values = [var.vpc_id ? var.vpc_id : data.aws_vpc.default.id]
-    values = [data.aws_vpc.default.id]
-  }
-}
-
 module "rds_cluster" {
   depends_on     = [data.aws_subnets.vpc_subnets]
   source         = "terraform-aws-modules/rds-aurora/aws"
@@ -107,10 +94,6 @@ resource "random_password" "master" {
 }
 
 ####
-output "aws_rds_postgres_default_subnet_ids" {
-  description = "The subnet ids from the default vpc"
-  value       = data.aws_subnets.vpc_subnets.ids
-}
 output "aws_rds_postgres_subnets_input" {
   description = "The subnet ids input from the user"
   value       = var.postgres_subnets
