@@ -93,6 +93,7 @@ module "rds_cluster" {
 }
 
 resource "random_password" "rds" {
+  override_special = "/@"
   length = 10
 }
 
