@@ -98,143 +98,210 @@ resource "random_password" "rds" {
 
 ####
 output "aws_rds_postgres_subnets_input" {
-  count = var.enable_postgres == "true" ? 1 : 0
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
   description = "The subnet ids input from the user"
   value       = var.postgres_subnets
 }
+
 output "aws_rds_postgres_default_subnet_ids_conditional" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "What subnets actually get passed to the rds cluster"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "What subnets actually get passed to the rds cluster"
   value       = var.postgres_subnets == null || length(var.postgres_subnets) == 0 ? data.aws_subnets.vpc_subnets.ids : var.postgres_subnets
 }
 
 # aws_db_subnet_group
 output "aws_rds_postgres_subnet_group_name" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "The db subnet group name"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "The db subnet group name"
   value       = module.rds_cluster[0].db_subnet_group_name
 }
 
 # aws_rds_cluster
 output "aws_rds_postgres_cluster_arn" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "Amazon Resource Name (ARN) of cluster"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "Amazon Resource Name (ARN) of cluster"
   value       = module.rds_cluster[0].cluster_arn
 }
 
 output "aws_rds_postgres_cluster_id" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "The RDS Cluster Identifier"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "The RDS Cluster Identifier"
   value       = module.rds_cluster[0].cluster_id
 }
 
 output "aws_rds_postgres_cluster_resource_id" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "The RDS Cluster Resource ID"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "The RDS Cluster Resource ID"
   value       = module.rds_cluster[0].cluster_resource_id
 }
 
 output "aws_rds_postgres_cluster_members" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "List of RDS Instances that are a part of this cluster"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "List of RDS Instances that are a part of this cluster"
   value       = module.rds_cluster[0].cluster_members
 }
 
 output "aws_rds_postgres_cluster_endpoint" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "Writer endpoint for the cluster"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "Writer endpoint for the cluster"
   value       = module.rds_cluster[0].cluster_endpoint
 }
 
 output "aws_rds_postgres_cluster_reader_endpoint" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "A read-only endpoint for the cluster, automatically load-balanced across replicas"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "A read-only endpoint for the cluster, automatically load-balanced across replicas"
   value       = module.rds_cluster[0].cluster_reader_endpoint
 }
 
 output "aws_rds_postgres_cluster_engine_version_actual" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "The running version of the cluster database"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "The running version of the cluster database"
   value       = module.rds_cluster[0].cluster_engine_version_actual
 }
 
 # database_name is not set on `aws_rds_cluster` resource if it was not specified, so can't be used in output
 output "aws_rds_postgres_cluster_database_name" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "Name for an automatically created database on cluster creation"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "Name for an automatically created database on cluster creation"
   value       = module.rds_cluster[0].cluster_database_name
 }
 
 output "aws_rds_postgres_cluster_port" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "The database port"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "The database port"
   value       = module.rds_cluster[0].cluster_port
 }
 
 output "aws_rds_postgres_cluster_master_password" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "The database master password"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "The database master password"
   value       = module.rds_cluster[0].cluster_master_password
   sensitive   = true
 }
 
 output "aws_rds_postgres_cluster_master_username" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "The database master username"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "The database master username"
   value       = module.rds_cluster[0].cluster_master_username
   sensitive   = true
 }
 
 output "aws_rds_postgres_cluster_hosted_zone_id" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "The Route53 Hosted Zone ID of the endpoint"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "The Route53 Hosted Zone ID of the endpoint"
   value       = module.rds_cluster[0].cluster_hosted_zone_id
 }
 
 # aws_rds_cluster_instances
 output "aws_rds_postgres_cluster_instances" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "A map of cluster instances and their attributes"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "A map of cluster instances and their attributes"
   value       = module.rds_cluster[0].cluster_instances
 }
 
 # aws_rds_cluster_endpoint
 output "aws_rds_postgres_additional_cluster_endpoints" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "A map of additional cluster endpoints and their attributes"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "A map of additional cluster endpoints and their attributes"
   value       = module.rds_cluster[0].additional_cluster_endpoints
 }
 
 # aws_rds_cluster_role_association
 output "aws_rds_postgres_cluster_role_associations" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "A map of IAM roles associated with the cluster and their attributes"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "A map of IAM roles associated with the cluster and their attributes"
   value       = module.rds_cluster[0].cluster_role_associations
 }
 
 # Enhanced monitoring role
 output "aws_rds_postgres_enhanced_monitoring_iam_role_name" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "The name of the enhanced monitoring role"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "The name of the enhanced monitoring role"
   value       = module.rds_cluster[0].enhanced_monitoring_iam_role_name
 }
 
 output "aws_rds_postgres_enhanced_monitoring_iam_role_arn" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "The Amazon Resource Name (ARN) specifying the enhanced monitoring role"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "The Amazon Resource Name (ARN) specifying the enhanced monitoring role"
   value       = module.rds_cluster[0].enhanced_monitoring_iam_role_arn
 }
 
 output "aws_rds_postgres_enhanced_monitoring_iam_role_unique_id" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "Stable and unique string identifying the enhanced monitoring role"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "Stable and unique string identifying the enhanced monitoring role"
   value       = module.rds_cluster[0].enhanced_monitoring_iam_role_unique_id
 }
 
 # aws_security_group
 output "aws_rds_postgres_security_group_id" {
-  count = var.enable_postgres == "true" ? 1 : 0
-  description = "The security group ID of the cluster"
+  precondition {
+    condition     = var.enable_postgres == "true" ? 1 : 0
+    error_message = "Postgres not enabled"
+  }
+   description = "The security group ID of the cluster"
   value       = module.rds_cluster[0].security_group_id
 }
 
