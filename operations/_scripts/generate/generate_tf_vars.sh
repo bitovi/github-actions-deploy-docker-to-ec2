@@ -121,6 +121,7 @@ postgres_engine = \"${POSTGRES_ENGINE}\"
 postgres_engine_version = \"${POSTGRES_ENGINE_VERSION}\"
 postgres_instance_class = \"${POSTGRES_INSTANCE_CLASS}\"
 postgres_database_name = \"${POSTGRES_DATABASE_NAME}\"
+postgres_database_port = \"${POSTGRES_DATABASE_PORT}\"
 ${POSTGRES_SUBNETS_TF}
 create_keypair_sm_entry = \"${CREATE_KEYPAIR_SM_ENTRY}\"
 
