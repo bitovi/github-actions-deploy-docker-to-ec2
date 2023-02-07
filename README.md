@@ -156,6 +156,7 @@ The following inputs can be used as `step.with` keys
 | `postgres_instance_class` | String | Define the size of the instances in the DB cluster. | `db.t3.medium` |
 | `postgres_subnets` | String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. | |
 | `postgres_database_name` | String | Specify a database name. Will be created if it does not exist. | `root` |
+| `postgres_database_port` | String | Specify a listening port for the database. | `5432` |
 
 ## Note about resource identifiers
 

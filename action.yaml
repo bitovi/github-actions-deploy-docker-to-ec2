@@ -120,6 +120,10 @@ inputs:
     required: false
     # TODO: create another user and point to that instead
     default: 'root'
+  postgres_database_port:
+    description: 'Postgres database port'
+    required: false
+    defaults: '5432'
 outputs:
   vm_url:
     description: "The URL of the generated app"
@@ -173,6 +177,7 @@ runs:
         POSTGRES_INSTANCE_CLASS: ${{ inputs.postgres_instance_class }}
         POSTGRES_SUBNETS: ${{ inputs.postgres_subnets }}
         POSTGRES_DATABASE_NAME: ${{ inputs.postgres_database_name }}
+        POSTGRES_DATABASE_PORT: ${{ inputs.postgres_database_port}}
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh

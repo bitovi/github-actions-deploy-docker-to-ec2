@@ -165,6 +165,12 @@ variable "postgres_database_name" {
   default     = "root"
 }
 
+variable "postgres_database_port" {
+  type        = string
+  default     = "5432"
+  description = "database port"
+}
+
 variable "create_keypair_sm_entry" {
   type = bool
   description = "y/n create sm entry for ec2 keypair"

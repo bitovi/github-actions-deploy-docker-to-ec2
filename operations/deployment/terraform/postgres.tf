@@ -18,9 +18,8 @@ resource "aws_security_group_rule" "ingress_postgres" {
   count = var.enable_postgres == "true" ? 1 : 0
   type              = "ingress"
   description       = "${var.aws_resource_identifier} - pgPort"
-  # TODO: parameterize the ports
-  from_port         = 5432
-  to_port           = 5432
+  from_port         = tonumber(var.postgres_database_port)
+  to_port           = tonumber(var.postgres_database_port)
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
   security_group_id = aws_security_group.pg_security_group[0].id
