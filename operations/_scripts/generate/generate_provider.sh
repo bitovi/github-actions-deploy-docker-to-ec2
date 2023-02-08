@@ -10,12 +10,12 @@ set -e
 
 echo "In generate_provider.sh"
 
-echo "
+echo "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
 terraform {
   required_providers {
     aws = {
       source  = \"hashicorp/aws\"
-      version = \">= 4.30\"
+      version = \"~> 4.30\"
     }
     random = {
       source  = \"hashicorp/random\"
@@ -40,7 +40,6 @@ data \"aws_region\" \"current\" {}
 
 provider \"aws\" {
   region = \"${AWS_DEFAULT_REGION}\"
-  #profile = \"default\"
   default_tags {
     tags = merge(
       local.aws_tags,
