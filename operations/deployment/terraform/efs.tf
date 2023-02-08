@@ -48,12 +48,13 @@ locals {
 
   replica_destination  = var.replication_configuration_destination != null ? var.replication_configuration_destination : data.aws_region.current.name
   create_mount_targets = var.create_efs ? local.mount_target : {}
+  create_efs = var.create_efs == true ? true : (var.create_ha_efs == true ? true : false)
 }
 
 # ---------------------CREATE--------------------------- #
 resource "aws_efs_file_system" "efs" {
   # File system
-  count          = var.create_efs ? 1 : 0
+  count          = local.create_efs ? 1 : 0
   creation_token = "${var.aws_resource_identifier}-token-modular"
   encrypted      = true
 
@@ -67,7 +68,7 @@ resource "aws_efs_file_system" "efs" {
 }
 
 resource "aws_security_group" "efs_security_group" {
-  count  = var.create_efs ? 1 : 0
+  count  = local.create_efs ? 1 : 0
   name   = "${var.aws_resource_identifier}-security-group"
   vpc_id = data.aws_vpc.default.id
 
