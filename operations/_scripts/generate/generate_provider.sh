@@ -10,7 +10,7 @@ set -e
 
 echo "In generate_provider.sh"
 
-echo "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+echo "
 terraform {
   required_providers {
     aws = {
