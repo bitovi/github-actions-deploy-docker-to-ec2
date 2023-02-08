@@ -127,15 +127,15 @@ if [[ -n "$LB_LOGS_BUCKET" ]]; then
   lb_access_bucket_name="lb_access_bucket_name = \"${LB_LOGS_BUCKET}\""
 fi
 
-security_group_name=
-if [[ -n "$GITHUB_IDENTIFIER" ]]; then
-  security_group_name="security_group_name = \"${GITHUB_IDENTIFIER}\""
-fi
+# security_group_name=
+# if [[ -n "$GITHUB_IDENTIFIER" ]]; then
+#   security_group_name="security_group_name = \"${GITHUB_IDENTIFIER}\""
+# fi
 
-ec2_iam_instance_profile=
-if [[ -n "$EC2_INSTANCE_PROFILE" ]]; then
-  ec2_iam_instance_profile="ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\""
-fi
+# ec2_iam_instance_profile=
+# if [[ -n "$EC2_INSTANCE_PROFILE" ]]; then
+#   ec2_iam_instance_profile="ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\""
+# fi
 
 ops_repo_environment=
 if [[ -n "$EC2_INSTANCE_PROFILE" ]]; then
@@ -181,10 +181,9 @@ $lb_healthcheck
 $lb_access_bucket_name
 
 #-- Security Groups --#
-$security_group_name
+
 
 #-- EC2 --#
-$ec2_iam_instance_profile
 $ec2_instance_type
 
 #-- AWS --#
