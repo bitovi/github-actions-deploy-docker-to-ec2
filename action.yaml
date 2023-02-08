@@ -22,8 +22,8 @@ inputs:
     required: false
   aws_default_region:
     description: 'AWS default region'
-    required: true
-    default: 'us-east-1'
+    default: us-east-1
+    required: false
   aws_ami_id:
     description: 'AWS AMI ID. Will default to the latest Ubuntu 22.04 server image (HVM) '
     required: false
