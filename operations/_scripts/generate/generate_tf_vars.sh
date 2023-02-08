@@ -52,9 +52,40 @@ if [[ -n "$NO_CERT" ]];then
   no_cert="no_cert = ${NO_CERT}"
 fi
 
+#----- EFS -----#
+create_efs=
+if [[ -n "$CREATE_EFS" ]];then
+  create_efs="create_efs = \"${CREATE_EFS}\""
+fi
+
+create_ha_efs=
+if [[ -n "$CREATE_HA_EFS" ]];then
+  create_ha_efs="create_ha_efs = \"${CREATE_HA_EFS}\""
+fi
+
+create_efs_replica=
+if [[ -n "$CREATE_EFS_REPLICA" ]];then
+  create_efs_replica="create_efs_replica = \"${CREATE_EFS_REPLICA}\""
+fi
+
+enable_efs_backup_policy=
+if [[ -n "$ENABLE_EFS_BACKUP_POLICY" ]];then
+  enable_efs_backup_policy="enable_efs_backup_policy = \"${ENABLE_EFS_BACKUP_POLICY}\""
+fi
+
 efs_zone_mapping=
 if [[ -n "$EFS_ZONE_MAPPING" ]];then
   efs_zone_mapping="zone_mapping = ${EFS_ZONE_MAPPING}"
+fi
+
+efs_transition_to_inactive=
+if [[ -n "$EFS_TRANSITION_TO_INACTIVE" ]];then
+  efs_transition_to_inactive="efs_transition_to_inactive = \"${EFS_TRANSITION_TO_INACTIVE}\""
+fi
+
+replication_configuration_destination=
+if [[ -n "$EFS_REPLICA_DESTINATION" ]];then
+  replication_configuration_destination="replication_configuration_destination = \"${EFS_REPLICA_DESTINATION}\""
 fi
 
 mount_efs=
@@ -62,10 +93,7 @@ if [[ -n "$MOUNT_EFS" ]];then
   mount_efs="mount_efs = ${MOUNT_EFS}"
 fi
 
-create_efs=
-if [[ -n "$CREATE_EFS" ]];then
-  create_efs="create_efs = \"${CREATE_EFS}\""
-fi
+#------------------------------------#
 
 additional_tags=
 if [[ -n "$ADDITIONAL_TAGS" ]]; then
@@ -202,9 +230,14 @@ $create_sub_cert
 $no_cert
 
 #-- EFS --#
-$mount_efs
 $create_efs
-$zone_mapping
+$create_ha_efs
+$create_efs_replica
+$enable_efs_backup_policy
+$efs_zone_mapping
+$efs_transition_to_inactive
+$replication_configuration_destination
+$mount_efs
 
 #-- Tags --#
 $additional_tags
