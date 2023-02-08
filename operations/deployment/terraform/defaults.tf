@@ -3,6 +3,7 @@ data "aws_region" "current" {}
 data "aws_vpc" "default" {
   default = true
 }
+
 data "aws_availability_zones" "all" {}
 
 data "aws_security_group" "default" {
@@ -10,10 +11,13 @@ data "aws_security_group" "default" {
     name   = "group-name"
     values = ["default"]
   }
-  vpc_id = data.aws_vpc.default.id
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
 }
 
-# us-east-1 contains all AZs, no check is required.
+# All regions have "a", skipping az validation
 data "aws_subnet" "defaulta" {
   availability_zone = "${data.aws_region.current.name}a"
   default_for_az    = true
@@ -41,5 +45,24 @@ data "aws_subnet" "defaulte" {
 data "aws_subnet" "defaultf" {
   count             = contains(data.aws_availability_zones.all.names, "${data.aws_region.current.name}f") ? 1 : 0
   availability_zone = "${data.aws_region.current.name}f"
+  default_for_az    = true
+}
+
+locals {
+  preferred_az = var.availability_zone != null ? var.availability_zone : data.aws_ec2_instance_type_offerings.region_azs.locations[random_integer.az_select.result]
+}
+
+data "aws_ec2_instance_type_offerings" "region_azs" {
+  filter {
+    name   = "instance-type"
+    values = [var.ec2_instance_type]
+  }
+
+  location_type = "availability-zone"
+}
+
+data "aws_subnet" "selected" {
+  count             = contains(data.aws_availability_zones.all.names, local.preferred_az) ? 1 : 0
+  availability_zone = local.preferred_az
   default_for_az    = true
 }

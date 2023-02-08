@@ -1,3 +1,8 @@
+resource "random_integer" "az_select" {
+  min = 0
+  max = length(data.aws_ec2_instance_type_offerings.region_azs.locations) - 1
+}
+
 locals {
   aws_tags = {
     OperationsRepo            = "bitovi/github-actions-node-app-to-aws-vm/operations/${var.ops_repo_environment}"

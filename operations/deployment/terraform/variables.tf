@@ -32,12 +32,6 @@ variable "app_install_root" {
   default     = "/home/ubuntu"
 }
 
-variable "os_system_user" {
-  type        = string
-  description = "User for the OS"
-  default     = "ubuntu"
-}
-
 variable "ops_repo_environment" {
   type        = string
   description = "Ops Repo Environment (i.e. directory name)"
@@ -52,16 +46,6 @@ variable "ec2_instance_public_ip" {
   type        = string
   default     = "true"
   description = "Attach public IP to the EC2 instance"
-}
-variable "security_group_name" {
-  type        = string
-  default     = "SG for deployment"
-  description = "Name of the security group to use"
-}
-variable "ec2_iam_instance_profile" {
-  type        = string
-  description = "IAM role for the ec2 instance"
-  default     = ""
 }
 variable "lb_access_bucket_name" {
   type        = string
@@ -197,6 +181,11 @@ variable "replication_configuration_destination" {
 }
 
 ## -- --- -- ##
+variable "availability_zone" {
+  type        = string
+  default     = null
+  description = "The AZ zone to deploy resources to"
+}
 
 variable "additional_tags" {
   type        = map(string)
