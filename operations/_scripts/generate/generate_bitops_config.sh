@@ -18,6 +18,10 @@ if [ -n "$TERRAFORM_TARGETS" ]; then
   targets="$targets 
       - $item"
   done
+  
+  # random_integer.az_select needs to be created before the "full stack" to avoid a potential state dependency locks
+  targets="$targets
+      - random_integer.az_select"
 fi
 
 targets_attribute="$targets_attribute $targets"
