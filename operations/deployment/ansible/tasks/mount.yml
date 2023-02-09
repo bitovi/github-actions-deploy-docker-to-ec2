@@ -27,9 +27,16 @@
   become: yes
   when: check_efs_utils.stat.exists
 
-- name: mount efs
-  ansible.builtin.shell: |
-    cd {{ app_install_root }}/{{ app_repo_name }}
-    mkdir data
-    mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport {{ efs_url }}:/ ./data
-  become: true
+- name: Creates efs mount directory
+  file:
+    path: "{{ app_install_root }}/{{ app_repo_name }}/data"
+    state: directory
+
+- name: Mount ephemeral SMB volume
+  ansible.posix.mount:
+    src: {{ efs_url }}:/data
+    path: "{{ app_install_root }}/{{ app_repo_name }}/data"
+    opts: "nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
+    fstype: nfs4
+    state: mounted
+    boot: false
