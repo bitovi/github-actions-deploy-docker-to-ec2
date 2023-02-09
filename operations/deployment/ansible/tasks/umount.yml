@@ -1,8 +1,12 @@
 # UnMount EFS
 
-- name: unmount efs
-  ansible.builtin.shell: |
-    cd {{ app_install_root }}/{{ app_repo_name }}
-    umount ./data
-  become: true
-  ignore_errors: true
+- name: Check if efs mount directory is present
+  stat:
+    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}"
+  register: check_efs_mount
+
+- name: Unmount efs volume
+  ansible.posix.mount:
+    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}"
+    state: unmounted
+  when: check_efs_mount.stat.exists
