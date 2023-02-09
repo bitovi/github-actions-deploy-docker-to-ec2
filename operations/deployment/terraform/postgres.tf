@@ -104,7 +104,7 @@ resource "aws_secretsmanager_secret" "database_credentials" {
 }
  
 resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version" {
-  secret_id = aws_secretsmanager_secret.postgress_credentials.id
+  secret_id = aws_secretsmanager_secret.database_credentials.id
   secret_string = <<EOF
    {
     "key": "public_key",
