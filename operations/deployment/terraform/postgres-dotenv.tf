@@ -2,7 +2,7 @@
 
 resource "local_file" "postgres-dotenv" {
   count = var.enable_postgres == "true" ? 1 : 0
-  filename = format("%s/%s", abspath(path.root), "postfres.env")
+  filename = format("%s/%s", abspath(path.root), "postgres.env")
   content  = <<-EOT
 
 ####
