@@ -6,9 +6,9 @@
   register: check_efs_mount
 
 - name: stat test
-    debug:
-      msg: "The file or directory exists"
-    when: check_efs_mount.stat.exists
+  debug:
+    msg: "The file or directory exists"
+  when: check_efs_mount.stat.exists
 
 - name: Unmount efs volume
   ansible.posix.mount:
