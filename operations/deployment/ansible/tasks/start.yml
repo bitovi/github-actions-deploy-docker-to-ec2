@@ -5,8 +5,6 @@
     build: yes
     recreate: always
     nocache: yes
-    environment:
-      HOST_DIR: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}"
   register: output
 
 - ansible.builtin.debug:
