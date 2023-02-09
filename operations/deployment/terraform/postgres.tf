@@ -46,6 +46,7 @@ module "rds_cluster" {
   subnets                  = var.postgres_subnets == null || length(var.postgres_subnets) == 0 ? data.aws_subnets.vpc_subnets.ids : var.postgres_subnets
 
   database_name          = var.postgres_database_name
+  port                   = var.postgres_database_port
   storage_encrypted      = true
   monitoring_interval    = 60
   create_db_subnet_group = true
