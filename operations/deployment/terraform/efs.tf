@@ -101,7 +101,7 @@ resource "aws_security_group" "efs_security_group" {
 }
 
 resource "aws_efs_backup_policy" "efs_policy" {
-  count          = var.enable_efs_backup_policy && var.create_efs ? 1 : 0
+  count          = var.enable_efs_backup_policy && local.create_efs ? 1 : 0
   file_system_id = aws_efs_file_system.efs[0].id
 
   backup_policy {
@@ -110,7 +110,7 @@ resource "aws_efs_backup_policy" "efs_policy" {
 }
 
 resource "aws_efs_replication_configuration" "efs_rep_config" {
-  count                 = var.create_efs_replica && var.create_efs ? 1 : 0
+  count                 = var.create_efs_replica && local.create_efs ? 1 : 0
   source_file_system_id = aws_efs_file_system.efs[0].id
 
   destination {

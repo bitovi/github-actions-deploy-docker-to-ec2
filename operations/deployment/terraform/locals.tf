@@ -1,6 +1,12 @@
 resource "random_integer" "az_select" {
   min = 0
   max = length(data.aws_ec2_instance_type_offerings.region_azs.locations) - 1
+
+  lifecycle {
+    # The AMI ID must refer to an AMI that contains an operating system
+    # for the `x86_64` architecture.
+    ignore_changes = [all]
+  }
 }
 
 locals {
