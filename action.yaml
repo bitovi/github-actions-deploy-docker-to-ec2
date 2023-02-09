@@ -130,6 +130,10 @@ inputs:
   application_mount_target:
     description: "Directory path in application env to mount directory, default is `data`"
     default: data
+  data_mount_target:
+    description: "Directory path within docker env to mount directory to, default is `/data`"
+  efs_mount_target:
+    description: "Directory path in efs to mount directory to, default is `/`"
 outputs:
   vm_url:
     description: "The URL of the generated app"
@@ -189,6 +193,8 @@ runs:
         MOUNT_EFS_SECURITY_GROUP_ID: ${{ inputs.mount_efs_security_group_id }}
 
         APPLICATION_MOUNT_TARGET: ${{ inputs.application_mount_target }}
+        EFS_MOUNT_TARGET: ${{ inputs.efs_mount_target }}
+        DATA_MOUNT_TARGET: ${{ inputs.data_mount_target }}
 
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"

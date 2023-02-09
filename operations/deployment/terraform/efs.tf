@@ -48,7 +48,7 @@ locals {
 
   replica_destination  = var.replication_configuration_destination != null ? var.replication_configuration_destination : data.aws_region.current.name
   create_mount_targets = var.create_efs || var.create_ha_efs ? local.mount_target : {}
-  create_efs = var.create_efs == true ? true : (var.create_ha_efs == true ? true : false)
+  create_efs           = var.create_efs == true ? true : (var.create_ha_efs == true ? true : false)
 }
 
 # ---------------------CREATE--------------------------- #

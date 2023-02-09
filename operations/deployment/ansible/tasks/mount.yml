@@ -44,10 +44,14 @@
   ansible.builtin.lineinfile:
     path: "{{ app_install_root }}/{{ app_repo_name }}/.env"
     line: HOST_DIR="{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}"
+- name: Adding to .env
+  ansible.builtin.lineinfile:
+    path: "{{ app_install_root }}/{{ app_repo_name }}/.env"
+    line: TARGET_DIR="{{ data_mount_target }}"
 
 - name: Mount efs volume
   ansible.posix.mount:
-    src: "{{ efs_url }}:/"
+    src: "{{ efs_url }}:/{{ efs_mount_target }}"
     path: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}"
     opts: "nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
     fstype: nfs4

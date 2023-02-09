@@ -110,6 +110,16 @@ if [[ -n "$APPLICATION_MOUNT_TARGET" ]]; then
   application_mount_target="application_mount_target = \"${APPLICATION_MOUNT_TARGET}\""
 fi
 
+efs_mount_target=
+if [[ -n "$EFS_MOUNT_TARGET" ]]; then
+  efs_mount_target="efs_mount_target = \"${EFS_MOUNT_TARGET}\""
+fi
+
+data_mount_target=
+if [[ -n "$DATA_MOUNT_TARGET" ]]; then
+  data_mount_target="data_mount_target = \"${DATA_MOUNT_TARGET}\""
+fi
+
 root_domain=
 if [[ -n "$ROOT_DOMAIN" ]]; then
   root_domain="root_domain = \"${ROOT_DOMAIN}\""
@@ -255,5 +265,7 @@ $additional_tags
 
 ##-- ANSIBLE --##
 $application_mount_target
+$efs_mount_target
+$data_mount_target
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"

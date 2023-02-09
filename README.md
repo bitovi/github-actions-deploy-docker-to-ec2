@@ -151,6 +151,8 @@ The following inputs can be used as `step.with` keys
 | `mount_efs_security_group_id` | string | ID of the primary security group used by the existing EFS |
 | `additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
 | `application_mount_target` | string | Directory path in application env to mount directory, default is `data` |
+| `efs_mount_target` | string | Directory path in efs to mount directory to, default is `/` |
+| `data_mount_target` | string | Directory path in docker compose to mount directory to, default is `/data` |
 
 ## Note about resource identifiers
 
