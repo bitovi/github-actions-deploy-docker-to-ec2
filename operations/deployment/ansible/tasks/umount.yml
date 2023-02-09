@@ -2,7 +2,7 @@
 
 - name: Check if efs mount directory is present
   stat:
-    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}"
+    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}/"
   register: check_efs_mount
 
 - name: stat test
