@@ -104,10 +104,11 @@ resource "aws_secretsmanager_secret" "database_credentials" {
 }
  
 resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version" {
-  secret_id = aws_secretsmanager_secret.database_credentials.id
+  count = var.enable_postgres == "true" ? 1 : 0
+  secret_id = aws_secretsmanager_secret.database_credentials[0].id
   secret_string = <<EOF
    {
-    "key": "public_key",
+    "key": "database_password",
     "value": "${sensitive(random_password.rds.result)}"
    }
 EOF
