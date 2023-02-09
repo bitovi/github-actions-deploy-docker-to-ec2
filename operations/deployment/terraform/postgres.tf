@@ -100,7 +100,7 @@ resource "random_password" "rds" {
 // Creates a secret manager secret for the databse credentials
 resource "aws_secretsmanager_secret" "database_credentials" {
    count = var.enable_postgres == "true" ? 1 : 0
-   name   = "${var.aws_resource_identifier_supershort}-ec2db-pub-${random_string.random.result}"
+   name   = "${var.aws_resource_identifier_supershort}-ec2db-pub-${random_string.random_sm.result}"
 }
  
 resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version" {
@@ -113,7 +113,7 @@ resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_ver
 EOF
 }
 
-resource "random_string" "random" {
+resource "random_string" "random_sm" {
   length    = 5
   lower     = true
   special   = false
