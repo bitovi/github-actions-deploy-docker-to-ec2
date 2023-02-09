@@ -3,7 +3,7 @@ resource "random_integer" "az_select" {
   max = length(data.aws_ec2_instance_type_offerings.region_azs.locations) - 1
 
   lifecycle {
-    ignore_changes = [ all ]
+    ignore_changes=all
   }
 }
 
