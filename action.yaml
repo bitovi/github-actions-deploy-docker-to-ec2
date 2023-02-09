@@ -125,6 +125,11 @@ inputs:
   additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
+  
+  # Ansible
+  application_mount_target:
+    description: "Directory path in application env to mount directory, default is `data`"
+    default: data
 outputs:
   vm_url:
     description: "The URL of the generated app"
@@ -182,6 +187,8 @@ runs:
         EFS_REPLICA_DESTINATION: ${{ inputs.replication_configuration_destination }}
         MOUNT_EFS_ID: ${{ inputs.mount_efs_id }}
         MOUNT_EFS_SECURITY_GROUP_ID: ${{ inputs.mount_efs_security_group_id }}
+
+        APPLICATION_MOUNT_TARGET: ${{ inputs.application_mount_target }}
 
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"

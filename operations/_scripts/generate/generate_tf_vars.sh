@@ -105,6 +105,11 @@ if [[ -n "$ADDITIONAL_TAGS" ]]; then
   additional_tags="additional_tags = ${ADDITIONAL_TAGS}"
 fi
 
+application_mount_target=
+if [[ -n "$APPLICATION_MOUNT_TARGET" ]]; then
+  application_mount_target="application_mount_target = \"${APPLICATION_MOUNT_TARGET}\""
+fi
+
 root_domain=
 if [[ -n "$ROOT_DOMAIN" ]]; then
   root_domain="root_domain = \"${ROOT_DOMAIN}\""
@@ -247,5 +252,8 @@ $mount_efs_security_group_id
 
 #-- Tags --#
 $additional_tags
+
+##-- ANSIBLE --##
+$application_mount_target
 
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars"

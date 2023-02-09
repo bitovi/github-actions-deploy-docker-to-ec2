@@ -186,3 +186,10 @@ variable "additional_tags" {
   description = "A list of strings that will be added to created resources"
   default     = {}
 }
+
+
+## -- --- -- ##
+variable application_mount_target {
+  type = string
+  description = "Directory path in application env to mount directory"
+}

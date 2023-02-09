@@ -30,19 +30,19 @@
 
 - name: Check if mount directory is present
   stat:
-    path: "{{ app_install_root }}/{{ app_repo_name }}/data"
+    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}"
   register: check_efs_mount
 
 - name: Creates efs mount directory
   file:
-    path: "{{ app_install_root }}/{{ app_repo_name }}/data"
+    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}"
     state: directory
   when: not check_efs_mount.stat.exists
 
 - name: Mount efs volume
   ansible.posix.mount:
     src: "{{ efs_url }}:/"
-    path: "{{ app_install_root }}/{{ app_repo_name }}/data"
+    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}"
     opts: "nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport"
     fstype: nfs4
     state: mounted

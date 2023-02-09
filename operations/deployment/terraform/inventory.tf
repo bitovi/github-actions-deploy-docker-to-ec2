@@ -13,6 +13,7 @@ resource "local_file" "ansible_inventory" {
     mount_efs           = local.mount_efs
     efs_url             = local.efs_url
     resource_identifier = var.aws_resource_identifier
+    application_mount_target  = var.application_mount_target
   })
   filename = format("%s/%s", abspath(path.root), "inventory.yaml")
 }
