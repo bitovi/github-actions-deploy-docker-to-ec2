@@ -39,6 +39,12 @@
     state: directory
   when: not check_efs_mount.stat.exists
 
+## Add to env file
+- name: Adding to .env
+  ansible.builtin.lineinfile:
+    path: "{{ app_install_root }}/{{ app_repo_name }}/.env"
+    line: HOST_DIR="{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}"
+
 - name: Mount efs volume
   ansible.posix.mount:
     src: "{{ efs_url }}:/"
