@@ -147,7 +147,6 @@ The following inputs can be used as `step.with` keys
 | `efs_zone_mapping` | JSON | Zone Mapping in the form of {\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":\[\"sg-abc123\"\]} } |
 | `efs_transition_to_inactive` | string | Indicates how long it takes to transition files to the IA storage class |
 | `replication_configuration_destination` | string | AWS Region to target for replication |
-| `mount_efs` | bool | Toggle to indicate whether to mount an existing EFS to the ec2 deployment |
 | `mount_efs_id` | string | ID of existing EFS |
 | `mount_efs_security_group_id` | string | ID of the primary security group used by the existing EFS |
 | `additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
@@ -192,7 +191,7 @@ Option 1, users have access to the `create_efs` attribute which will create a EF
 > :warning: Be very careful here! The **EFS is fully managed by Terraform**. Therefor **it will be destroyed upon stack destruction**.
 
 ### 2. Mount EFS
-Option 2, users have access to the `mount_efs` attribute. Requiring an existing EFS id and primary security group id the existing EFS will be attached to the ec2 security group to allow traffic.
+Option 2, users have access to the `mount_efs` attributes. Requiring an existing EFS id and optionally a primary security group id the existing EFS will be attached to the ec2 security group to allow traffic.
 
 ### EFS Zone Mapping
 An example EFS Zone mapping;

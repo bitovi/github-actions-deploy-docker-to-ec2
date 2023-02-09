@@ -88,8 +88,6 @@ inputs:
     description: Indicates how long it takes to transition files to the IA storage class
   replication_configuration_destination:
     description: "AWS Region to target for replication"
-  mount_efs:
-    description: Toggle to indicate whether to mount an existing EFS to the ec2 deployment
   mount_efs_id:
     description: ID of existing EFS
   mount_efs_security_group_id:
@@ -182,7 +180,6 @@ runs:
         EFS_ZONE_MAPPING: ${{ inputs.efs_zone_mapping }}
         EFS_TRANSITION_TO_INACTIVE: ${{ inputs.efs_transition_to_inactive }}
         EFS_REPLICA_DESTINATION: ${{ inputs.replication_configuration_destination }}
-        MOUNT_EFS: ${{ inputs.mount_efs }}
         MOUNT_EFS_ID: ${{ inputs.mount_efs_id }}
         MOUNT_EFS_SECURITY_GROUP_ID: ${{ inputs.mount_efs_security_group_id }}
 

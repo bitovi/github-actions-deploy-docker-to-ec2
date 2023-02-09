@@ -43,7 +43,7 @@ locals {
   }) : local.no_zone_mapping
 
   mount_target      = var.zone_mapping != null ? local.user_zone_mapping : (var.create_ha_efs == true ? local.ha_zone_mapping : (length(local.ec2_zone_mapping) > 0 ? local.ec2_zone_mapping : local.no_zone_mapping))
-  mount_efs         = var.mount_efs && var.mount_efs_security_group_id != null ? 1 : (var.create_efs ? 1 : 0)
+  mount_efs         = var.mount_efs_id != null && var.mount_efs_security_group_id != null ? true : (var.create_efs ? true : false)
   mount_efs_warning = var.mount_efs_security_group_id == null ? "To mount EFS specify the EFS ID as well as the primary security group id used by the EFS." : ""
 
   replica_destination  = var.replication_configuration_destination != null ? var.replication_configuration_destination : data.aws_region.current.name

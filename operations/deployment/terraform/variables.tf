@@ -140,12 +140,6 @@ variable "enable_efs_backup_policy" {
   description = "Toggle to indiciate whether the EFS should have a backup policy, default is `false`"
 }
 
-variable "mount_efs" {
-  type        = bool
-  description = "Toggle to indicate whether to mount an existing EFS to the ec2 deployment"
-  default     = false
-}
-
 variable "mount_efs_id" {
   type        = string
   description = "ID of existing EFS"

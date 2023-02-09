@@ -88,9 +88,14 @@ if [[ -n "$EFS_REPLICA_DESTINATION" ]];then
   replication_configuration_destination="replication_configuration_destination = \"${EFS_REPLICA_DESTINATION}\""
 fi
 
-mount_efs=
-if [[ -n "$MOUNT_EFS" ]];then
-  mount_efs="mount_efs = ${MOUNT_EFS}"
+mount_efs_id=
+if [[ -n "$MOUNT_EFS_ID" ]];then
+  mount_efs_id="mount_efs_id = \"${MOUNT_EFS_ID}\""
+fi
+
+mount_efs_security_group_id=
+if [[ -n "$MOUNT_EFS_SECURITY_GROUP_ID" ]];then
+  mount_efs_security_group_id="mount_efs_security_group_id = ${MOUNT_EFS_SECURITY_GROUP_ID}"
 fi
 
 #------------------------------------#
@@ -237,7 +242,8 @@ $enable_efs_backup_policy
 $efs_zone_mapping
 $efs_transition_to_inactive
 $replication_configuration_destination
-$mount_efs
+$mount_efs_id
+$mount_efs_security_group_id
 
 #-- Tags --#
 $additional_tags
