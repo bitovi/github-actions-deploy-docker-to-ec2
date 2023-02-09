@@ -17,7 +17,7 @@
     repo: 'https://github.com/aws/efs-utils'
     dest: /home/ubuntu/efs-utils
   become: yes
-  when: check_efs_utils.stat.exists
+  when: not check_efs_utils.stat.exists
 
 - name: Build amazon-efs-utils
   ansible.builtin.shell: 
@@ -26,7 +26,7 @@
       apt-get -y install ./build/amazon-efs-utils*deb
     chdir: /home/ubuntu/efs-utils
   become: yes
-  when: check_efs_utils.stat.exists
+  when: not check_efs_utils.stat.exists
 
 - name: Check if mount directory is present
   stat:
@@ -37,9 +37,9 @@
   file:
     path: "{{ app_install_root }}/{{ app_repo_name }}/data"
     state: directory
-  when: check_efs_mount.stat.exists
+  when: not check_efs_mount.stat.exists
 
-- name: Mount ephemeral SMB volume
+- name: Mount efs volume
   ansible.posix.mount:
     src: "{{ efs_url }}:/data"
     path: "{{ app_install_root }}/{{ app_repo_name }}/data"
@@ -47,4 +47,3 @@
     fstype: nfs4
     state: mounted
     boot: false
-  when: check_efs_mount.stat.exists
