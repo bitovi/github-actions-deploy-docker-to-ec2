@@ -1,7 +1,8 @@
 # UnMount EFS
 
-- name: mount efs
+- name: unmount efs
   ansible.builtin.shell: |
     cd {{ app_install_root }}/{{ app_repo_name }}
-    ./data
+    umount ./data
   become: true
+  ignore_errors: true
