@@ -95,7 +95,7 @@ fi
 
 mount_efs_security_group_id=
 if [[ -n "$MOUNT_EFS_SECURITY_GROUP_ID" ]];then
-  mount_efs_security_group_id="mount_efs_security_group_id = ${MOUNT_EFS_SECURITY_GROUP_ID}"
+  mount_efs_security_group_id="mount_efs_security_group_id = \"${MOUNT_EFS_SECURITY_GROUP_ID}\""
 fi
 
 #------------------------------------#
