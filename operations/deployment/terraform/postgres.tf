@@ -97,6 +97,29 @@ resource "random_password" "rds" {
   length = 10
 }
 
+// Creates a secret manager secret for the databse credentials
+resource "aws_secretsmanager_secret" "database_credentials" {
+   count = var.enable_postgres == "true" ? 1 : 0
+   name   = "${var.aws_resource_identifier_supershort}-ec2db-pub-${random_string.random.result}"
+}
+ 
+resource "aws_secretsmanager_secret_version" "database_credentials_sm_secret_version" {
+  secret_id = aws_secretsmanager_secret.postgress_credentials.id
+  secret_string = <<EOF
+   {
+    "key": "public_key",
+    "value": "${sensitive(random_password.rds.result)}"
+   }
+EOF
+}
+
+resource "random_string" "random" {
+  length    = 5
+  lower     = true
+  special   = false
+  numeric   = false
+}
+
 #####
 #output "aws_rds_postgres_subnets_input" {
 #  description = "The subnet ids input from the user"
