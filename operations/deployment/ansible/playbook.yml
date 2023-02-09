@@ -6,7 +6,9 @@
   - name: Include fetch
     include_tasks: tasks/fetch.yml
 
-  - name: Include mount
+  - name: Unmount efs
+    include_tasks: tasks/umount.yml
+  - name: Mount efs
     include_tasks: tasks/mount.yml
     when: mount_efs
 

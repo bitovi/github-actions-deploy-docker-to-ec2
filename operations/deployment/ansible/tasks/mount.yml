@@ -1,17 +1,23 @@
 # Mount EFS
 
 - name: Install required system packages
-  apt: name={{ item }} state=latest update_cache=yes
+  apt: name={{ item }} state=present update_cache=yes
   loop:
     - 'nfs-kernel-server'
     - 'git'
     - 'binutils'
+
+- name: Check if amazon-efs-utils is present
+  stat:
+    path: /home/ubuntu/efs-utils
+  register: check_efs_utils
 
 - name: Cloning amazon-efs-utils from GitHub
   ansible.builtin.git:
     repo: 'https://github.com/aws/efs-utils'
     dest: /home/ubuntu/efs-utils
   become: yes
+  when: check_efs_utils.stat.exists
 
 - name: Build amazon-efs-utils
   ansible.builtin.shell: |
@@ -19,6 +25,7 @@
     ./build-deb.sh
     apt-get -y install ./build/amazon-efs-utils*deb
   become: yes
+  when: check_efs_utils.stat.exists
 
 - name: mount efs
   ansible.builtin.shell: |
