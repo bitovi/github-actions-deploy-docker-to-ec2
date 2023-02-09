@@ -123,7 +123,7 @@ inputs:
   postgres_database_port:
     description: 'Postgres database port'
     required: false
-    defaults: '5432'
+    default: '5432'
 outputs:
   vm_url:
     description: "The URL of the generated app"
