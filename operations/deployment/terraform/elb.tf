@@ -29,11 +29,6 @@ resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
   ]
 }
 POLICY
-  
-  tags = {
-    Name = var.lb_access_bucket_name
-  }
-
 }
 
 resource "aws_s3_bucket_acl" "lb_access_logs_acl" {

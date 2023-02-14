@@ -6,6 +6,7 @@
   - name: Include fetch
     include_tasks: tasks/fetch.yml
 
+    # Notes on why unmounting is required can be found in umount.yaml
   - name: Unmount efs
     include_tasks: tasks/umount.yml
   - name: Mount efs

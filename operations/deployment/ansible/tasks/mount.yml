@@ -1,7 +1,11 @@
 # Mount EFS
 
 - name: Install required system packages
-  apt: name={{ item }} state=present update_cache=yes
+  apt: 
+    name: "{{ item }}" 
+    state: present 
+    update_cache: yes
+    cache_valid_time: 3600 # 1 hour
   loop:
     - 'nfs-kernel-server'
     - 'git'
@@ -16,8 +20,8 @@
   ansible.builtin.git:
     repo: 'https://github.com/aws/efs-utils'
     dest: /home/ubuntu/efs-utils
+    update: false
   become: yes
-  when: not check_efs_utils.stat.exists
 
 - name: Build amazon-efs-utils
   ansible.builtin.shell: 
