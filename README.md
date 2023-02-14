@@ -108,38 +108,57 @@ jobs:
 ## Customizing
 
 ### Inputs
+1. [Action Defaults](#action-defaults)
+1. [Secrets and Environment Variables](#secrets-and-environment-variables)
+1. [EC2](#ec2)
+1. [EFS](#efs)
+1. [Certificates](#certificates)
+1. [Load Balancer](#load-balancer)
+1. [Secret Manager](#secret-manager)
+1. [Application](#application)
+1. [Terraform](#terraform)
 
 The following inputs can be used as `step.with` keys
 
+#### **Action defaults Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `checkout`          | Boolean | Set to `false` if the code is already checked out (Default is `true`) (Optional) |
+| `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` - Will delete the elb_logs bucket after the destroy action runs. |
 | `aws_access_key_id` | String | AWS access key ID |
 | `aws_secret_access_key` | String | AWS secret access key |
 | `aws_session_token` | String | AWS session token |
 | `aws_default_region` | String | AWS default region |
-| `aws_ami_id` | String | AWS AMI ID. Will default to latest Ubuntu 22.04 server image (HVM). Accepts `ami-####` values |
-| `domain_name` | String | Define the root domain name for the application. e.g. bitovi.com' |
-| `sub_domain` | String | Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}` |
-| `root_domain` | Boolean | Deploy application to root domain. Will create root and www records. Defaults to `false` |
-| `cert_arn` | String | Define the certificate ARN to use for the application. **See note ** |
-| `create_root_cert` | Boolean | Generates and manage the root cert for the application. **See note **. Defaults to `false` |
-| `create_sub_cert` | Boolean | Generates and manage the sub-domain certificate for the application. **See note **. Defaults to `false` |
-| `no_cert` | Boolean | Set this to true if no certificate is present for the domain. **See note **. Defaults to `false` |
-| `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state. |
-| `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. (Default is `false`). `stack_destroy` must also be `true`|
+| `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources. |
+<hr/>
+<br/>
+<br/>
+
+#### **Secrets and Environment Variables Inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `aws_secret_env` | String | Secret name to pull environment variables from AWS Secret Manager. Check **Environment variables** note |
 | `repo_env` | String | `.env` file containing environment variables to be used with the app. Name defaults to `repo_env`. Check **Environment variables** note |
 | `dot_env` | String | `.env` file to be used with the app. This is the name of the [Github secret](https://docs.github.com/es/actions/security-guides/encrypted-secrets). Check **Environment variables** note |
 | `ghv_env` | String | `.env` file to be used with the app. This is the name of the [Github variables](https://docs.github.com/en/actions/learn-github-actions/variables). Check **Environment variables** note |
-| `aws_secret_env` | String | Secret name to pull environment variables from AWS Secret Manager. Check **Environment variables** note |
-| `app_port` | String | port to expose for the app |
-| `lb_port` | String | Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided |
-| `lb_healthcheck` | String | Load balancer health check string. Defaults to HTTP:app_port |
+<hr/>
+<br/>
+<br/>
+
+#### **EC2 Inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `aws_ami_id` | String | AWS AMI ID. Will default to latest Ubuntu 22.04 server image (HVM). Accepts `ami-###` values |
 | `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}` |
 | `ec2_instance_type` | String | The AWS IAM instance type to use. Default is t2.small. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference |
-| `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` - Will delete the elb_logs bucket after the destroy action runs. |
-| `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources. |
-| `app_directory` | String | Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance. Default is the root of the repo. |
+| `create_keypair_sm_entry` | Boolean | Generates and manage a secret manager entry that contains the public and private keys created for the ec2 instance. |
+<hr/>
+<br/>
+<br/>
+
+#### **EFS Inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
 | `create_efs` | bool | Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack |
 | `create_ha_efs` | bool | Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region) |
 | `create_efs_replica` | bool | Toggle to indiciate whether a read-only replica should be created for the EFS primary file system |
@@ -149,11 +168,54 @@ The following inputs can be used as `step.with` keys
 | `replication_configuration_destination` | string | AWS Region to target for replication |
 | `mount_efs_id` | string | ID of existing EFS |
 | `mount_efs_security_group_id` | string | ID of the primary security group used by the existing EFS |
-| `create_keypair_sm_entry` | Boolean | Generates and manage a secret manager entry that contains the public and private keys created for the ec2 instance. |
-| `additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
-| `application_mount_target` | string | Directory path in application env to mount directory, default is `data` |
+| `application_mount_target` | string | The application_mount_target input represents the folder path within the EC2 instance to the data directory. The default is; `/user/ubuntu/<application_repo>/data`. Additionally this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
+| `data_mount_target` | string | The data_mount_target input represents the target volume directory within the docker compose container. The default is `/data`. Additionally this value is loaded into the docker-compose container `.env` file as `TARGET_DIR` |
 | `efs_mount_target` | string | Directory path in efs to mount directory to, default is `/` |
-| `data_mount_target` | string | Directory path in docker compose to mount directory to, default is `/data` |
+<hr/>
+<br/>
+<br/>
+
+#### **Certificate Inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `domain_name` | String | Define the root domain name for the application. e.g. bitovi.com' |
+| `sub_domain` | String | Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}` |
+| `root_domain` | Boolean | Deploy application to root domain. Will create root and www records. Defaults to `false` |
+| `cert_arn` | String | Define the certificate ARN to use for the application. **See note ** |
+| `create_root_cert` | Boolean | Generates and manage the root cert for the application. **See note **. Defaults to `false` |
+| `create_sub_cert` | Boolean | Generates and manage the sub-domain certificate for the application. **See note **. Defaults to `false` |
+| `no_cert` | Boolean | Set this to true if no certificate is present for the domain. **See note **. Defaults to `false` |
+<hr/>
+<br/>
+<br/>
+
+#### **Load Balancer Inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `lb_port` | String | Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided |
+| `lb_healthcheck` | String | Load balancer health check string. Defaults to HTTP:app_port |
+<hr/>
+<br/>
+<br/>
+
+#### **Application Inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `app_port` | String | port to expose for the app |
+| `app_directory` | String | Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance. Default is the root of the repo. |
+<hr/>
+<br/>
+<br/>
+
+#### **Terraform Inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state. |
+| `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. (Default is `false`). `stack_destroy` must also be `true`|
+| `additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
+<hr/>
+<br/>
+<br/>
 
 ## Note about resource identifiers
 
