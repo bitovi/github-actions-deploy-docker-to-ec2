@@ -192,16 +192,17 @@ variable "additional_tags" {
 variable "application_mount_target" {
   type        = string
   description = "Directory path in application env to mount directory"
-}
-
-variable "efs_mount_target" {
-  type        = string
-  description = "Directory path in efs to mount to"
-  default     = null
+  default = "data"
 }
 
 variable "data_mount_target" {
   type        = string
   description = "Directory path in efs to mount to"
   default     = "/data"
+}
+
+variable "efs_mount_target" {
+  type        = string
+  description = "Directory path in efs to mount to"
+  default     = null
 }

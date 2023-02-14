@@ -49,7 +49,8 @@ data "aws_subnet" "defaultf" {
 }
 
 locals {
-  preferred_az = var.availability_zone != null ? var.availability_zone : data.aws_ec2_instance_type_offerings.region_azs.locations[random_integer.az_select.result]
+  aws_ec2_instance_type_offerings = sort(data.aws_ec2_instance_type_offerings.region_azs.locations)
+  preferred_az = var.availability_zone != null ? var.availability_zone : local.aws_ec2_instance_type_offerings[random_integer.az_select.result]
 }
 
 data "aws_ec2_instance_type_offerings" "region_azs" {
