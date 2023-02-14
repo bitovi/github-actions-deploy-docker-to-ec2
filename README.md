@@ -108,15 +108,15 @@ jobs:
 ## Customizing
 
 ### Inputs
-1. [Action Defaults](#action-defaults)
-1. [Secrets and Environment Variables](#secrets-and-environment-variables)
-1. [EC2](#ec2)
-1. [EFS](#efs)
-1. [Certificates](#certificates)
-1. [Load Balancer](#load-balancer)
-1. [Secret Manager](#secret-manager)
-1. [Application](#application)
-1. [Terraform](#terraform)
+1. [Action Defaults](#action-defaults-inputs)
+1. [Secrets and Environment Variables](#secrets-and-environment-variables-inputs)
+1. [EC2](#ec2-inputs)
+1. [EFS](#efs-inputs)
+1. [Certificates](#certificates-inputs)
+1. [Load Balancer](#load-balancer-inputs)
+1. [Secret Manager](#secret-manager-inputs)
+1. [Application](#application-inputs)
+1. [Terraform](#terraform-inputs)
 
 The following inputs can be used as `step.with` keys
 
