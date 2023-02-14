@@ -118,13 +118,19 @@ inputs:
   no_cert:
     description: 'Makes the application not to use a certificate by disabling certificate lookup.'
     required: false
-  
+    
   # Terraform
   targets:
     description: 'A list of targets to create before the full stack creation. Example: `'
   additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
+   
+  # Secret Manager
+  create_keypair_sm_entry:
+    required: false
+    description: "Generates and manage a secret manager entry that contains the public and private keys created for the ec2 instance."
+    default: false
   
   # Ansible
   application_mount_target:
@@ -180,6 +186,7 @@ runs:
         NO_CERT: ${{ inputs.no_cert }}
         BITOPS_FAST_FAIL: true
         APP_DIRECTORY: ${{ inputs.app_directory }}
+        CREATE_KEYPAIR_SM_ENTRY: ${{ inputs.create_keypair_sm_entry }}
         ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
 
         CREATE_EFS: ${{ inputs.create_efs }}

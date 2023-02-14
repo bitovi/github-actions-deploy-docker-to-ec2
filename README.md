@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: deploy
-        uses: bitovi/github-actions-deploy-docker-to-ec2@v0.4.1
+        uses: bitovi/github-actions-deploy-docker-to-ec2@v0.4.6
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -89,7 +89,7 @@ jobs:
     steps:
     - id: deploy
       name: Deploy
-      uses: bitovi/github-actions-deploy-docker-to-ec2@v0.4.1
+      uses: bitovi/github-actions-deploy-docker-to-ec2@v0.4.6
       with:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -149,6 +149,7 @@ The following inputs can be used as `step.with` keys
 | `replication_configuration_destination` | string | AWS Region to target for replication |
 | `mount_efs_id` | string | ID of existing EFS |
 | `mount_efs_security_group_id` | string | ID of the primary security group used by the existing EFS |
+| `create_keypair_sm_entry` | Boolean | Generates and manage a secret manager entry that contains the public and private keys created for the ec2 instance. |
 | `additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
 | `application_mount_target` | string | Directory path in application env to mount directory, default is `data` |
 | `efs_mount_target` | string | Directory path in efs to mount directory to, default is `/` |

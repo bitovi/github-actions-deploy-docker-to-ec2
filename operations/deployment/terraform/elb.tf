@@ -1,9 +1,14 @@
 data "aws_elb_service_account" "main" {}
 resource "aws_s3_bucket" "lb_access_logs" {
   bucket = var.lb_access_bucket_name
-
   force_destroy = true
+  tags = {
+    Name = var.lb_access_bucket_name
+  }
+}
 
+resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
+  bucket = aws_s3_bucket.lb_access_logs.id
   policy = <<POLICY
 {
   "Id": "Policy",
@@ -24,10 +29,11 @@ resource "aws_s3_bucket" "lb_access_logs" {
   ]
 }
 POLICY
-
+  
   tags = {
     Name = var.lb_access_bucket_name
   }
+
 }
 
 resource "aws_s3_bucket_acl" "lb_access_logs_acl" {

@@ -15,7 +15,7 @@ terraform {
   required_providers {
     aws = {
       source  = \"hashicorp/aws\"
-      version = \"~> 4.16\"
+      version = \"~> 4.30\"
     }
 
   }
@@ -36,5 +36,4 @@ provider \"aws\" {
     )
   }
 }
-
 " > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/provider.tf"

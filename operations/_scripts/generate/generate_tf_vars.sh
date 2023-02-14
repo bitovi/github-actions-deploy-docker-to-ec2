@@ -210,6 +210,11 @@ if [[ -n "$EC2_INSTANCE_PROFILE" ]]; then
   app_install_root="app_install_root = \"/home/ubuntu\""
 fi
 
+create_keypair_sm_entry=
+if [[ -n "$CREATE_KEYPAIR_SM_ENTRY" ]]; then
+  create_keypair_sm_entry="create_keypair_sm_entry = \"${CREATE_KEYPAIR_SM_ENTRY}\""
+fi
+
 # -------------------------------------------------- #
 
 echo "
@@ -259,6 +264,9 @@ $efs_transition_to_inactive
 $replication_configuration_destination
 $mount_efs_id
 $mount_efs_security_group_id
+
+#-- Security Manager --#
+$create_keypair_sm_entry
 
 #-- Tags --#
 $additional_tags
