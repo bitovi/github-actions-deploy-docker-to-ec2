@@ -59,7 +59,7 @@ resource "aws_efs_file_system" "efs" {
   encrypted      = true
 
   lifecycle_policy {
-    transition_to_ia = var.transition_to_inactive
+    transition_to_ia = var.aws_efs_transition_to_inactive
   }
 
   tags = {

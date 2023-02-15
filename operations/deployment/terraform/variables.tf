@@ -162,7 +162,7 @@ variable "aws_efs_zone_mapping" {
   default     = null
 }
 
-variable "aws_transition_to_inactive" {
+variable "aws_efs_transition_to_inactive" {
   type        = string
   default     = "AFTER_30_DAYS"
   description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system#transition_to_ia"
