@@ -116,43 +116,43 @@ variable "no_cert" {
 
 
 ## -- EFS -- ##
-variable "create_efs" {
+variable "aws_create_efs" {
   type        = bool
   description = "Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack."
   default     = false
 }
 
-variable "create_ha_efs" {
+variable "aws_create_ha_efs" {
   type        = bool
   description = "Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)."
   default     = false
 }
 
-variable "create_efs_replica" {
+variable "aws_create_efs_replica" {
   type        = bool
   description = "Toggle to indiciate whether a read-only replica should be created for the EFS primary file system"
   default     = false
 }
 
-variable "enable_efs_backup_policy" {
+variable "aws_enable_efs_backup_policy" {
   type        = bool
   default     = false
   description = "Toggle to indiciate whether the EFS should have a backup policy, default is `false`"
 }
 
-variable "mount_efs_id" {
+variable "aws_mount_efs_id" {
   type        = string
   description = "ID of existing EFS"
   default     = null
 }
 
-variable "mount_efs_security_group_id" {
+variable "aws_mount_efs_security_group_id" {
   type        = string
   description = "ID of the primary security group used by the existing EFS"
   default     = null
 }
 
-variable "zone_mapping" {
+variable "aws_efs_zone_mapping" {
   type = map(object({
     subnet_id       = string
     security_groups = list(string)
@@ -162,13 +162,13 @@ variable "zone_mapping" {
   default     = null
 }
 
-variable "transition_to_inactive" {
+variable "aws_transition_to_inactive" {
   type        = string
   default     = "AFTER_30_DAYS"
   description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system#transition_to_ia"
 }
 
-variable "replication_configuration_destination" {
+variable "aws_replication_configuration_destination" {
   type        = string
   default     = null
   description = "AWS Region to target for replication"

@@ -252,12 +252,12 @@ This is necessary due to a limitation that prevents certificates from being chan
 Users looking to add non-ephemeral storage to their created EC2 instance have the following options; create a new efs as a part of the ec2 deployment stack, or mounting an existing EFS. 
 
 ### 1. Create EFS
-Option 1, users have access to the `create_efs` attribute which will create a EFS resource and mount it to the EC2 instance in the application directory at the path: "app_root/data".
+Option 1, you have access to the `create_efs` attribute which will create a EFS resource and mount it to the EC2 instance in the application directory at the path: "app_root/data".
 
 > :warning: Be very careful here! The **EFS is fully managed by Terraform**. Therefor **it will be destroyed upon stack destruction**.
 
 ### 2. Mount EFS
-Option 2, users have access to the `mount_efs` attributes. Requiring an existing EFS id and optionally a primary security group id the existing EFS will be attached to the ec2 security group to allow traffic.
+Option 2, you have access to the `mount_efs` attributes. Requiring an existing EFS id and optionally a primary security group id the existing EFS will be attached to the ec2 security group to allow traffic.
 
 ### EFS Zone Mapping
 An example EFS Zone mapping;

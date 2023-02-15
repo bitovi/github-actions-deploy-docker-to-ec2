@@ -20,7 +20,6 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 
 # Generate terraform variables
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_tf_vars.sh
-cat ${GITHUB_ACTION_PATH}/operations/deployment/terraform/terraform.tfvars
 
 # Generate dot_env
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_dot_env.sh
@@ -37,7 +36,6 @@ cat $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars"
-cat $GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars
 echo "ls GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
 ls "$GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
 
@@ -50,7 +48,7 @@ if [ "$STACK_DESTROY" == "true" ]; then
 fi
 echo "::endgroup::"
 
-if [[ $GHA_TESTING == "true" ]]; then
+if [[ $SKIP_BITOPS_RUN == "true" ]]; then
   exit 1
 fi
 
