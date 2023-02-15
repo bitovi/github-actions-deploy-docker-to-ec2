@@ -53,49 +53,49 @@ if [[ -n "$NO_CERT" ]];then
 fi
 
 #----- EFS -----#
-create_efs=
-if [[ -n "$CREATE_EFS" ]];then
-  create_efs="create_efs = \"${CREATE_EFS}\""
+aws_create_efs=
+if [[ -n "$AWS_CREATE_EFS" ]];then
+  aws_create_efs="aws_create_efs = \"${AWS_CREATE_EFS}\""
 fi
 
-create_ha_efs=
-if [[ -n "$CREATE_HA_EFS" ]];then
-  create_ha_efs="create_ha_efs = \"${CREATE_HA_EFS}\""
+aws_create_ha_efs=
+if [[ -n "$AWS_CREATE_HA_EFS" ]];then
+  aws_create_ha_efs="aws_create_ha_efs = \"${AWS_CREATE_HA_EFS}\""
 fi
 
-create_efs_replica=
-if [[ -n "$CREATE_EFS_REPLICA" ]];then
-  create_efs_replica="create_efs_replica = \"${CREATE_EFS_REPLICA}\""
+aws_create_efs_replica=
+if [[ -n "$AWS_CREATE_EFS_REPLICA" ]];then
+  aws_create_efs_replica="aws_create_efs_replica = \"${AWS_CREATE_EFS_REPLICA}\""
 fi
 
-enable_efs_backup_policy=
-if [[ -n "$ENABLE_EFS_BACKUP_POLICY" ]];then
-  enable_efs_backup_policy="enable_efs_backup_policy = \"${ENABLE_EFS_BACKUP_POLICY}\""
+aws_enable_efs_backup_policy=
+if [[ -n "$AWS_ENABLE_EFS_BACKUP_POLICY" ]];then
+  aws_enable_efs_backup_policy="aws_enable_efs_backup_policy = \"${AWS_ENABLE_EFS_BACKUP_POLICY}\""
 fi
 
-efs_zone_mapping=
-if [[ -n "$EFS_ZONE_MAPPING" ]];then
-  efs_zone_mapping="zone_mapping = ${EFS_ZONE_MAPPING}"
+aws_efs_zone_mapping=
+if [[ -n "$AWS_EFS_ZONE_MAPPING" ]];then
+  aws_efs_zone_mapping="aws_efs_zone_mapping = ${AWS_EFS_ZONE_MAPPING}"
 fi
 
-efs_transition_to_inactive=
-if [[ -n "$EFS_TRANSITION_TO_INACTIVE" ]];then
-  efs_transition_to_inactive="efs_transition_to_inactive = \"${EFS_TRANSITION_TO_INACTIVE}\""
+aws_efs_transition_to_inactive=
+if [[ -n "$AWS_EFS_TRANSITION_TO_INACTIVE" ]];then
+  aws_efs_transition_to_inactive="aws_efs_transition_to_inactive = \"${AWS_EFS_TRANSITION_TO_INACTIVE}\""
 fi
 
-replication_configuration_destination=
-if [[ -n "$EFS_REPLICA_DESTINATION" ]];then
-  replication_configuration_destination="replication_configuration_destination = \"${EFS_REPLICA_DESTINATION}\""
+aws_replication_configuration_destination=
+if [[ -n "$AWS_EFS_REPLICA_DESTINATION" ]];then
+  aws_replication_configuration_destination="aws_replication_configuration_destination = \"${AWS_EFS_REPLICA_DESTINATION}\""
 fi
 
-mount_efs_id=
-if [[ -n "$MOUNT_EFS_ID" ]];then
-  mount_efs_id="mount_efs_id = \"${MOUNT_EFS_ID}\""
+aws_mount_efs_id=
+if [[ -n "$AWS_MOUNT_EFS_ID" ]];then
+  aws_mount_efs_id="aws_mount_efs_id = \"${AWS_MOUNT_EFS_ID}\""
 fi
 
-mount_efs_security_group_id=
-if [[ -n "$MOUNT_EFS_SECURITY_GROUP_ID" ]];then
-  mount_efs_security_group_id="mount_efs_security_group_id = \"${MOUNT_EFS_SECURITY_GROUP_ID}\""
+aws_mount_efs_security_group_id=
+if [[ -n "$AWS_MOUNT_EFS_SECURITY_GROUP_ID" ]];then
+  aws_mount_efs_security_group_id="aws_mount_efs_security_group_id = \"${AWS_MOUNT_EFS_SECURITY_GROUP_ID}\""
 fi
 
 #------------------------------------#
@@ -255,15 +255,15 @@ $create_sub_cert
 $no_cert
 
 #-- EFS --#
-$create_efs
-$create_ha_efs
-$create_efs_replica
-$enable_efs_backup_policy
-$efs_zone_mapping
-$efs_transition_to_inactive
-$replication_configuration_destination
-$mount_efs_id
-$mount_efs_security_group_id
+$aws_create_efs
+$aws_create_ha_efs
+$aws_create_efs_replica
+$aws_enable_efs_backup_policy
+$aws_efs_zone_mapping
+$aws_efs_transition_to_inactive
+$aws_replication_configuration_destination
+$aws_mount_efs_id
+$aws_mount_efs_security_group_id
 
 #-- Security Manager --#
 $create_keypair_sm_entry

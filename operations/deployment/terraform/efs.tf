@@ -38,17 +38,17 @@ locals {
     }
   }) : null
   ha_zone_mapping = merge(local.auto_ha_availability_zonea, local.auto_ha_availability_zoneb, local.auto_ha_availability_zonec, local.auto_ha_availability_zoned, local.auto_ha_availability_zonee, local.auto_ha_availability_zonef)
-  user_zone_mapping = var.zone_mapping != null ? ({
-    for k, val in var.zone_mapping : "${data.aws_region.current.name}${k}" => val
+  user_zone_mapping = var.aws_efs_zone_mapping != null ? ({
+    for k, val in var.aws_efs_zone_mapping : "${data.aws_region.current.name}${k}" => val
   }) : local.no_zone_mapping
 
-  mount_target      = var.zone_mapping != null ? local.user_zone_mapping : (var.create_ha_efs == true ? local.ha_zone_mapping : (length(local.ec2_zone_mapping) > 0 ? local.ec2_zone_mapping : local.no_zone_mapping))
-  mount_efs         = var.mount_efs_id != null && var.mount_efs_security_group_id != null ? true : (var.create_efs ? true : false)
-  mount_efs_warning = var.mount_efs_security_group_id == null ? "To mount EFS specify the EFS ID as well as the primary security group id used by the EFS." : ""
+  mount_target      = var.aws_efs_zone_mapping != null ? local.user_zone_mapping : (var.aws_create_ha_efs == true ? local.ha_zone_mapping : (length(local.ec2_zone_mapping) > 0 ? local.ec2_zone_mapping : local.no_zone_mapping))
+  mount_efs         = var.aws_mount_efs_id != null && var.aws_mount_efs_security_group_id != null ? true : (var.aws_create_efs ? true : false)
+  mount_efs_warning = var.aws_mount_efs_security_group_id == null ? "To mount EFS specify the EFS ID as well as the primary security group id used by the EFS." : ""
 
-  replica_destination  = var.replication_configuration_destination != null ? var.replication_configuration_destination : data.aws_region.current.name
-  create_mount_targets = var.create_efs || var.create_ha_efs ? local.mount_target : {}
-  create_efs           = var.create_efs == true ? true : (var.create_ha_efs == true ? true : false)
+  replica_destination  = var.aws_replication_configuration_destination != null ? var.aws_replication_configuration_destination : data.aws_region.current.name
+  create_mount_targets = var.aws_create_efs || var.aws_create_ha_efs ? local.mount_target : {}
+  create_efs           = var.aws_create_efs == true ? true : (var.aws_create_ha_efs == true ? true : false)
 }
 
 # ---------------------CREATE--------------------------- #
@@ -101,7 +101,7 @@ resource "aws_security_group" "efs_security_group" {
 }
 
 resource "aws_efs_backup_policy" "efs_policy" {
-  count          = var.enable_efs_backup_policy && local.create_efs ? 1 : 0
+  count          = var.aws_enable_efs_backup_policy && local.create_efs ? 1 : 0
   file_system_id = aws_efs_file_system.efs[0].id
 
   backup_policy {
@@ -110,7 +110,7 @@ resource "aws_efs_backup_policy" "efs_policy" {
 }
 
 resource "aws_efs_replication_configuration" "efs_rep_config" {
-  count                 = var.create_efs_replica && local.create_efs ? 1 : 0
+  count                 = var.aws_create_efs_replica && local.create_efs ? 1 : 0
   source_file_system_id = aws_efs_file_system.efs[0].id
 
   destination {
@@ -140,7 +140,7 @@ resource "aws_efs_mount_target" "efs_mount_targets" {
 
 # Whitelist the EFS security group for the EC2 Security Group
 resource "aws_security_group_rule" "ingress_ec2_to_efs" {
-  count                    = var.create_efs ? 1 : 0
+  count                    = local.create_efs ? 1 : 0
   type                     = "ingress"
   description              = "${var.aws_resource_identifier} - EFS"
   from_port                = 443
@@ -151,7 +151,7 @@ resource "aws_security_group_rule" "ingress_ec2_to_efs" {
 }
 
 resource "aws_security_group_rule" "ingress_efs_to_ec2" {
-  count                    = var.create_efs ? 1 : 0
+  count                    = local.create_efs ? 1 : 0
   type                     = "ingress"
   description              = "${var.aws_resource_identifier} - NFS EFS"
   from_port                = 443
@@ -164,36 +164,36 @@ resource "aws_security_group_rule" "ingress_efs_to_ec2" {
 
 # ---------------------MOUNT--------------------------- #
 data "aws_efs_file_system" "mount_efs" {
-  count          = var.mount_efs_id != null ? 1 : 0
-  file_system_id = var.mount_efs_id
+  count          = var.aws_mount_efs_id != null ? 1 : 0
+  file_system_id = var.aws_mount_efs_id
 }
 
 resource "aws_security_group_rule" "mount_ingress_ec2_to_efs" {
-  count                    = var.mount_efs_security_group_id != null ? 1 : 0
+  count                    = var.aws_mount_efs_security_group_id != null ? 1 : 0
   type                     = "ingress"
   description              = "${var.aws_resource_identifier} - EFS"
   from_port                = 443
   to_port                  = 443
   protocol                 = "all"
-  source_security_group_id = var.mount_efs_security_group_id
+  source_security_group_id = var.aws_mount_efs_security_group_id
   security_group_id        = data.aws_security_group.ec2_security_group.id
 }
 
 resource "aws_security_group_rule" "mount_ingress_efs_to_ec2" {
-  count                    = var.mount_efs_security_group_id != null ? 1 : 0
+  count                    = var.aws_mount_efs_security_group_id != null ? 1 : 0
   type                     = "ingress"
   description              = "${var.aws_resource_identifier} - NFS EFS"
   from_port                = 443
   to_port                  = 443
   protocol                 = "all"
   source_security_group_id = data.aws_security_group.ec2_security_group.id
-  security_group_id        = var.mount_efs_security_group_id
+  security_group_id        = var.aws_mount_efs_security_group_id
 }
 
 
 # -------------------------------------------------------- #
 locals {
-  create_efs_url = var.create_efs ? aws_efs_file_system.efs[0].dns_name : ""
-  mount_efs_url  = var.mount_efs_id != null ? data.aws_efs_file_system.mount_efs[0].dns_name : ""
+  create_efs_url = var.aws_create_efs ? aws_efs_file_system.efs[0].dns_name : ""
+  mount_efs_url  = var.aws_mount_efs_id != null ? data.aws_efs_file_system.mount_efs[0].dns_name : ""
   efs_url        = local.create_efs_url != "" ? local.create_efs_url : local.mount_efs_url
 }

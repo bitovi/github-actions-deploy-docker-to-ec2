@@ -74,23 +74,23 @@ inputs:
     required: false
   
   # EFS
-  create_efs:
+  aws_create_efs:
     description: "Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack"
-  create_ha_efs:
+  aws_create_ha_efs:
     description: Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)
-  create_efs_replica:
+  aws_create_efs_replica:
     description: Toggle to indiciate whether a read-only replica should be created for the EFS primary file system
-  enable_efs_backup_policy:
+  aws_enable_efs_backup_policy:
     description: Toggle to indiciate whether the EFS should have a backup policy, default is `false`
-  efs_zone_mapping:
+  aws_efs_zone_mapping:
     description: Information on Zone Mapping can be found in the [README.md](README.md#efs-zone-mapping)
-  efs_transition_to_inactive:
+  aws_efs_transition_to_inactive:
     description: Indicates how long it takes to transition files to the IA storage class
-  replication_configuration_destination:
+  aws_replication_configuration_destination:
     description: "AWS Region to target for replication"
-  mount_efs_id:
+  aws_mount_efs_id:
     description: ID of existing EFS
-  mount_efs_security_group_id:
+  aws_mount_efs_security_group_id:
     description: ID of the primary security group used by the existing EFS
   
   # Stack management
@@ -189,15 +189,15 @@ runs:
         CREATE_KEYPAIR_SM_ENTRY: ${{ inputs.create_keypair_sm_entry }}
         ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
 
-        CREATE_EFS: ${{ inputs.create_efs }}
-        CREATE_HA_EFS: ${{ inputs.create_ha_efs }}
-        CREATE_EFS_REPLICA: ${{ inputs.create_efs_replica }}
-        ENABLE_EFS_BACKUP_POLICY: ${{ inputs.enable_efs_backup_policy }}
-        EFS_ZONE_MAPPING: ${{ inputs.efs_zone_mapping }}
-        EFS_TRANSITION_TO_INACTIVE: ${{ inputs.efs_transition_to_inactive }}
-        EFS_REPLICA_DESTINATION: ${{ inputs.replication_configuration_destination }}
-        MOUNT_EFS_ID: ${{ inputs.mount_efs_id }}
-        MOUNT_EFS_SECURITY_GROUP_ID: ${{ inputs.mount_efs_security_group_id }}
+        AWS_CREATE_EFS: ${{ inputs.aws_create_efs }}
+        AWS_CREATE_HA_EFS: ${{ inputs.aws_create_ha_efs }}
+        AWS_CREATE_EFS_REPLICA: ${{ inputs.aws_create_efs_replica }}
+        AWS_ENABLE_EFS_BACKUP_POLICY: ${{ inputs.aws_enable_efs_backup_policy }}
+        AWS_EFS_ZONE_MAPPING: ${{ inputs.aws_efs_zone_mapping }}
+        AWS_EFS_TRANSITION_TO_INACTIVE: ${{ inputs.aws_efs_transition_to_inactive }}
+        AWS_EFS_REPLICA_DESTINATION: ${{ inputs.aws_replication_configuration_destination }}
+        AWS_MOUNT_EFS_ID: ${{ inputs.aws_mount_efs_id }}
+        AWS_MOUNT_EFS_SECURITY_GROUP_ID: ${{ inputs.aws_mount_efs_security_group_id }}
 
         APPLICATION_MOUNT_TARGET: ${{ inputs.application_mount_target }}
         EFS_MOUNT_TARGET: ${{ inputs.efs_mount_target }}

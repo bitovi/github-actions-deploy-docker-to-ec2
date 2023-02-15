@@ -159,15 +159,15 @@ The following inputs can be used as `step.with` keys
 #### **EFS Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `create_efs` | bool | Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack |
-| `create_ha_efs` | bool | Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region) |
-| `create_efs_replica` | bool | Toggle to indiciate whether a read-only replica should be created for the EFS primary file system |
-| `enable_efs_backup_policy` | bool | Toggle to indiciate whether the EFS should have a backup policy |
-| `efs_zone_mapping` | JSON | Zone Mapping in the form of {\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":\[\"sg-abc123\"\]} } |
-| `efs_transition_to_inactive` | string | Indicates how long it takes to transition files to the IA storage class |
-| `replication_configuration_destination` | string | AWS Region to target for replication |
-| `mount_efs_id` | string | ID of existing EFS |
-| `mount_efs_security_group_id` | string | ID of the primary security group used by the existing EFS |
+| `aws_create_efs` | bool | Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack |
+| `aws_create_ha_efs` | bool | Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region) |
+| `aws_create_efs_replica` | bool | Toggle to indiciate whether a read-only replica should be created for the EFS primary file system |
+| `aws_enable_efs_backup_policy` | bool | Toggle to indiciate whether the EFS should have a backup policy |
+| `aws_efs_zone_mapping` | JSON | Zone Mapping in the form of {\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":\[\"sg-abc123\"\]} } |
+| `aws_efs_transition_to_inactive` | string | Indicates how long it takes to transition files to the IA storage class |
+| `aws_replication_configuration_destination` | string | AWS Region to target for replication |
+| `aws_mount_efs_id` | string | ID of existing EFS |
+| `aws_mount_efs_security_group_id` | string | ID of the primary security group used by the existing EFS |
 | `application_mount_target` | string | The application_mount_target input represents the folder path within the EC2 instance to the data directory. The default is; `/user/ubuntu/<application_repo>/data`. Additionally this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
 | `data_mount_target` | string | The data_mount_target input represents the target volume directory within the docker compose container. The default is `/data`. Additionally this value is loaded into the docker-compose container `.env` file as `TARGET_DIR` |
 | `efs_mount_target` | string | Directory path in efs to mount directory to, default is `/` |
