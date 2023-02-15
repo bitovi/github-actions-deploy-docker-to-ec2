@@ -44,11 +44,11 @@
   when: not check_efs_mount.stat.exists
 
 ## Add to env file
-- name: Adding to .env
+- name: Adding `HOST_DIR` to application .env
   ansible.builtin.lineinfile:
     path: "{{ app_install_root }}/{{ app_repo_name }}/.env"
     line: HOST_DIR="{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}"
-- name: Adding to .env
+- name: Adding `TARGET_DIR` to application .env
   ansible.builtin.lineinfile:
     path: "{{ app_install_root }}/{{ app_repo_name }}/.env"
     line: TARGET_DIR="{{ data_mount_target }}"
