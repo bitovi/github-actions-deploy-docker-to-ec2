@@ -4,10 +4,13 @@ branding:
   icon: upload-cloud
   color: red
 inputs:
+  # Checkout
   checkout:
     description: 'Specifies if this action should checkout the code'
     required: false
     default: 'true'
+  
+  # AWS
   aws_access_key_id:
     description: 'AWS access key ID'
     required: true
@@ -19,12 +22,11 @@ inputs:
     required: false
   aws_default_region:
     description: 'AWS default region'
-    required: true
-    default: 'us-east-1'
+    default: us-east-1
+    required: false
   aws_ami_id:
     description: 'AWS AMI ID. Will default to the latest Ubuntu 22.04 server image (HVM) '
     required: false
-    default: ''
   tf_state_bucket:
     description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-{branch}-tf-state`'
     required: false
@@ -32,6 +34,10 @@ inputs:
     description: 'Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. `stack_destroy` must also be `true`'
     required: false
     default: 'false'
+  aws_resource_identifier:
+    description: 'Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources.'
+  
+  # ENV files
   repo_env:
     description: 'File containing environment variables to be used with the app'
     required: false
@@ -46,26 +52,52 @@ inputs:
     description: 'Secret name to pull env variables from AWS Secret Manager'
     required: false
     default: ''
+  
+  # Application
+  app_directory:
+    description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo.'
   app_port:
     description: 'Port to expose for the app'
     required: false
-    default: '3000'
   lb_port:
     description: 'Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided'
     required: false
   lb_healthcheck: 
     description: 'Load balancer health check string. Defaults to HTTP:app_port'
     required: false
+  
+  # EC2 Instance
   ec2_instance_profile:
     description: 'The AWS IAM instance profile to use for the EC2 instance'
   ec2_instance_type: 
     description: 'The AWS Instance type'
     required: false
-    default: 't2.small'
+  
+  # EFS
+  aws_create_efs:
+    description: "Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack"
+  aws_create_ha_efs:
+    description: Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)
+  aws_create_efs_replica:
+    description: Toggle to indiciate whether a read-only replica should be created for the EFS primary file system
+  aws_enable_efs_backup_policy:
+    description: Toggle to indiciate whether the EFS should have a backup policy, default is `false`
+  aws_efs_zone_mapping:
+    description: Information on Zone Mapping can be found in the [README.md](README.md#efs-zone-mapping)
+  aws_efs_transition_to_inactive:
+    description: Indicates how long it takes to transition files to the IA storage class
+  aws_replication_configuration_destination:
+    description: "AWS Region to target for replication"
+  aws_mount_efs_id:
+    description: ID of existing EFS
+  aws_mount_efs_security_group_id:
+    description: ID of the primary security group used by the existing EFS
+  
+  # Stack management
   stack_destroy:
     description: 'Set to "true" to Destroy the stack. Will delete the elb_logs bucket after the destroy action runs.'
-  aws_resource_identifier:
-    description: 'Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources.'
+  
+  # Domains
   domain_name:
     description: 'Define the root domain name for the application. e.g. app.com'
     required: false
@@ -86,16 +118,28 @@ inputs:
   no_cert:
     description: 'Makes the application not to use a certificate by disabling certificate lookup.'
     required: false
-  app_directory:
-    description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo.'
+    
+  # Terraform
+  targets:
+    description: 'A list of targets to create before the full stack creation. Example: `'
+  additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+   
+  # Secret Manager
   create_keypair_sm_entry:
     required: false
     description: "Generates and manage a secret manager entry that contains the public and private keys created for the ec2 instance."
     default: false
-  additional_tags:
-    description: 'A list of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
-    required: false
-    default: '{}'
+  
+  # Ansible
+  application_mount_target:
+    description: "Directory path in application env to mount directory, default is `data`"
+    default: data
+  data_mount_target:
+    description: "Directory path within docker env to mount directory to, default is `/data`"
+  efs_mount_target:
+    description: "Directory path in efs to mount directory to, default is `/`"
 outputs:
   vm_url:
     description: "The URL of the generated app"
@@ -114,6 +158,7 @@ runs:
       env:
         GITHUB_ACTION_PATH: ${{ github.action_path }}
         BITOPS_ENVIRONMENT: deployment
+        TERRAFORM_TARGETS: ${{ inputs.targets }}
         AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
         AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
         AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
@@ -143,6 +188,21 @@ runs:
         APP_DIRECTORY: ${{ inputs.app_directory }}
         CREATE_KEYPAIR_SM_ENTRY: ${{ inputs.create_keypair_sm_entry }}
         ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
+
+        AWS_CREATE_EFS: ${{ inputs.aws_create_efs }}
+        AWS_CREATE_HA_EFS: ${{ inputs.aws_create_ha_efs }}
+        AWS_CREATE_EFS_REPLICA: ${{ inputs.aws_create_efs_replica }}
+        AWS_ENABLE_EFS_BACKUP_POLICY: ${{ inputs.aws_enable_efs_backup_policy }}
+        AWS_EFS_ZONE_MAPPING: ${{ inputs.aws_efs_zone_mapping }}
+        AWS_EFS_TRANSITION_TO_INACTIVE: ${{ inputs.aws_efs_transition_to_inactive }}
+        AWS_EFS_REPLICA_DESTINATION: ${{ inputs.aws_replication_configuration_destination }}
+        AWS_MOUNT_EFS_ID: ${{ inputs.aws_mount_efs_id }}
+        AWS_MOUNT_EFS_SECURITY_GROUP_ID: ${{ inputs.aws_mount_efs_security_group_id }}
+
+        APPLICATION_MOUNT_TARGET: ${{ inputs.application_mount_target }}
+        EFS_MOUNT_TARGET: ${{ inputs.efs_mount_target }}
+        DATA_MOUNT_TARGET: ${{ inputs.data_mount_target }}
+
       run: |
         echo "running operations/_scripts/deploy/deploy.sh"
         $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
