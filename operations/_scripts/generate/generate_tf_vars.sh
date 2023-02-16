@@ -24,16 +24,16 @@ echo "GITHUB_IDENTIFIER SS: [$GITHUB_IDENTIFIER_SS]"
 
 # -------------------------------------------------- #
 domain_name=
-if [ -z "$DOMAIN_NAME" ]; then
+if [ -n "$DOMAIN_NAME" ]; then
   domain_name="domain_name = \"${DOMAIN_NAME}\""
 fi
 
 sub_domain_name=
-if [ -z "$SUB_DOMAIN" ]; then
+if [ -n "$SUB_DOMAIN" ]; then
   sub_domain_name="sub_domain = \"$SUB_DOMAIN\""
 fi
 
-if [ -z "${EC2_INSTANCE_PROFILE}" ]; then
+if [ -n "${EC2_INSTANCE_PROFILE}" ]; then
   EC2_INSTANCE_PROFILE="${GITHUB_IDENTIFIER}"
 fi
 
