@@ -31,10 +31,15 @@ fi
 sub_domain_name=
 if [ -n "$SUB_DOMAIN" ]; then
   sub_domain_name="sub_domain = \"$SUB_DOMAIN\""
+else
+  sub_domain_name="sub_domain = \"$GITHUB_IDENTIFIER\""
 fi
 
+ec2_instance_profile=
 if [ -n "${EC2_INSTANCE_PROFILE}" ]; then
-  EC2_INSTANCE_PROFILE="${GITHUB_IDENTIFIER}"
+  ec2_instance_profile="ec2_instance_profile =\"${EC2_INSTANCE_PROFILE}\""
+else
+  ec2_instance_profile="ec2_instance_profile =\"${GITHUB_IDENTIFIER}\""
 fi
 
 ec2_instance_type=
@@ -175,39 +180,25 @@ if [[ -n "$LB_LOGS_BUCKET" ]]; then
   lb_access_bucket_name="lb_access_bucket_name = \"${LB_LOGS_BUCKET}\""
 fi
 
-# security_group_name=
-# if [[ -n "$GITHUB_IDENTIFIER" ]]; then
-#   security_group_name="security_group_name = \"${GITHUB_IDENTIFIER}\""
-# fi
-
-# ec2_iam_instance_profile=
-# if [[ -n "$EC2_INSTANCE_PROFILE" ]]; then
-#   ec2_iam_instance_profile="ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\""
-# fi
-
-ops_repo_environment=
-if [[ -n "$EC2_INSTANCE_PROFILE" ]]; then
-  ops_repo_environment="ops_repo_environment = \"deployment\""
-fi
+# Should this be moved to a defaults?
+ops_repo_environment="ops_repo_environment = \"deployment\""
+security_group_name="security_group_name = \"${GITHUB_IDENTIFIER}\""
+app_install_root="app_install_root = \"/home/ubuntu\""
+ec2_iam_instance_profile="ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\""
 
 app_org_name=
-if [[ -n "$EC2_INSTANCE_PROFILE" ]]; then
+if [[ -n "$GITHUB_ORG_NAME" ]]; then
   app_org_name="app_org_name = \"${GITHUB_ORG_NAME}\""
 fi
 
 app_repo_name=
-if [[ -n "$EC2_INSTANCE_PROFILE" ]]; then
+if [[ -n "$GITHUB_REPO_NAME" ]]; then
   app_repo_name="app_repo_name = \"${GITHUB_REPO_NAME}\""
 fi
 
 app_branch_name=
-if [[ -n "$EC2_INSTANCE_PROFILE" ]]; then
+if [[ -n "$GITHUB_BRANCH_NAME" ]]; then
   app_branch_name="app_branch_name = \"${GITHUB_BRANCH_NAME}\""
-fi
-
-app_install_root=
-if [[ -n "$EC2_INSTANCE_PROFILE" ]]; then
-  app_install_root="app_install_root = \"/home/ubuntu\""
 fi
 
 create_keypair_sm_entry=
@@ -234,10 +225,12 @@ $lb_healthcheck
 $lb_access_bucket_name
 
 #-- Security Groups --#
-
+$security_group_name
 
 #-- EC2 --#
 $ec2_instance_type
+$ec2_instance_profile
+$ec2_iam_instance_profile
 
 #-- AWS --#
 $aws_resource_identifier
