@@ -53,6 +53,7 @@ variable "ec2_instance_public_ip" {
   default     = "true"
   description = "Attach public IP to the EC2 instance"
 }
+
 variable "security_group_name" {
   type        = string
   default     = "SG for deployment"
@@ -68,6 +69,7 @@ variable "ec2_iam_instance_profile" {
   description = "IAM role for the ec2 instance"
   default     = ""
 }
+
 variable "lb_access_bucket_name" {
   type        = string
   description = "s3 bucket for the lb access logs"
@@ -86,6 +88,7 @@ variable "aws_resource_identifier_supershort" {
 variable "aws_secret_env" {
   type        = string
   description = "Secret name to pull env variables from AWS Secret Manager"
+  default     = null
 }
 
 variable "aws_ami_id" {
@@ -171,6 +174,73 @@ variable "postgres_database_port" {
   description = "database port"
 }
 
+
+## -- EFS -- ##
+variable "aws_create_efs" {
+  type        = bool
+  description = "Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack."
+  default     = false
+}
+
+variable "aws_create_ha_efs" {
+  type        = bool
+  description = "Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)."
+  default     = false
+}
+
+variable "aws_create_efs_replica" {
+  type        = bool
+  description = "Toggle to indiciate whether a read-only replica should be created for the EFS primary file system"
+  default     = false
+}
+
+variable "aws_enable_efs_backup_policy" {
+  type        = bool
+  default     = false
+  description = "Toggle to indiciate whether the EFS should have a backup policy, default is `false`"
+}
+
+variable "aws_mount_efs_id" {
+  type        = string
+  description = "ID of existing EFS"
+  default     = null
+}
+
+variable "aws_mount_efs_security_group_id" {
+  type        = string
+  description = "ID of the primary security group used by the existing EFS"
+  default     = null
+}
+
+variable "aws_efs_zone_mapping" {
+  type = map(object({
+    subnet_id       = string
+    security_groups = list(string)
+  }))
+  description = "Zone Mapping in the form of {\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":[\"sg-abc123\"]} }"
+  nullable    = true
+  default     = null
+}
+
+variable "aws_efs_transition_to_inactive" {
+  type        = string
+  default     = "AFTER_30_DAYS"
+  description = "https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system#transition_to_ia"
+}
+
+variable "aws_replication_configuration_destination" {
+  type        = string
+  default     = null
+  description = "AWS Region to target for replication"
+}
+
+## -- --- -- ##
+variable "availability_zone" {
+  type        = string
+  default     = null
+  description = "The AZ zone to deploy resources to"
+}
+
 variable "create_keypair_sm_entry" {
   type = bool
   description = "y/n create sm entry for ec2 keypair"
@@ -181,4 +251,25 @@ variable "additional_tags" {
   type        = map(string)
   description = "A list of strings that will be added to created resources"
   default     = {}
+
+}
+
+
+## -- --- -- ##
+variable "application_mount_target" {
+  type        = string
+  description = "Directory path in application env to mount directory"
+  default = "data"
+}
+
+variable "data_mount_target" {
+  type        = string
+  description = "Directory path in efs to mount to"
+  default     = "/data"
+}
+
+variable "efs_mount_target" {
+  type        = string
+  description = "Directory path in efs to mount to"
+  default     = null
 }

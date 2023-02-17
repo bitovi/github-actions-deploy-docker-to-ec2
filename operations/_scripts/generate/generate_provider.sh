@@ -35,8 +35,6 @@ terraform {
     encrypt = true #AES-256encryption
   }
 }
- 
-data \"aws_region\" \"current\" {}
 
 provider \"aws\" {
   region = \"${AWS_DEFAULT_REGION}\"
@@ -47,5 +45,4 @@ provider \"aws\" {
     )
   }
 }
-
-" >> "${GITHUB_ACTION_PATH}/operations/deployment/terraform/provider.tf"
+" > "${GITHUB_ACTION_PATH}/operations/deployment/terraform/provider.tf"

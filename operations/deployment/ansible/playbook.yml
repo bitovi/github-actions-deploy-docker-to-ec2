@@ -5,5 +5,13 @@
     include_tasks: tasks/install.yml
   - name: Include fetch
     include_tasks: tasks/fetch.yml
+
+    # Notes on why unmounting is required can be found in umount.yaml
+  - name: Unmount efs
+    include_tasks: tasks/umount.yml
+  - name: Mount efs
+    include_tasks: tasks/mount.yml
+    when: mount_efs
+
   - name: Include start
     include_tasks: tasks/start.yml

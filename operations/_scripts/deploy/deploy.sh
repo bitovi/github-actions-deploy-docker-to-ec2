@@ -28,12 +28,13 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 
 # Generate bitops config
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
+ls -al $GITHUB_ACTION_PATH/operations/deployment/terraform/
+cat $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml
 
 
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars"
-cat $GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars
 echo "ls GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
 ls "$GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
 
@@ -45,6 +46,10 @@ if [ "$STACK_DESTROY" == "true" ]; then
   ANSIBLE_SKIP_DEPLOY="true"
 fi
 echo "::endgroup::"
+
+if [[ $SKIP_BITOPS_RUN == "true" ]]; then
+  exit 1
+fi
 
 echo "::group::BitOps Excecution"  
 echo "Running BitOps for env: $BITOPS_ENVIRONMENT"

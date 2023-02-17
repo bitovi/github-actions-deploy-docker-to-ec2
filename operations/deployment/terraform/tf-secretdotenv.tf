@@ -15,5 +15,5 @@ resource "local_file" "tf-secretdotenv" {
 }
 
 locals {
-  secret_provided = (var.aws_secret_env != "" ? true : false)
+  secret_provided = (var.aws_secret_env != null ? true : false)
 }

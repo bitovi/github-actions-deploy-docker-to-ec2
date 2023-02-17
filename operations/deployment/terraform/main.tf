@@ -58,15 +58,24 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "server" {
   # ubuntu
   ami                         = var.aws_ami_id != "" ? var.aws_ami_id : data.aws_ami.ubuntu.id
+  availability_zone           = local.preferred_az
+  subnet_id                   = data.aws_subnet.selected[0].id
   instance_type               = var.ec2_instance_type
   associate_public_ip_address = var.ec2_instance_public_ip
-  security_groups             = [aws_security_group.ec2_security_group.name]
+  vpc_security_group_ids      = [aws_security_group.ec2_security_group.id]
   key_name                    = aws_key_pair.aws_key.key_name
   monitoring                  = true
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
 
   tags = {
     Name = "${var.aws_resource_identifier} - Instance"
+  }
+}
+
+data "aws_instance" "server" {
+  filter {
+    name   = "dns-name"
+    values = [aws_instance.server.public_dns]
   }
 }
 
