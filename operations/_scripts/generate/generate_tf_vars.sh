@@ -50,16 +50,16 @@ fi
 
 sub_domain_name=
 if [ -n "$SUB_DOMAIN" ]; then
-  sub_domain_name="sub_domain = \"$SUB_DOMAIN\""
+  sub_domain_name="sub_domain_name = \"$SUB_DOMAIN_NAME\""
 else
-  sub_domain_name="sub_domain = \"$GITHUB_IDENTIFIER\""
+  sub_domain_name="sub_domain_name = \"$GITHUB_IDENTIFIER\""
 fi
 
-ec2_instance_profile=
+ec2_iam_instance_profile=
 if [ -n "${EC2_INSTANCE_PROFILE}" ]; then
-  ec2_instance_profile="ec2_instance_profile =\"${EC2_INSTANCE_PROFILE}\""
+  ec2_iam_instance_profile="ec2_iam_instance_profile =\"${EC2_INSTANCE_PROFILE}\""
 else
-  ec2_instance_profile="ec2_instance_profile =\"${GITHUB_IDENTIFIER}\""
+  ec2_iam_instance_profile="ec2_iam_instance_profile =\"${GITHUB_IDENTIFIER}\""
 fi
 
 ec2_instance_type=
@@ -204,7 +204,6 @@ fi
 ops_repo_environment="ops_repo_environment = \"deployment\""
 security_group_name="security_group_name = \"${GITHUB_IDENTIFIER}\""
 app_install_root="app_install_root = \"/home/ubuntu\""
-ec2_iam_instance_profile="ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\""
 
 app_org_name=
 if [[ -n "$GITHUB_ORG_NAME" ]]; then
