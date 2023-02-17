@@ -229,20 +229,41 @@ fi
 
 postgres_subnets=
 if [ -n "${POSTGRES_SUBNETS}" ]; then
-  POSTGRES_SUBNETS_TF="postgres_subnets = "
-  POSTGRES_SUBNETS_TF="${POSTGRES_SUBNETS_TF}$(comma_str_to_tf_array $POSTGRES_SUBNETS)"
-else
-  POSTGRES_SUBNETS_TF=
+  postgres_subnets="postgres_subnets = \"$(comma_str_to_tf_array $POSTGRES_SUBNETS)\""
 fi
 
-security_group_name_pg = \"${GITHUB_IDENTIFIER}-pg\"
-enable_postgres = \"${ENABLE_POSTGRES}\"
-postgres_engine = \"${POSTGRES_ENGINE}\"
-postgres_engine_version = \"${POSTGRES_ENGINE_VERSION}\"
-postgres_instance_class = \"${POSTGRES_INSTANCE_CLASS}\"
-postgres_database_name = \"${POSTGRES_DATABASE_NAME}\"
-postgres_database_port = \"${POSTGRES_DATABASE_PORT}\"
-${POSTGRES_SUBNETS_TF}
+
+echo "Postgres subnets: $postgres_subnets"
+
+#security_group_name_pg=
+#if [ -n "${POSTGRES_SUBNETS}" ]; then
+  security_group_name_pg="security_group_name_pg = \"${GITHUB_IDENTIFIER}-pg\""
+#fi
+enable_postgres=
+if [ -n "${ENABLE_POSTGRES}" ]; then
+  enable_postgres="enable_postgres = \"${ENABLE_POSTGRES}\""
+fi
+postgres_engine=
+if [ -n "${POSTGRES_ENGINE}" ]; then
+  postgres_engine="postgres_engine = \"${POSTGRES_ENGINE}\""
+fi
+postgres_engine_version=
+if [ -n "${POSTGRES_ENGINE_VERSION}" ]; then
+  postgres_engine_version="postgres_engine_version = \"${POSTGRES_ENGINE_VERSION}\""
+fi
+postgres_instance_class=
+if [ -n "${POSTGRES_INSTANCE_CLASS}" ]; then
+  postgres_instance_class="postgres_instance_class = \"${POSTGRES_INSTANCE_CLASS}\""
+fi
+postgres_database_name=
+if [ -n "${POSTGRES_DATABASE_NAME}" ]; then
+  postgres_database_name="postgres_database_name = \"${POSTGRES_DATABASE_NAME}\""
+fi
+postgres_database_port=
+if [ -n "${POSTGRES_DATABASE_PORT}" ]; then
+  postgres_database_port="postgres_database_port = \"${POSTGRES_DATABASE_PORT}\""
+fi
+
 
 # -------------------------------------------------- #
 
@@ -295,6 +316,16 @@ $aws_efs_transition_to_inactive
 $aws_replication_configuration_destination
 $aws_mount_efs_id
 $aws_mount_efs_security_group_id
+
+#-- RDS --#
+$security_group_name_pg
+$enable_postgres
+$postgres_engine
+$postgres_engine_version
+$postgres_instance_class
+$postgres_database_name
+$postgres_database_port
+$postgres_subnets
 
 #-- Security Manager --#
 $create_keypair_sm_entry
