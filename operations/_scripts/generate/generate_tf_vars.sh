@@ -50,7 +50,7 @@ fi
 
 sub_domain_name=
 if [ -n "$SUB_DOMAIN" ]; then
-  sub_domain_name="sub_domain_name = \"$SUB_DOMAIN_NAME\""
+  sub_domain_name="sub_domain_name = \"$SUB_DOMAIN\""
 else
   sub_domain_name="sub_domain_name = \"$GITHUB_IDENTIFIER\""
 fi
