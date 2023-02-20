@@ -93,8 +93,9 @@ module "rds_cluster" {
 }
 
 resource "random_password" "rds" {
-  override_special = "/@"
   length = 10
+  special = true
+  override_special = "/@"
 }
 
 // Creates a secret manager secret for the databse credentials
