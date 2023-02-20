@@ -69,10 +69,8 @@ docker run --rm --name bitops \
 -e DEFAULT_FOLDER_NAME="_default" \
 -e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
-awildphil/bitops:nfs
+bitovi/bitops:2.4.0
 BITOPS_RESULT=$?
 echo "::endgroup::"
-
-#bitovi/bitops:2.3.0
 
 exit $BITOPS_RESULT
