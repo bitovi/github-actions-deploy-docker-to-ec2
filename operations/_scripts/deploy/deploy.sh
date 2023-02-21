@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+#set -x
 
 echo "::group::In Deploy"
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
