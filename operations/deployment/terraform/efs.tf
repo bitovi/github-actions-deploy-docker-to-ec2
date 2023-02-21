@@ -50,7 +50,7 @@ locals {
   # mount_target: Fall-Through variable that checks multiple layers of EFS zone map selection
   mount_target      = var.aws_efs_zone_mapping != null ? local.user_zone_mapping : (var.aws_create_ha_efs == true ? local.ha_zone_mapping : (length(local.ec2_zone_mapping) > 0 ? local.ec2_zone_mapping : local.no_zone_mapping))
   # mount_efs: Fall-Through variable that checks multiple layers of EFS creation and if any of them are active, sets creation to active.
-  mount_efs         = var.aws_mount_efs_id != null && var.aws_mount_efs_security_group_id != null ? true : (local.create_efs ? true : false)
+  mount_efs         = var.aws_mount_efs_id != null ? true : (local.create_efs ? true : false)
 
   # replica_destination: Checks whether a replica destination exists otherwise sets a default
   replica_destination  = var.aws_replication_configuration_destination != null ? var.aws_replication_configuration_destination : data.aws_region.current.name
