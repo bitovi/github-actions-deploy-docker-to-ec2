@@ -322,7 +322,7 @@ The available environment variables are:
 ### AWS Root Certs
 The AWS root certificate is downloaded and accessible via the `rds-combined-ca-bundle.pem` file in root of your app repo/directory.
 
-### Javascript
+### App example
 Example JavaScript to make a request to the Postgres cluster:
 
 ```js
