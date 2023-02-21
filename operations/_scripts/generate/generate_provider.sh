@@ -17,8 +17,12 @@ terraform {
       source  = \"hashicorp/aws\"
       version = \"~> 4.30\"
     }
-
+    random = {
+      source  = \"hashicorp/random\"
+      version = \">= 2.2\"
+    }
   }
+
   backend \"s3\" {
     region  = \"${AWS_DEFAULT_REGION}\"
     bucket  = \"${TF_STATE_BUCKET}\"

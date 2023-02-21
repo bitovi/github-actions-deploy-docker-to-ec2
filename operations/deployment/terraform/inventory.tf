@@ -19,4 +19,3 @@ resource "local_file" "ansible_inventory" {
   })
   filename = format("%s/%s", abspath(path.root), "inventory.yaml")
 }
-

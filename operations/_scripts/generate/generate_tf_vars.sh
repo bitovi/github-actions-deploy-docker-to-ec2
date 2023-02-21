@@ -4,6 +4,26 @@ set -e
 
 echo "In generate_tf_vars.sh"
 
+# convert 'a,b,c'
+# to '["a","b","c"]'
+comma_str_to_tf_array () {
+  local IFS=','
+  local str=$1
+
+  local out=""
+  local first_item_flag="1"
+  for item in $str; do
+    if [ -z $first_item_flag ]; then
+      out="${out},"
+    fi
+    first_item_flag=""
+
+    item="$(echo $item | xargs)"
+    out="${out}\"${item}\""
+  done
+  echo "[${out}]"
+}
+
 GITHUB_ORG_NAME=$(echo $GITHUB_REPOSITORY | sed 's/\/.*//')
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 
@@ -13,12 +33,12 @@ else
   GITHUB_BRANCH_NAME=${GITHUB_REF_NAME}
 fi
 
-GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh)"
-GITHUB_IDENTIFIER=$(echo $GITHUB_IDENTIFIER | tr "_" "-")
+# Translating  '/' '-' and '_' '-'  in the same line
+
+GITHUB_IDENTIFIER="$(echo $($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh) | tr '/' '-' | tr '_' '-' )"
 echo "GITHUB_IDENTIFIER: [$GITHUB_IDENTIFIER]"
 
-GITHUB_IDENTIFIER_SS="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier_supershort.sh)"
-GITHUB_IDENTIFIER_SS=$(echo $GITHUB_IDENTIFIER_SS | tr "_" "-")
+GITHUB_IDENTIFIER_SS="$(echo $($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier_supershort.sh) | tr '/' '-' | tr '_' '-' )"
 echo "GITHUB_IDENTIFIER SS: [$GITHUB_IDENTIFIER_SS]"
 
 
@@ -30,16 +50,16 @@ fi
 
 sub_domain_name=
 if [ -n "$SUB_DOMAIN" ]; then
-  sub_domain_name="sub_domain = \"$SUB_DOMAIN\""
+  sub_domain_name="sub_domain_name = \"$SUB_DOMAIN\""
 else
-  sub_domain_name="sub_domain = \"$GITHUB_IDENTIFIER\""
+  sub_domain_name="sub_domain_name = \"$GITHUB_IDENTIFIER\""
 fi
 
-ec2_instance_profile=
+ec2_iam_instance_profile=
 if [ -n "${EC2_INSTANCE_PROFILE}" ]; then
-  ec2_instance_profile="ec2_instance_profile =\"${EC2_INSTANCE_PROFILE}\""
+  ec2_iam_instance_profile="ec2_iam_instance_profile =\"${EC2_INSTANCE_PROFILE}\""
 else
-  ec2_instance_profile="ec2_instance_profile =\"${GITHUB_IDENTIFIER}\""
+  ec2_iam_instance_profile="ec2_iam_instance_profile =\"${GITHUB_IDENTIFIER}\""
 fi
 
 ec2_instance_type=
@@ -184,7 +204,6 @@ fi
 ops_repo_environment="ops_repo_environment = \"deployment\""
 security_group_name="security_group_name = \"${GITHUB_IDENTIFIER}\""
 app_install_root="app_install_root = \"/home/ubuntu\""
-ec2_iam_instance_profile="ec2_iam_instance_profile = \"${EC2_INSTANCE_PROFILE}\""
 
 app_org_name=
 if [[ -n "$GITHUB_ORG_NAME" ]]; then
@@ -205,6 +224,46 @@ create_keypair_sm_entry=
 if [[ -n "$CREATE_KEYPAIR_SM_ENTRY" ]]; then
   create_keypair_sm_entry="create_keypair_sm_entry = \"${CREATE_KEYPAIR_SM_ENTRY}\""
 fi
+
+# RDS
+
+postgres_subnets=
+if [ -n "${POSTGRES_SUBNETS}" ]; then
+  postgres_subnets="postgres_subnets = \"$(comma_str_to_tf_array $POSTGRES_SUBNETS)\""
+fi
+
+
+echo "Postgres subnets: $postgres_subnets"
+
+#security_group_name_pg=
+#if [ -n "${POSTGRES_SUBNETS}" ]; then
+  security_group_name_pg="security_group_name_pg = \"${GITHUB_IDENTIFIER}-pg\""
+#fi
+enable_postgres=
+if [ -n "${ENABLE_POSTGRES}" ]; then
+  enable_postgres="enable_postgres = \"${ENABLE_POSTGRES}\""
+fi
+postgres_engine=
+if [ -n "${POSTGRES_ENGINE}" ]; then
+  postgres_engine="postgres_engine = \"${POSTGRES_ENGINE}\""
+fi
+postgres_engine_version=
+if [ -n "${POSTGRES_ENGINE_VERSION}" ]; then
+  postgres_engine_version="postgres_engine_version = \"${POSTGRES_ENGINE_VERSION}\""
+fi
+postgres_instance_class=
+if [ -n "${POSTGRES_INSTANCE_CLASS}" ]; then
+  postgres_instance_class="postgres_instance_class = \"${POSTGRES_INSTANCE_CLASS}\""
+fi
+postgres_database_name=
+if [ -n "${POSTGRES_DATABASE_NAME}" ]; then
+  postgres_database_name="postgres_database_name = \"${POSTGRES_DATABASE_NAME}\""
+fi
+postgres_database_port=
+if [ -n "${POSTGRES_DATABASE_PORT}" ]; then
+  postgres_database_port="postgres_database_port = \"${POSTGRES_DATABASE_PORT}\""
+fi
+
 
 # -------------------------------------------------- #
 
@@ -257,6 +316,16 @@ $aws_efs_transition_to_inactive
 $aws_replication_configuration_destination
 $aws_mount_efs_id
 $aws_mount_efs_security_group_id
+
+#-- RDS --#
+$security_group_name_pg
+$enable_postgres
+$postgres_engine
+$postgres_engine_version
+$postgres_instance_class
+$postgres_database_name
+$postgres_database_port
+$postgres_subnets
 
 #-- Security Manager --#
 $create_keypair_sm_entry

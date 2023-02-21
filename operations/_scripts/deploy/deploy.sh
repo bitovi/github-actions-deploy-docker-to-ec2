@@ -1,9 +1,8 @@
 #!/bin/bash
 
-set -x
+#set -x
 
 echo "::group::In Deploy"
-
 GITHUB_REPO_NAME=$(echo $GITHUB_REPOSITORY | sed 's/^.*\///')
 
 # Generate buckets identifiers and check them agains AWS Rules 
@@ -71,4 +70,7 @@ docker run --rm --name bitops \
 -e BITOPS_FAST_FAIL="${BITOPS_FAST_FAIL}" \
 -v $(echo $GITHUB_ACTION_PATH)/operations:/opt/bitops_deployment \
 bitovi/bitops:2.4.0
+BITOPS_RESULT=$?
 echo "::endgroup::"
+
+exit $BITOPS_RESULT

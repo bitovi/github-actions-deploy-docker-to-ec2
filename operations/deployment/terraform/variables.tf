@@ -32,6 +32,12 @@ variable "app_install_root" {
   default     = "/home/ubuntu"
 }
 
+variable "os_system_user" {
+  type        = string
+  description = "User for the OS"
+  default     = "ubuntu"
+}
+
 variable "ops_repo_environment" {
   type        = string
   description = "Ops Repo Environment (i.e. directory name)"
@@ -47,6 +53,23 @@ variable "ec2_instance_public_ip" {
   default     = "true"
   description = "Attach public IP to the EC2 instance"
 }
+
+variable "security_group_name" {
+  type        = string
+  default     = "SG for deployment"
+  description = "Name of the security group to use"
+}
+variable "security_group_name_pg" {
+  type        = string
+  default     = "SG for postgres deployment"
+  description = "Name of the security group to use for postgres"
+}
+variable "ec2_iam_instance_profile" {
+  type        = string
+  description = "IAM role for the ec2 instance"
+  default     = ""
+}
+
 variable "lb_access_bucket_name" {
   type        = string
   description = "s3 bucket for the lb access logs"
@@ -109,9 +132,46 @@ variable "create_sub_cert" {
 }
 
 variable "no_cert" {
-  type        = bool
+  type        = string
   description = "disable cert lookup"
-  default     = false
+  default     = ""
+}
+
+variable "enable_postgres" {
+  type        = string
+  description = "deploy a postgres database"
+  default     = ""
+}
+variable "postgres_engine" {
+  type        = string
+  description = "The engine to use for postgres.  Defaults to `aurora-postgresql`.  For more details, see: https://aws.amazon.com/rds/, https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
+  default     = "aurora-postgresql"
+}
+variable "postgres_engine_version" {
+  type        = string
+  description = "The version of the engine to use for postgres.  Defaults to `11.13`."
+  default     = "11.13"
+}
+variable "postgres_instance_class" {
+  type        = string
+  description = "The size of the db instances.  For more details, see: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html, https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
+  default     = "db.t3.medium"
+}
+variable "postgres_subnets" {
+  type        = list(string)
+  description = "The list of subnet ids to use for postgres. For more details, see: https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
+  default     = []
+}
+variable "postgres_database_name" {
+  type        = string
+  description = "The name of the database. will be created if it does not exist."
+  default     = "root"
+}
+
+variable "postgres_database_port" {
+  type        = string
+  default     = "5432"
+  description = "database port"
 }
 
 
@@ -191,6 +251,7 @@ variable "additional_tags" {
   type        = map(string)
   description = "A list of strings that will be added to created resources"
   default     = {}
+
 }
 
 

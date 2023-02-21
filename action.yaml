@@ -129,8 +129,38 @@ inputs:
   # Secret Manager
   create_keypair_sm_entry:
     required: false
-    description: "Generates and manage a secret manager entry that contains the public and private keys created for the ec2 instance."
+    description: "Generates and manages a secret manager entry that contains the public and private keys created for the ec2 instance."
     default: false
+    
+  # RDS
+  enable_postgres:
+    description: Set to "true" to enable a postgres database
+    required: false
+  postgres_engine: 
+    description: Which Database engine to use
+    required: false
+    default: 'aurora-postgresql'
+  postgres_engine_version:
+    description: Specify Postgres version 
+    required: false
+    default: '11.13'
+  postgres_instance_class:
+    description: Define the size of the instances in the DB cluster
+    required: false
+    default: 'db.t3.medium'
+  postgres_subnets:
+    description: 'Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`'
+    required: false
+    default: ''
+  postgres_database_name:
+    description: 'Specify a database name. Will be created if it does not exist'
+    required: false
+    # TODO: create another user and point to that instead
+    default: 'root'
+  postgres_database_port:
+    description: 'Postgres database port'
+    required: false
+    default: '5432'
   
   # Ansible
   application_mount_target:
@@ -140,6 +170,7 @@ inputs:
     description: "Directory path within docker env to mount directory to, default is `/data`"
   efs_mount_target:
     description: "Directory path in efs to mount directory to, default is `/`"
+
 outputs:
   vm_url:
     description: "The URL of the generated app"
@@ -188,7 +219,13 @@ runs:
         APP_DIRECTORY: ${{ inputs.app_directory }}
         CREATE_KEYPAIR_SM_ENTRY: ${{ inputs.create_keypair_sm_entry }}
         ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
-
+        ENABLE_POSTGRES: ${{ inputs.enable_postgres }}
+        POSTGRES_ENGINE:  ${{ inputs.postgres_engine }}
+        POSTGRES_ENGINE_VERSION:  ${{ inputs.postgres_engine_version }}
+        POSTGRES_INSTANCE_CLASS: ${{ inputs.postgres_instance_class }}
+        POSTGRES_SUBNETS: ${{ inputs.postgres_subnets }}
+        POSTGRES_DATABASE_NAME: ${{ inputs.postgres_database_name }}
+        POSTGRES_DATABASE_PORT: ${{ inputs.postgres_database_port}}
         AWS_CREATE_EFS: ${{ inputs.aws_create_efs }}
         AWS_CREATE_HA_EFS: ${{ inputs.aws_create_ha_efs }}
         AWS_CREATE_EFS_REPLICA: ${{ inputs.aws_create_efs_replica }}
@@ -198,7 +235,6 @@ runs:
         AWS_EFS_REPLICA_DESTINATION: ${{ inputs.aws_replication_configuration_destination }}
         AWS_MOUNT_EFS_ID: ${{ inputs.aws_mount_efs_id }}
         AWS_MOUNT_EFS_SECURITY_GROUP_ID: ${{ inputs.aws_mount_efs_security_group_id }}
-
         APPLICATION_MOUNT_TARGET: ${{ inputs.application_mount_target }}
         EFS_MOUNT_TARGET: ${{ inputs.efs_mount_target }}
         DATA_MOUNT_TARGET: ${{ inputs.data_mount_target }}

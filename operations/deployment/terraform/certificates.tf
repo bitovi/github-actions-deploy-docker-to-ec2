@@ -1,7 +1,7 @@
 # Lookup for main domain.
 
 data "aws_acm_certificate" "issued" {
-  count  = var.no_cert == true ? 0 : (var.create_root_cert != "true" ? (var.create_sub_cert != "true" ? (local.fqdn_provided ? 1 : 0) : 0) : 0)
+  count  = var.no_cert == "true" ? 0 : (var.create_root_cert != "true" ? (var.create_sub_cert != "true" ? (local.fqdn_provided ? 1 : 0) : 0) : 0)
   domain = var.domain_name
 }
 
@@ -55,7 +55,7 @@ resource "aws_acm_certificate_validation" "sub_domain" {
 
 locals {
   selected_arn = (
-    var.no_cert == true ? "" :
+    var.no_cert == "true" ? "" :
     (var.cert_arn != "" ? var.cert_arn :
       (var.create_root_cert != "true" ?
         (var.create_sub_cert != "true" ?
@@ -66,7 +66,7 @@ locals {
     )
   )
   cert_available = (
-    var.no_cert == true ? false :
+    var.no_cert == "true" ? false :
     (var.cert_arn != "" ? true :
       (var.create_root_cert != "true" ?
         (var.create_sub_cert != "true" ?

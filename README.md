@@ -8,6 +8,14 @@ The action will copy this repo to the VM and then run `docker-compose up`.
 [![Getting Started - Youtube](https://img.youtube.com/vi/oya5LuHUCXc/0.jpg)](https://www.youtube.com/watch?v=oya5LuHUCXc)
 
 
+## Need help or have questions?
+This project is supported by [Bitovi, a DevOps Consultancy](https://www.bitovi.com/devops-consulting) and a proud supporter of Open Source software.
+
+You can **get help or ask questions** on [Discord channel](https://discord.gg/J7ejFsZnJ4)! Come hangout with us!
+
+Or, you can hire us for training, consulting, or development. [Set up a free consultation](https://www.bitovi.com/devops-consulting).
+
+
 ## Requirements
 
 1. Files for Docker
@@ -112,106 +120,114 @@ jobs:
 1. [Secrets and Environment Variables](#secrets-and-environment-variables-inputs)
 1. [EC2](#ec2-inputs)
 1. [EFS](#efs-inputs)
-1. [Certificates](#certificates-inputs)
+1. [RDS](#rds-inputs)
+1. [Certificates](#certificate-inputs)
 1. [Load Balancer](#load-balancer-inputs)
-1. [Secret Manager](#secret-manager-inputs)
 1. [Application](#application-inputs)
 1. [Terraform](#terraform-inputs)
 
 The following inputs can be used as `step.with` keys
+<br/>
+<br/>
 
 #### **Action defaults Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `checkout`          | Boolean | Set to `false` if the code is already checked out (Default is `true`) (Optional) |
-| `stack_destroy` | String | Set to `true` to destroy the stack. Default is `""` - Will delete the elb_logs bucket after the destroy action runs. |
+| `checkout` | Boolean | Set to `false` if the code is already checked out. (Default is `true`). |
+| `stack_destroy` | Boolean  | Set to `true` to destroy the stack - Will delete the `elb logs bucket` after the destroy action runs. |
 | `aws_access_key_id` | String | AWS access key ID |
 | `aws_secret_access_key` | String | AWS secret access key |
 | `aws_session_token` | String | AWS session token |
-| `aws_default_region` | String | AWS default region |
-| `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources. |
+| `aws_default_region` | String | AWS default region. Defaults to `us-east-1` |
+| `aws_resource_identifier` | String | Set to override the AWS resource identifier for the deployment. Defaults to `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`. Use with destroy to destroy specific resources. |
 <hr/>
-<br/>
 <br/>
 
 #### **Secrets and Environment Variables Inputs**
-| Name             | Type    | Description                        |
+| Name             | Type    | Description - Check note about [**environment variables**](#environment-variables). |
 |------------------|---------|------------------------------------|
-| `aws_secret_env` | String | Secret name to pull environment variables from AWS Secret Manager. Check **Environment variables** note |
-| `repo_env` | String | `.env` file containing environment variables to be used with the app. Name defaults to `repo_env`. Check **Environment variables** note |
-| `dot_env` | String | `.env` file to be used with the app. This is the name of the [Github secret](https://docs.github.com/es/actions/security-guides/encrypted-secrets). Check **Environment variables** note |
-| `ghv_env` | String | `.env` file to be used with the app. This is the name of the [Github variables](https://docs.github.com/en/actions/learn-github-actions/variables). Check **Environment variables** note |
+| `aws_secret_env` | String | Secret name to pull environment variables from AWS Secret Manager. |
+| `repo_env` | String | `.env` file containing environment variables to be used with the app. Name defaults to `repo_env`. |
+| `dot_env` | String | `.env` file to be used with the app. This is the name of the [Github secret](https://docs.github.com/es/actions/security-guides/encrypted-secrets). |
+| `ghv_env` | String | `.env` file to be used with the app. This is the name of the [Github variables](https://docs.github.com/en/actions/learn-github-actions/variables). |
 <hr/>
-<br/>
 <br/>
 
 #### **EC2 Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `aws_ami_id` | String | AWS AMI ID. Will default to latest Ubuntu 22.04 server image (HVM). Accepts `ami-###` values |
-| `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}` |
-| `ec2_instance_type` | String | The AWS IAM instance type to use. Default is t2.small. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference |
+| `aws_ami_id` | String | AWS AMI ID. Will default to latest Ubuntu 22.04 server image (HVM). Accepts `ami-###` values. |
+| `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`|
+| `ec2_instance_type` | String | The AWS IAM instance type to use. Default is `t2.small`. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference. |
 | `create_keypair_sm_entry` | Boolean | Generates and manage a secret manager entry that contains the public and private keys created for the ec2 instance. |
 <hr/>
-<br/>
 <br/>
 
 #### **EFS Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `aws_create_efs` | bool | Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack |
-| `aws_create_ha_efs` | bool | Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region) |
-| `aws_create_efs_replica` | bool | Toggle to indiciate whether a read-only replica should be created for the EFS primary file system |
-| `aws_enable_efs_backup_policy` | bool | Toggle to indiciate whether the EFS should have a backup policy |
-| `aws_efs_zone_mapping` | JSON | Zone Mapping in the form of {\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":\[\"sg-abc123\"\]} } |
-| `aws_efs_transition_to_inactive` | string | Indicates how long it takes to transition files to the IA storage class |
-| `aws_replication_configuration_destination` | string | AWS Region to target for replication |
-| `aws_mount_efs_id` | string | ID of existing EFS |
-| `aws_mount_efs_security_group_id` | string | ID of the primary security group used by the existing EFS |
-| `application_mount_target` | string | The application_mount_target input represents the folder path within the EC2 instance to the data directory. The default is; `/user/ubuntu/<application_repo>/data`. Additionally this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
-| `data_mount_target` | string | The data_mount_target input represents the target volume directory within the docker compose container. The default is `/data`. Additionally this value is loaded into the docker-compose container `.env` file as `TARGET_DIR` |
-| `efs_mount_target` | string | Directory path in efs to mount directory to, default is `/` |
+| `aws_create_efs` | Boolean | Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack |
+| `aws_create_ha_efs` | Boolean | Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region) |
+| `aws_create_efs_replica` | Boolean | Toggle to indiciate whether a read-only replica should be created for the EFS primary file system |
+| `aws_enable_efs_backup_policy` | Boolean | Toggle to indiciate whether the EFS should have a backup policy |
+| `aws_efs_zone_mapping` | JSON | Zone Mapping in the form of `{\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":\[\"sg-abc123\"\]} }` |
+| `aws_efs_transition_to_inactive` | String | Indicates how long it takes to transition files to the IA storage class. |
+| `aws_replication_configuration_destination` | String | AWS Region to target for replication. |
+| `aws_mount_efs_id` | String | ID of existing EFS. |
+| `aws_mount_efs_security_group_id` | String | ID of the primary security group used by the existing EFS. |
+| `application_mount_target` | String | The application_mount_target input represents the folder path within the EC2 instance to the data directory. Default is `/user/ubuntu/<application_repo>/data`. Additionally this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
+| `data_mount_target` | String | The data_mount_target input represents the target volume directory within the docker compose container. Default is `/data`. Additionally this value is loaded into the docker-compose container `.env` file as `TARGET_DIR`. |
+| `efs_mount_target` | String | Directory path in efs to mount directory to. Default is `/`. |
 <hr/>
 <br/>
+
+#### **RDS Inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `enable_postgres` | Boolean | Set to "true" to enable a postgres database. |
+| `postgres_engine` | String |  Which Database engine to use. Default is `aurora-postgresql`.|
+| `postgres_engine_version` | String |  Specify Postgres version.  More information [here](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Updates.20180305.html). Default is `11.13`. |
+| `postgres_instance_class` | String | Define the size of the instances in the DB cluster. Default is `db.t3.medium`. | 
+| `postgres_subnets` | String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. |
+| `postgres_database_name` | String | Specify a database name. Will be created if it does not exist. Default is `root`. |
+| `postgres_database_port` | String | Specify a listening port for the database. Default is `5432`.|
+<hr/>
 <br/>
 
 #### **Certificate Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `domain_name` | String | Define the root domain name for the application. e.g. bitovi.com' |
-| `sub_domain` | String | Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}` |
-| `root_domain` | Boolean | Deploy application to root domain. Will create root and www records. Defaults to `false` |
-| `cert_arn` | String | Define the certificate ARN to use for the application. **See note ** |
-| `create_root_cert` | Boolean | Generates and manage the root cert for the application. **See note **. Defaults to `false` |
-| `create_sub_cert` | Boolean | Generates and manage the sub-domain certificate for the application. **See note **. Defaults to `false` |
-| `no_cert` | Boolean | Set this to true if no certificate is present for the domain. **See note **. Defaults to `false` |
+| `domain_name` | String | Define the root domain name for the application. e.g. bitovi.com'. |
+| `sub_domain` | String | Define the sub-domain part of the URL. Defaults to `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`. |
+| `root_domain` | Boolean | Deploy application to root domain. Will create root and www records. Default is `false`. |
+| `cert_arn` | String | Define the certificate ARN to use for the application. **See note**. |
+| `create_root_cert` | Boolean | Generates and manage the root cert for the application. **See note**. Default is `false`. |
+| `create_sub_cert` | Boolean | Generates and manage the sub-domain certificate for the application. **See note**. Default is `false`. |
+| `no_cert` | Boolean | Set this to true if no certificate is present for the domain. **See note**. Default is `false`. |
 <hr/>
-<br/>
 <br/>
 
 #### **Load Balancer Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `lb_port` | String | Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided |
-| `lb_healthcheck` | String | Load balancer health check string. Defaults to HTTP:app_port |
+| `lb_port` | String | Load balancer listening port. Default is `80` if NO FQDN provided, `443` if FQDN provided. |
+| `lb_healthcheck` | String | Load balancer health check string. Default is `HTTP:app_port`. |
 <hr/>
-<br/>
 <br/>
 
 #### **Application Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `app_port` | String | port to expose for the app |
-| `app_directory` | String | Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance. Default is the root of the repo. |
+| `app_port` | String | Port to be expose for the container. Default is `3000` | 
+| `app_directory` | String | Relative path for the directory of the app. (i.e. where the `docker-compose.yaml` file is located). This is the directory that is copied into the EC2 instance. Default is `/`, the root of the repository. |
 <hr/>
-<br/>
 <br/>
 
 #### **Terraform Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `tf_state_bucket` | String | AWS S3 bucket to use for Terraform state. |
-| `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. (Default is `false`). `stack_destroy` must also be `true`|
+| `tf_state_bucket` | String | AWS S3 bucket name to use for Terraform state. See [note](#s3-buckets-naming) | 
+| `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. `stack_destroy` must also be `true`. Default is `false`. |
 | `additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
 <hr/>
 <br/>
@@ -219,7 +235,7 @@ The following inputs can be used as `step.with` keys
 
 ## Note about resource identifiers
 
-Most resources will contain the tag GITHUB_ORG-GITHUB_REPO-GITHUB_BRANCH, some of them, even the resource name after. 
+Most resources will contain the tag `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`, some of them, even the resource name after. 
 We limit this to a 60 characters string because some AWS resources have a length limit and short it if needed.
 
 We use the kubernetes style for this. For example, kubernetes -> k(# of characters)s -> k8s. And so you might see some compressions are made.
@@ -242,7 +258,7 @@ Setting `create_root_cert` to `true` will create this certificate with both `exa
 
 Setting `create_sub_cert` to `true` will create a certificate **just for the subdomain**, and validate it.
 
-:warning: **Keep in mind that managed certificates will be deleted if stack_destroy is set to true** :warning:
+> :warning: Be very careful here! **Created certificates are fully managed by Terraform**. Therefor **they will be destroyed upon stack destruction**.
 
 To change a certificate (root_cert, sub_cert, ARN or pre-existing root cert), you must first set the `no_cert` flag to true, run the action, then set the `no_cert` flag to false, add the desired settings and excecute the action again. (**This will destroy the first certificate.**)
 
@@ -252,6 +268,7 @@ This is necessary due to a limitation that prevents certificates from being chan
 Users looking to add non-ephemeral storage to their created EC2 instance have the following options; create a new efs as a part of the ec2 deployment stack, or mounting an existing EFS. 
 
 ### 1. Create EFS
+
 Option 1, you have access to the `create_efs` attribute which will create a EFS resource and mount it to the EC2 instance in the application directory at the path: "app_root/data".
 
 > :warning: Be very careful here! The **EFS is fully managed by Terraform**. Therefor **it will be destroyed upon stack destruction**.
@@ -270,20 +287,89 @@ An example EFS Zone mapping;
 }
 ```
 
+## Adding external Postgres database (AWS RDS)
+
+If `enable_postgres` is set to `true`, this action will deploy an RDS cluster for Postgres.
+
+### Environment variables
+The following environment variables are added to the `.env` file in your app's `docker-compose.yaml` file.
+
+To take advantage of these environment variables, be sure your docker-compose file is referencing the `.env` file like this:
+```
+version: '3.9'
+services:
+  app:
+    # ...
+    env_file: .env
+    # ...
+```
+
+The available environment variables are:
+| Variable | Description |
+|----------|-------------|
+| `POSTGRES_CLUSTER_ENDPOINT` (and `PGHOST`) | Writer endpoint for the cluster |
+| `POSTGRES_CLUSTER_PORT` (and `PGPORT`) | The database port |
+| `POSTGRES_CLUSTER_MASTER_PASSWORD` (and `PG_PASSWORD`) | database root password |
+| `POSTGRES_CLUSTER_MASTER_USERNAME` (and `PG_USER`) | The database master username |
+| `POSTGRES_CLUSTER_DATABASE_NAME` (and `PGDATABASE`) | Name for an automatically created database on cluster creation |
+| `POSTGRES_CLUSTER_ARN` | Amazon Resource Name (ARN) of cluster |
+| `POSTGRES_CLUSTER_ID` | The RDS Cluster Identifier |
+| `POSTGRES_CLUSTER_RESOURCE_ID` | The RDS Cluster Resource ID |
+| `POSTGRES_CLUSTER_READER_ENDPOINT` | A read-only endpoint for the cluster, automatically load-balanced across replicas |
+| `POSTGRES_CLUSTER_ENGINE_VERSION_ACTUAL` | The running version of the cluster database |
+| `POSTGRES_CLUSTER_HOSTED_ZONE_ID`| The Route53 Hosted Zone ID of the endpoint |
+
+### AWS Root Certs
+The AWS root certificate is downloaded and accessible via the `rds-combined-ca-bundle.pem` file in root of your app repo/directory.
+
+### App example
+Example JavaScript to make a request to the Postgres cluster:
+
+```js
+const { Client } = require('pg')
+
+// set up client
+const client = new Client({
+  host: process.env.PGHOST,
+  port: process.env.PGPORT,
+  user: process.env.PG_USER,
+  password: process.env.PG_PASSWORD,
+  database: process.env.PGDATABASE,
+  ssl: {
+    ca: fs.readFileSync('rds-combined-ca-bundle.pem').toString()
+  }
+});
+
+// connect and query
+client.connect()
+const result = await client.query('SELECT NOW()');
+await client.end();
+
+console.log(`Hello SQL timestamp: ${result.rows[0].now}`);
+```
+
+### Postgres Infrastructure and Cluster Details
+Specifically, the following resources will be created:
+- AWS Security Group
+  - AWS Security Group Rule - Allows access to the cluster's db port: `5432`
+- AWS RDS Aurora Postgres
+  - Includes a single database (set by the input: `postgres_database_name`. defaults to `root`)
+
+Additional details about the cluster that's created:
+- Automated backups (7 Days)
+  - Backup window 2-3 UTC (GMT)
+- Encrypted Storage
+- Monitoring enabled
+- Sends logs to AWS Cloudwatch
+
+> _**For more details**, see [operations/deployment/terraform/postgres.tf](operations/deployment/terraform/postgres.tf)_
+
 ## Made with BitOps
 [BitOps](https://bitops.sh) allows you to define Infrastructure-as-Code for multiple tools in a central place.  This action uses a BitOps [Operations Repository](https://bitops.sh/operations-repo-structure/) to set up the necessary Terraform and Ansible to create infrastructure and deploy to it.
 
 ## Contributing
-We would love for you to contribute to [bitovi/github-actions-deploy-docker-to-ec2](https://github.com/bitovi/github-actions-deploy-docker-to-ec2).   [Issues](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/issues) and [Pull Requests](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/pulls) are welcome!
+We would love for you to contribute to [bitovi/github-actions-deploy-docker-to-ec2](https://github.com/bitovi/github-actions-deploy-docker-to-ec2).
+Would you like to see additional features?  [Create an issue](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/issues/new) or a [Pull Requests](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/pulls). We love discussing solutions!
 
 ## License
 The scripts and documentation in this project are released under the [MIT License](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/blob/main/LICENSE).
-
-## Provided by Bitovi
-[Bitovi](https://www.bitovi.com/) is a proud supporter of Open Source software.
-
-
-## Need help?
-Bitovi has consultants that can help.  Drop into [Bitovi's Community Slack](https://www.bitovi.com/community/slack), and talk to us in the `#devops` channel!
-
-Need DevOps Consulting Services?  Head over to https://www.bitovi.com/devops-consulting, and book a free consultation.
