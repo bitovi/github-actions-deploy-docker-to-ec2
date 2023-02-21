@@ -21,11 +21,6 @@ terraform {
       source  = \"hashicorp/random\"
       version = \">= 2.2\"
     }
-    # do we need db to be created and priviliges to be granted ? 
-    # cyrilgdn-postgresql = {
-    #   source = \"cyrilgdn/postgresql\"
-    #   version = \"1.18.0\"
-    # }
   }
 
   backend \"s3\" {
