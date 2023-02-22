@@ -17,6 +17,6 @@ echo "In afterhook - output.sh"
 
 if [ "$TERRAFORM_DESTROY" != "true" ]; then
     # The sed command will make each variable be in it's line, and in case a list is present, will transform it into a line
-    terraform output sed -e ':a;/["\)]$/!N;s/\n//;ta' -e 's/ *= */=/g;s/[" ,]//g;s/,\([]]\)/\1/g'  > /opt/bitops_deployment/bo-out.env
+    terraform output | sed -e ':a;/["\)]$/!N;s/\n//;ta' -e 's/ *= */=/g;s/[" ,]//g;s/,\([]]\)/\1/g'  > /opt/bitops_deployment/bo-out.env
     cat /opt/bitops_deployment/bo-out.env
 fi
