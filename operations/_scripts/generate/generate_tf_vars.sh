@@ -33,12 +33,11 @@ else
   GITHUB_BRANCH_NAME=${GITHUB_REF_NAME}
 fi
 
-# Translating  '/' '-' and '_' '-'  in the same line
 
-GITHUB_IDENTIFIER="$(echo $($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh) | tr '/' '-' | tr '_' '-' )"
+GITHUB_IDENTIFIER="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier.sh)"
 echo "GITHUB_IDENTIFIER: [$GITHUB_IDENTIFIER]"
 
-GITHUB_IDENTIFIER_SS="$(echo $($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier_supershort.sh) | tr '/' '-' | tr '_' '-' )"
+GITHUB_IDENTIFIER_SS="$($GITHUB_ACTION_PATH/operations/_scripts/generate/generate_identifier_supershort.sh)"
 echo "GITHUB_IDENTIFIER SS: [$GITHUB_IDENTIFIER_SS]"
 
 
