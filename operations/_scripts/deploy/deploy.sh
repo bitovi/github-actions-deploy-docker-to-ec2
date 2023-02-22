@@ -28,13 +28,19 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 
 # Generate bitops config
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
+
+# List terraform folder
+echo "ls -al $GITHUB_ACTION_PATH/operations/deployment/terraform/"
 ls -al $GITHUB_ACTION_PATH/operations/deployment/terraform/
+# Prints out bitops.config.yaml
+echo "cat $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/bitops.config.yaml
 
 
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf"
 cat $GITHUB_ACTION_PATH/operations/deployment/terraform/provider.tf
 echo "cat GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars"
+cat $GITHUB_ACTION_PATH/operations/deployment/terraform/terraform.tfvars
 echo "ls GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
 ls "$GITHUB_ACTION_PATH/operations/deployment/ansible/app/${GITHUB_REPO_NAME}"
 
