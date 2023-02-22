@@ -115,23 +115,27 @@ create_root_cert=$(generate create_root_cert $CREATE_ROOT_CERT)
 create_sub_cert=$(generate create_sub_cert $CREATE_SUB_CERT)
 no_cert=$(generate no_cert $NO_CERT)
 #-- EFS --#
-aws_create_efs=$(generate aws_create_efs $AWS_CREATE_EFS)
-aws_create_ha_efs=$(generate aws_create_ha_efs $AWS_CREATE_HA_EFS)
-aws_create_efs_replica=$(generate aws_create_efs_replica $AWS_CREATE_EFS_REPLICA)
-aws_enable_efs_backup_policy=$(generate aws_enable_efs_backup_policy $AWS_ENABLE_EFS_BACKUP_POLICY)
-aws_efs_zone_mapping=$(generate aws_efs_zone_mapping $AWS_EFS_ZONE_MAPPING)
-aws_efs_transition_to_inactive=$(generate aws_efs_transition_to_inactive $AWS_EFS_TRANSITION_TO_INACTIVE)
-aws_replication_configuration_destination=$(generate aws_replication_configuration_destination $AWS_EFS_REPLICA_DESTINATION)
-aws_mount_efs_id=$(generate aws_mount_efs_id $AWS_MOUNT_EFS_ID)
-aws_mount_efs_security_group_id=$(generate aws_mount_efs_security_group_id $AWS_MOUNT_EFS_SECURITY_GROUP_ID)
+if [[ $AWS_CREATE_EFS = true ]]; then
+  aws_create_efs=$(generate aws_create_efs $AWS_CREATE_EFS)
+  aws_create_ha_efs=$(generate aws_create_ha_efs $AWS_CREATE_HA_EFS)
+  aws_create_efs_replica=$(generate aws_create_efs_replica $AWS_CREATE_EFS_REPLICA)
+  aws_enable_efs_backup_policy=$(generate aws_enable_efs_backup_policy $AWS_ENABLE_EFS_BACKUP_POLICY)
+  aws_efs_zone_mapping=$(generate aws_efs_zone_mapping $AWS_EFS_ZONE_MAPPING)
+  aws_efs_transition_to_inactive=$(generate aws_efs_transition_to_inactive $AWS_EFS_TRANSITION_TO_INACTIVE)
+  aws_replication_configuration_destination=$(generate aws_replication_configuration_destination $AWS_EFS_REPLICA_DESTINATION)
+  aws_mount_efs_id=$(generate aws_mount_efs_id $AWS_MOUNT_EFS_ID)
+  aws_mount_efs_security_group_id=$(generate aws_mount_efs_security_group_id $AWS_MOUNT_EFS_SECURITY_GROUP_ID)
+fi
 #-- RDS --#
-# aws_security_group_name_pg=$(generate aws_security_group_name_pg $AWS_SECURITY_GROUP_NAME_PG) - Fixed
-aws_enable_postgres=$(generate aws_enable_postgres $AWS_ENABLE_POSTGRES)
-aws_postgres_engine=$(generate aws_postgres_engine $AWS_POSTGRES_ENGINE)
-aws_postgres_engine_version=$(generate aws_postgres_engine_version $AWS_POSTGRES_ENGINE_VERSION)
-aws_postgres_instance_class=$(generate aws_postgres_instance_class $AWS_POSTGRES_INSTANCE_CLASS)
-aws_postgres_database_name=$(generate aws_postgres_database_name $AWS_POSTGRES_DATABASE_NAME)
-aws_postgres_database_port=$(generate aws_postgres_database_port $AWS_POSTGRES_DATABASE_PORT)
+if [[ $AWS_ENABLE_POSTGRES = true ]]; then
+  # aws_security_group_name_pg=$(generate aws_security_group_name_pg $AWS_SECURITY_GROUP_NAME_PG) - Fixed
+  aws_enable_postgres=$(generate aws_enable_postgres $AWS_ENABLE_POSTGRES)
+  aws_postgres_engine=$(generate aws_postgres_engine $AWS_POSTGRES_ENGINE)
+  aws_postgres_engine_version=$(generate aws_postgres_engine_version $AWS_POSTGRES_ENGINE_VERSION)
+  aws_postgres_instance_class=$(generate aws_postgres_instance_class $AWS_POSTGRES_INSTANCE_CLASS)
+  aws_postgres_database_name=$(generate aws_postgres_database_name $AWS_POSTGRES_DATABASE_NAME)
+  aws_postgres_database_port=$(generate aws_postgres_database_port $AWS_POSTGRES_DATABASE_PORT)
+fi
 # aws_postgres_subnets=$(generate aws_postgres_subnets $AWS_POSTGRES_SUBNETS) - Special case
 #-- Security Manager --#
 create_keypair_sm_entry=$(generate create_keypair_sm_entry $CREATE_KEYPAIR_SM_ENTRY)
