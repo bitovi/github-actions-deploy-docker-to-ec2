@@ -42,9 +42,33 @@ echo "GITHUB_IDENTIFIER SS: [$GITHUB_IDENTIFIER_SS]"
 
 
 # -------------------------------------------------- #
-domain_name=
-if [ -n "$DOMAIN_NAME" ]; then
-  domain_name="domain_name = \"${DOMAIN_NAME}\""
+# Generator # 
+generate () {
+  $1=
+  if [[ -n "$2" ]];then
+    $1="$1 = \"\${$2}\""
+  fi
+}
+
+# Fixed values
+
+ops_repo_environment="ops_repo_environment = \"deployment\""
+app_org_name="app_org_name = \"${GITHUB_ORG_NAME}\""
+app_repo_name="app_repo_name = \"${GITHUB_REPO_NAME}\""
+app_branch_name="app_branch_name = \"${GITHUB_BRANCH_NAME}\""
+app_install_root="app_install_root = \"/home/ubuntu\""
+security_group_name="security_group_name = \"${GITHUB_IDENTIFIER}\""
+aws_resource_identifier="aws_resource_identifier = \"${GITHUB_IDENTIFIER}\""
+aws_resource_identifier_supershort="aws_resource_identifier_supershort = \"${GITHUB_IDENTIFIER_SS}\""
+aws_security_group_name_pg="aws_security_group_name_pg = \"${GITHUB_IDENTIFIER}-pg\""
+
+# Special cases
+
+ec2_iam_instance_profile=
+if [ -n "${EC2_INSTANCE_PROFILE}" ]; then
+  ec2_iam_instance_profile="ec2_iam_instance_profile =\"${EC2_INSTANCE_PROFILE}\""
+else
+  ec2_iam_instance_profile="ec2_iam_instance_profile =\"${GITHUB_IDENTIFIER}\""
 fi
 
 sub_domain_name=
@@ -54,214 +78,70 @@ else
   sub_domain_name="sub_domain_name = \"$GITHUB_IDENTIFIER\""
 fi
 
-ec2_iam_instance_profile=
-if [ -n "${EC2_INSTANCE_PROFILE}" ]; then
-  ec2_iam_instance_profile="ec2_iam_instance_profile =\"${EC2_INSTANCE_PROFILE}\""
-else
-  ec2_iam_instance_profile="ec2_iam_instance_profile =\"${GITHUB_IDENTIFIER}\""
-fi
-
-ec2_instance_type=
-if [[ -n "$EC2_INSTANCE_TYPE" ]];then
-  ec2_instance_type="ec2_instance_type = \"${EC2_INSTANCE_TYPE}\""
-fi
-
-app_port=
-if [[ -n "$APP_PORT" ]];then
-  app_port="app_port = \"$APP_PORT\""
-fi
-
-no_cert=
-if [[ -n "$NO_CERT" ]];then
-  no_cert="no_cert = ${NO_CERT}"
-fi
-
-#----- EFS -----#
-aws_create_efs=
-if [[ -n "$AWS_CREATE_EFS" ]];then
-  aws_create_efs="aws_create_efs = \"${AWS_CREATE_EFS}\""
-fi
-
-aws_create_ha_efs=
-if [[ -n "$AWS_CREATE_HA_EFS" ]];then
-  aws_create_ha_efs="aws_create_ha_efs = \"${AWS_CREATE_HA_EFS}\""
-fi
-
-aws_create_efs_replica=
-if [[ -n "$AWS_CREATE_EFS_REPLICA" ]];then
-  aws_create_efs_replica="aws_create_efs_replica = \"${AWS_CREATE_EFS_REPLICA}\""
-fi
-
-aws_enable_efs_backup_policy=
-if [[ -n "$AWS_ENABLE_EFS_BACKUP_POLICY" ]];then
-  aws_enable_efs_backup_policy="aws_enable_efs_backup_policy = \"${AWS_ENABLE_EFS_BACKUP_POLICY}\""
-fi
-
-aws_efs_zone_mapping=
-if [[ -n "$AWS_EFS_ZONE_MAPPING" ]];then
-  aws_efs_zone_mapping="aws_efs_zone_mapping = ${AWS_EFS_ZONE_MAPPING}"
-fi
-
-aws_efs_transition_to_inactive=
-if [[ -n "$AWS_EFS_TRANSITION_TO_INACTIVE" ]];then
-  aws_efs_transition_to_inactive="aws_efs_transition_to_inactive = \"${AWS_EFS_TRANSITION_TO_INACTIVE}\""
-fi
-
-aws_replication_configuration_destination=
-if [[ -n "$AWS_EFS_REPLICA_DESTINATION" ]];then
-  aws_replication_configuration_destination="aws_replication_configuration_destination = \"${AWS_EFS_REPLICA_DESTINATION}\""
-fi
-
-aws_mount_efs_id=
-if [[ -n "$AWS_MOUNT_EFS_ID" ]];then
-  aws_mount_efs_id="aws_mount_efs_id = \"${AWS_MOUNT_EFS_ID}\""
-fi
-
-aws_mount_efs_security_group_id=
-if [[ -n "$AWS_MOUNT_EFS_SECURITY_GROUP_ID" ]];then
-  aws_mount_efs_security_group_id="aws_mount_efs_security_group_id = \"${AWS_MOUNT_EFS_SECURITY_GROUP_ID}\""
-fi
-
-#------------------------------------#
-
-additional_tags=
-if [[ -n "$ADDITIONAL_TAGS" ]]; then
-  additional_tags="additional_tags = ${ADDITIONAL_TAGS}"
-fi
-
-application_mount_target=
-if [[ -n "$APPLICATION_MOUNT_TARGET" ]]; then
-  application_mount_target="application_mount_target = \"${APPLICATION_MOUNT_TARGET}\""
-fi
-
-efs_mount_target=
-if [[ -n "$EFS_MOUNT_TARGET" ]]; then
-  efs_mount_target="efs_mount_target = \"${EFS_MOUNT_TARGET}\""
-fi
-
-data_mount_target=
-if [[ -n "$DATA_MOUNT_TARGET" ]]; then
-  data_mount_target="data_mount_target = \"${DATA_MOUNT_TARGET}\""
-fi
-
-root_domain=
-if [[ -n "$ROOT_DOMAIN" ]]; then
-  root_domain="root_domain = \"${ROOT_DOMAIN}\""
-fi
-
-cert_arn=
-if [[ -n "$CERT_ARN" ]]; then
-  cert_arn="cert_arn = \"${CERT_ARN}\""
-fi
-
-create_root_cert=
-if [[ -n "$CREATE_ROOT_CERT" ]]; then
-  create_root_cert="create_root_cert = \"${CREATE_ROOT_CERT}\""
-fi
-
-create_sub_cert=
-if [[ -n "$CREATE_SUB_CERT" ]]; then
-  create_sub_cert="create_sub_cert = \"${CREATE_SUB_CERT}\""
-fi
-
-aws_resource_identifier=
-if [[ -n "$GITHUB_IDENTIFIER" ]]; then
-  aws_resource_identifier="aws_resource_identifier = \"${GITHUB_IDENTIFIER}\""
-fi
-
-aws_resource_identifier_supershort=
-if [[ -n "$GITHUB_IDENTIFIER_SS" ]]; then
-  aws_resource_identifier_supershort="aws_resource_identifier_supershort = \"${GITHUB_IDENTIFIER_SS}\""
-fi
-
-aws_secret_env=
-if [[ -n "$AWS_SECRET_ENV" ]]; then
-  aws_secret_env="aws_secret_env = \"${AWS_SECRET_ENV}\""
-fi
-
-aws_ami_id=
-if [[ -n "$AWS_AMI_ID" ]]; then
-  aws_ami_id="aws_ami_id = \"${AWS_AMI_ID}\""
-fi
-
-lb_port=
-if [[ -n "$LB_PORT" ]]; then
-  lb_port="lb_port = \"$LB_PORT\""
-fi
-
-lb_healthcheck=
-if [[ -n "$LB_HEALTHCHECK" ]]; then
-  lb_healthcheck="lb_healthcheck = \"$LB_HEALTHCHECK\""
-fi
-
-lb_access_bucket_name=
-if [[ -n "$LB_LOGS_BUCKET" ]]; then
-  lb_access_bucket_name="lb_access_bucket_name = \"${LB_LOGS_BUCKET}\""
-fi
-
-# Should this be moved to a defaults?
-ops_repo_environment="ops_repo_environment = \"deployment\""
-security_group_name="security_group_name = \"${GITHUB_IDENTIFIER}\""
-app_install_root="app_install_root = \"/home/ubuntu\""
-
-app_org_name=
-if [[ -n "$GITHUB_ORG_NAME" ]]; then
-  app_org_name="app_org_name = \"${GITHUB_ORG_NAME}\""
-fi
-
-app_repo_name=
-if [[ -n "$GITHUB_REPO_NAME" ]]; then
-  app_repo_name="app_repo_name = \"${GITHUB_REPO_NAME}\""
-fi
-
-app_branch_name=
-if [[ -n "$GITHUB_BRANCH_NAME" ]]; then
-  app_branch_name="app_branch_name = \"${GITHUB_BRANCH_NAME}\""
-fi
-
-create_keypair_sm_entry=
-if [[ -n "$CREATE_KEYPAIR_SM_ENTRY" ]]; then
-  create_keypair_sm_entry="create_keypair_sm_entry = \"${CREATE_KEYPAIR_SM_ENTRY}\""
-fi
-
-# RDS
-
 aws_postgres_subnets=
 if [ -n "${AWS_POSTGRES_SUBNETS}" ]; then
   aws_postgres_subnets="aws_postgres_subnets = \"$(comma_str_to_tf_array $AWS_POSTGRES_SUBNETS)\""
 fi
-
-
 echo "AWS Postgres subnets: $aws_postgres_subnets"
 
-#aws_security_group_name_pg=
-#if [ -n "${AWS_POSTGRES_SUBNETS}" ]; then
-  aws_security_group_name_pg="aws_security_group_name_pg = \"${GITHUB_IDENTIFIER}-pg\""
-#fi
-aws_enable_postgres=
-if [ -n "${AWS_ENABLE_POSTGRES}" ]; then
-  aws_enable_postgres="aws_enable_postgres = \"${EAWS_NABLE_POSTGRES}\""
-fi
-aws_postgres_engine=
-if [ -n "${AWS_POSTGRES_ENGINE}" ]; then
-  aws_postgres_engine="aws_postgres_engine = \"${AWS_POSTGRES_ENGINE}\""
-fi
-aws_postgres_engine_version=
-if [ -n "${AWS_POSTGRES_ENGINE_VERSION}" ]; then
-  aws_postgres_engine_version="aws_postgres_engine_version = \"${AWS_POSTGRES_ENGINE_VERSION}\""
-fi
-aws_postgres_instance_class=
-if [ -n "${AWS_POSTGRES_INSTANCE_CLASS}" ]; then
-  aws_postgres_instance_class="aws_postgres_instance_class = \"${AWS_POSTGRES_INSTANCE_CLASS}\""
-fi
-aws_postgres_database_name=
-if [ -n "${AWS_POSTGRES_DATABASE_NAME}" ]; then
-  aws_postgres_database_name="aws_postgres_database_name = \"${AWS_POSTGRES_DATABASE_NAME}\""
-fi
-aws_postgres_database_port=
-if [ -n "${AWS_POSTGRES_DATABASE_PORT}" ]; then
-  aws_postgres_database_port="aws_postgres_database_port = \"${AWS_POSTGRES_DATABASE_PORT}\""
-fi
+
+#-- Application --#
+generate app_port APP_PORT
+# generate ops_repo_environment OPS_REPO_ENVIRONMENT - Fixed
+# generate app_org_name APP_ORG_NAME - Fixed
+# generate app_repo_name APP_REPO_NAME - Fixed
+# generate app_branch_name APP_BRANCH_NAME - Fixed
+# generate app_install_root APP_INSTALL_ROOT - Fixed
+#-- Load Balancer --#
+generate lb_port LB_PORT
+generate lb_healthcheck LB_HEALTHCHECK
+#-- Logging --#
+generate lb_access_bucket_name LB_LOGS_BUCKET
+#-- Security Groups --#
+generate security_group_name SECURITY_GROUP_NAME
+#-- EC2 --#
+generate ec2_instance_type EC2_INSTANCE_TYPE
+#generate ec2_iam_instance_profile EC2_INSTANCE_PROFILE - Special case
+#-- AWS --#
+#generate aws_resource_identifier AWS_RESOURCE_IDENTIFIER - Fixed
+#generate aws_resource_identifier_supershort AWS_RESOURCE_IDENTIFIER_SUPERSHORT - Fixed
+generate aws_secret_env AWS_SECRET_ENV
+generate aws_ami_id AWS_AMI_ID
+#-- Certificates --#
+#generate sub_domain_name SUB_DOMAIN_NAME  - Special case
+generate domain_name DOMAIN_NAME
+generate root_domain ROOT_DOMAIN
+generate cert_arn CERT_ARN
+generate create_root_cert CREATE_ROOT_CERT
+generate create_sub_cert CREATE_SUB_CERT
+generate no_cert NO_CERT
+#-- EFS --#
+generate aws_create_efs AWS_CREATE_EFS
+generate aws_create_ha_efs AWS_CREATE_HA_EFS
+generate aws_create_efs_replica AWS_CREATE_EFS_REPLICA
+generate aws_enable_efs_backup_policy AWS_ENABLE_EFS_BACKUP_POLICY
+generate aws_efs_zone_mapping AWS_EFS_ZONE_MAPPING
+generate aws_efs_transition_to_inactive AWS_EFS_TRANSITION_TO_INACTIVE
+generate aws_replication_configuration_destination AWS_EFS_REPLICA_DESTINATION
+generate aws_mount_efs_id AWS_MOUNT_EFS_ID
+generate aws_mount_efs_security_group_id AWS_MOUNT_EFS_SECURITY_GROUP_ID
+#-- RDS --#
+# generate aws_security_group_name_pg AWS_SECURITY_GROUP_NAME_PG - Fixed
+generate aws_enable_postgres AWS_ENABLE_POSTGRES
+generate aws_postgres_engine AWS_POSTGRES_ENGINE
+generate aws_postgres_engine_version AWS_POSTGRES_ENGINE_VERSION
+generate aws_postgres_instance_class AWS_POSTGRES_INSTANCE_CLASS
+generate aws_postgres_database_name AWS_POSTGRES_DATABASE_NAME
+generate aws_postgres_database_port AWS_POSTGRES_DATABASE_PORT
+# generate aws_postgres_subnets AWS_POSTGRES_SUBNETS - Special case
+#-- Security Manager --#
+generate create_keypair_sm_entry CREATE_KEYPAIR_SM_ENTRY
+#-- Tags --#
+generate additional_tags ADDITIONAL_TAGS
+#-- ANSIBLE --##
+generate application_mount_target APPLICATION_MOUNT_TARGET
+generate efs_mount_target EFS_MOUNT_TARGET
+generate data_mount_target DATA_MOUNT_TARGET
 
 
 # -------------------------------------------------- #
