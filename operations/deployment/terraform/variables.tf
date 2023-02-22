@@ -59,7 +59,7 @@ variable "security_group_name" {
   default     = "SG for deployment"
   description = "Name of the security group to use"
 }
-variable "security_group_name_pg" {
+variable "aws_security_group_name_pg" {
   type        = string
   default     = "SG for postgres deployment"
   description = "Name of the security group to use for postgres"
@@ -137,38 +137,38 @@ variable "no_cert" {
   default     = ""
 }
 
-variable "enable_postgres" {
+variable "aws_enable_postgres" {
   type        = string
   description = "deploy a postgres database"
   default     = ""
 }
-variable "postgres_engine" {
+variable "aws_postgres_engine" {
   type        = string
   description = "The engine to use for postgres.  Defaults to `aurora-postgresql`.  For more details, see: https://aws.amazon.com/rds/, https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
   default     = "aurora-postgresql"
 }
-variable "postgres_engine_version" {
+variable "aws_postgres_engine_version" {
   type        = string
   description = "The version of the engine to use for postgres.  Defaults to `11.13`."
   default     = "11.13"
 }
-variable "postgres_instance_class" {
+variable "aws_postgres_instance_class" {
   type        = string
   description = "The size of the db instances.  For more details, see: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html, https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
   default     = "db.t3.medium"
 }
-variable "postgres_subnets" {
+variable "aws_postgres_subnets" {
   type        = list(string)
   description = "The list of subnet ids to use for postgres. For more details, see: https://registry.terraform.io/modules/terraform-aws-modules/rds-aurora/aws/latest?tab=inputs"
   default     = []
 }
-variable "postgres_database_name" {
+variable "aws_postgres_database_name" {
   type        = string
   description = "The name of the database. will be created if it does not exist."
   default     = "root"
 }
 
-variable "postgres_database_port" {
+variable "aws_postgres_database_port" {
   type        = string
   default     = "5432"
   description = "database port"

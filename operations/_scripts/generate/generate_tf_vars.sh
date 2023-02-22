@@ -227,41 +227,41 @@ fi
 
 # RDS
 
-postgres_subnets=
-if [ -n "${POSTGRES_SUBNETS}" ]; then
-  postgres_subnets="postgres_subnets = \"$(comma_str_to_tf_array $POSTGRES_SUBNETS)\""
+aws_postgres_subnets=
+if [ -n "${AWS_POSTGRES_SUBNETS}" ]; then
+  aws_postgres_subnets="aws_postgres_subnets = \"$(comma_str_to_tf_array $AWS_POSTGRES_SUBNETS)\""
 fi
 
 
-echo "Postgres subnets: $postgres_subnets"
+echo "AWS Postgres subnets: $aws_postgres_subnets"
 
-#security_group_name_pg=
-#if [ -n "${POSTGRES_SUBNETS}" ]; then
-  security_group_name_pg="security_group_name_pg = \"${GITHUB_IDENTIFIER}-pg\""
+#aws_security_group_name_pg=
+#if [ -n "${AWS_POSTGRES_SUBNETS}" ]; then
+  aws_security_group_name_pg="aws_security_group_name_pg = \"${GITHUB_IDENTIFIER}-pg\""
 #fi
-enable_postgres=
-if [ -n "${ENABLE_POSTGRES}" ]; then
-  enable_postgres="enable_postgres = \"${ENABLE_POSTGRES}\""
+aws_enable_postgres=
+if [ -n "${AWS_ENABLE_POSTGRES}" ]; then
+  aws_enable_postgres="aws_enable_postgres = \"${EAWS_NABLE_POSTGRES}\""
 fi
-postgres_engine=
-if [ -n "${POSTGRES_ENGINE}" ]; then
-  postgres_engine="postgres_engine = \"${POSTGRES_ENGINE}\""
+aws_postgres_engine=
+if [ -n "${AWS_POSTGRES_ENGINE}" ]; then
+  aws_postgres_engine="aws_postgres_engine = \"${AWS_POSTGRES_ENGINE}\""
 fi
-postgres_engine_version=
-if [ -n "${POSTGRES_ENGINE_VERSION}" ]; then
-  postgres_engine_version="postgres_engine_version = \"${POSTGRES_ENGINE_VERSION}\""
+aws_postgres_engine_version=
+if [ -n "${AWS_POSTGRES_ENGINE_VERSION}" ]; then
+  aws_postgres_engine_version="aws_postgres_engine_version = \"${AWS_POSTGRES_ENGINE_VERSION}\""
 fi
-postgres_instance_class=
-if [ -n "${POSTGRES_INSTANCE_CLASS}" ]; then
-  postgres_instance_class="postgres_instance_class = \"${POSTGRES_INSTANCE_CLASS}\""
+aws_postgres_instance_class=
+if [ -n "${AWS_POSTGRES_INSTANCE_CLASS}" ]; then
+  aws_postgres_instance_class="aws_postgres_instance_class = \"${AWS_POSTGRES_INSTANCE_CLASS}\""
 fi
-postgres_database_name=
-if [ -n "${POSTGRES_DATABASE_NAME}" ]; then
-  postgres_database_name="postgres_database_name = \"${POSTGRES_DATABASE_NAME}\""
+aws_postgres_database_name=
+if [ -n "${AWS_POSTGRES_DATABASE_NAME}" ]; then
+  aws_postgres_database_name="aws_postgres_database_name = \"${AWS_POSTGRES_DATABASE_NAME}\""
 fi
-postgres_database_port=
-if [ -n "${POSTGRES_DATABASE_PORT}" ]; then
-  postgres_database_port="postgres_database_port = \"${POSTGRES_DATABASE_PORT}\""
+aws_postgres_database_port=
+if [ -n "${AWS_POSTGRES_DATABASE_PORT}" ]; then
+  aws_postgres_database_port="aws_postgres_database_port = \"${AWS_POSTGRES_DATABASE_PORT}\""
 fi
 
 
@@ -318,14 +318,14 @@ $aws_mount_efs_id
 $aws_mount_efs_security_group_id
 
 #-- RDS --#
-$security_group_name_pg
-$enable_postgres
-$postgres_engine
-$postgres_engine_version
-$postgres_instance_class
-$postgres_database_name
-$postgres_database_port
-$postgres_subnets
+$aws_security_group_name_pg
+$aws_enable_postgres
+$aws_postgres_engine
+$aws_postgres_engine_version
+$aws_postgres_instance_class
+$aws_postgres_database_name
+$aws_postgres_database_port
+$aws_postgres_subnets
 
 #-- Security Manager --#
 $create_keypair_sm_entry

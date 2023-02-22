@@ -1,7 +1,7 @@
 # Additional postgres configuration in postgres.tf
 
 resource "local_file" "postgres-dotenv" {
-  count = var.enable_postgres == "true" ? 1 : 0
+  count = var.aws_enable_postgres == "true" ? 1 : 0
   filename = format("%s/%s", abspath(path.root), "postgres.env")
   content  = <<-EOT
 
