@@ -252,18 +252,25 @@ runs:
       run: |
         echo "## VM Created! :rocket:" >> $GITHUB_STEP_SUMMARY
         echo " ${{ steps.deploy.outputs.vm_url }}" >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_state_bucket_destroy == 'false' }}
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.stack_destroy == 'true' && inputs.tf_state_bucket_destroy == 'false' }}
       name: Print result destroyed
       shell: bash
       run: |
         echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
         echo "Infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_state_bucket_destroy == 'true' }}
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.stack_destroy == 'true' && inputs.tf_state_bucket_destroy == 'true' }}
       name: Print result destroyed
       shell: bash
       run: |
         echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
         echo "Buckets and infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.stack_destroy == 'false' }}
+      name: Print result destroyed
+      shell: bash
+      run: |
+        echo "## Deploy finished! But no URL found. :thinking: " >> $GITHUB_STEP_SUMMARY
+        echo "If expecting an URL, please check the logs for possible  errors." >> $GITHUB_STEP_SUMMARY
+        echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
     - if: ${{ failure() }} 
       name: Print error result
       shell: bash
