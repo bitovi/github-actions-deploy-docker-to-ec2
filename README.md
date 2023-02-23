@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: deploy
-        uses: bitovi/github-actions-deploy-docker-to-ec2@v0.4.6
+        uses: bitovi/github-actions-deploy-docker-to-ec2@v0.5.0
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -97,7 +97,7 @@ jobs:
     steps:
     - id: deploy
       name: Deploy
-      uses: bitovi/github-actions-deploy-docker-to-ec2@v0.4.6
+      uses: bitovi/github-actions-deploy-docker-to-ec2@v0.5.0
       with:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
