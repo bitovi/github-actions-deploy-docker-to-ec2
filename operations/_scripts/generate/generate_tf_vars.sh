@@ -43,7 +43,10 @@ echo "GITHUB_IDENTIFIER SS: [$GITHUB_IDENTIFIER_SS]"
 
 # -------------------------------------------------- #
 # Generator # 
-generate () {
+# Function to generate the variable content based on the fact that it could be empty. 
+# This way, we only pass terraform variables that are defined, hence not overwriting terraform defaults. 
+
+generate_var () {
   if [[ -n "$2" ]];then
     echo "$1 = \"$2\""
   fi
@@ -85,66 +88,66 @@ echo "AWS Postgres subnets: $aws_postgres_subnets"
 
 
 #-- Application --#
-app_port=$(generate app_port $APP_PORT)
-# ops_repo_environment=$(generate ops_repo_environment OPS_REPO_ENVIRONMENT - Fixed
-# app_org_name=$(generate app_org_name APP_ORG_NAME - Fixed
-# app_repo_name=$(generate app_repo_name APP_REPO_NAME - Fixed
-# app_branch_name=$(generate app_branch_name APP_BRANCH_NAME - Fixed
-# app_install_root=$(generate app_install_root APP_INSTALL_ROOT - Fixed
+app_port=$(generate_var app_port $APP_PORT)
+# ops_repo_environment=$(generate_var ops_repo_environment OPS_REPO_ENVIRONMENT - Fixed
+# app_org_name=$(generate_var app_org_name APP_ORG_NAME - Fixed
+# app_repo_name=$(generate_var app_repo_name APP_REPO_NAME - Fixed
+# app_branch_name=$(generate_var app_branch_name APP_BRANCH_NAME - Fixed
+# app_install_root=$(generate_var app_install_root APP_INSTALL_ROOT - Fixed
 #-- Load Balancer --#
-lb_port=$(generate lb_port $LB_PORT)
-lb_healthcheck=$(generate lb_healthcheck $LB_HEALTHCHECK)
+lb_port=$(generate_var lb_port $LB_PORT)
+lb_healthcheck=$(generate_var lb_healthcheck $LB_HEALTHCHECK)
 #-- Logging --#
-lb_access_bucket_name=$(generate lb_access_bucket_name $LB_LOGS_BUCKET)
+lb_access_bucket_name=$(generate_var lb_access_bucket_name $LB_LOGS_BUCKET)
 #-- Security Groups --#
-security_group_name=$(generate security_group_name $SECURITY_GROUP_NAME)
+security_group_name=$(generate_var security_group_name $SECURITY_GROUP_NAME)
 #-- EC2 --#
-ec2_instance_type=$(generate ec2_instance_type $EC2_INSTANCE_TYPE)
-# ec2_iam_instance_profile=$(generate ec2_iam_instance_profile EC2_INSTANCE_PROFILE - Special case
+ec2_instance_type=$(generate_var ec2_instance_type $EC2_INSTANCE_TYPE)
+# ec2_iam_instance_profile=$(generate_var ec2_iam_instance_profile EC2_INSTANCE_PROFILE - Special case
 #-- AWS --#
-# aws_resource_identifier=$(generate aws_resource_identifier AWS_RESOURCE_IDENTIFIER - Fixed
-# aws_resource_identifier_supershort=$(generate aws_resource_identifier_supershort AWS_RESOURCE_IDENTIFIER_SUPERSHORT - Fixed
-aws_secret_env=$(generate aws_secret_env $AWS_SECRET_ENV)
-aws_ami_id=$(generate aws_ami_id $AWS_AMI_ID)
+# aws_resource_identifier=$(generate_var aws_resource_identifier AWS_RESOURCE_IDENTIFIER - Fixed
+# aws_resource_identifier_supershort=$(generate_var aws_resource_identifier_supershort AWS_RESOURCE_IDENTIFIER_SUPERSHORT - Fixed
+aws_secret_env=$(generate_var aws_secret_env $AWS_SECRET_ENV)
+aws_ami_id=$(generate_var aws_ami_id $AWS_AMI_ID)
 #-- Certificates --#
-# sub_domain_name=$(generate sub_domain_name $SUB_DOMAIN_NAME)  - Special case
-domain_name=$(generate domain_name $DOMAIN_NAME)
-root_domain=$(generate root_domain $ROOT_DOMAIN)
-cert_arn=$(generate cert_arn $CERT_ARN)
-create_root_cert=$(generate create_root_cert $CREATE_ROOT_CERT)
-create_sub_cert=$(generate create_sub_cert $CREATE_SUB_CERT)
-no_cert=$(generate no_cert $NO_CERT)
+# sub_domain_name=$(generate_var sub_domain_name $SUB_DOMAIN_NAME)  - Special case
+domain_name=$(generate_var domain_name $DOMAIN_NAME)
+root_domain=$(generate_var root_domain $ROOT_DOMAIN)
+cert_arn=$(generate_var cert_arn $CERT_ARN)
+create_root_cert=$(generate_var create_root_cert $CREATE_ROOT_CERT)
+create_sub_cert=$(generate_var create_sub_cert $CREATE_SUB_CERT)
+no_cert=$(generate_var no_cert $NO_CERT)
 #-- EFS --#
 if [[ $AWS_CREATE_EFS = true ]]; then
-  aws_create_efs=$(generate aws_create_efs $AWS_CREATE_EFS)
-  aws_create_ha_efs=$(generate aws_create_ha_efs $AWS_CREATE_HA_EFS)
-  aws_create_efs_replica=$(generate aws_create_efs_replica $AWS_CREATE_EFS_REPLICA)
-  aws_enable_efs_backup_policy=$(generate aws_enable_efs_backup_policy $AWS_ENABLE_EFS_BACKUP_POLICY)
-  aws_efs_zone_mapping=$(generate aws_efs_zone_mapping $AWS_EFS_ZONE_MAPPING)
-  aws_efs_transition_to_inactive=$(generate aws_efs_transition_to_inactive $AWS_EFS_TRANSITION_TO_INACTIVE)
-  aws_replication_configuration_destination=$(generate aws_replication_configuration_destination $AWS_EFS_REPLICA_DESTINATION)
-  aws_mount_efs_id=$(generate aws_mount_efs_id $AWS_MOUNT_EFS_ID)
-  aws_mount_efs_security_group_id=$(generate aws_mount_efs_security_group_id $AWS_MOUNT_EFS_SECURITY_GROUP_ID)
+  aws_create_efs=$(generate_var aws_create_efs $AWS_CREATE_EFS)
+  aws_create_ha_efs=$(generate_var aws_create_ha_efs $AWS_CREATE_HA_EFS)
+  aws_create_efs_replica=$(generate_var aws_create_efs_replica $AWS_CREATE_EFS_REPLICA)
+  aws_enable_efs_backup_policy=$(generate_var aws_enable_efs_backup_policy $AWS_ENABLE_EFS_BACKUP_POLICY)
+  aws_efs_zone_mapping=$(generate_var aws_efs_zone_mapping $AWS_EFS_ZONE_MAPPING)
+  aws_efs_transition_to_inactive=$(generate_var aws_efs_transition_to_inactive $AWS_EFS_TRANSITION_TO_INACTIVE)
+  aws_replication_configuration_destination=$(generate_var aws_replication_configuration_destination $AWS_EFS_REPLICA_DESTINATION)
+  aws_mount_efs_id=$(generate_var aws_mount_efs_id $AWS_MOUNT_EFS_ID)
+  aws_mount_efs_security_group_id=$(generate_var aws_mount_efs_security_group_id $AWS_MOUNT_EFS_SECURITY_GROUP_ID)
 fi
 #-- RDS --#
 if [[ $AWS_ENABLE_POSTGRES = true ]]; then
-  # aws_security_group_name_pg=$(generate aws_security_group_name_pg $AWS_SECURITY_GROUP_NAME_PG) - Fixed
-  aws_enable_postgres=$(generate aws_enable_postgres $AWS_ENABLE_POSTGRES)
-  aws_postgres_engine=$(generate aws_postgres_engine $AWS_POSTGRES_ENGINE)
-  aws_postgres_engine_version=$(generate aws_postgres_engine_version $AWS_POSTGRES_ENGINE_VERSION)
-  aws_postgres_instance_class=$(generate aws_postgres_instance_class $AWS_POSTGRES_INSTANCE_CLASS)
-  aws_postgres_database_name=$(generate aws_postgres_database_name $AWS_POSTGRES_DATABASE_NAME)
-  aws_postgres_database_port=$(generate aws_postgres_database_port $AWS_POSTGRES_DATABASE_PORT)
+  # aws_security_group_name_pg=$(generate_var aws_security_group_name_pg $AWS_SECURITY_GROUP_NAME_PG) - Fixed
+  aws_enable_postgres=$(generate_var aws_enable_postgres $AWS_ENABLE_POSTGRES)
+  aws_postgres_engine=$(generate_var aws_postgres_engine $AWS_POSTGRES_ENGINE)
+  aws_postgres_engine_version=$(generate_var aws_postgres_engine_version $AWS_POSTGRES_ENGINE_VERSION)
+  aws_postgres_instance_class=$(generate_var aws_postgres_instance_class $AWS_POSTGRES_INSTANCE_CLASS)
+  aws_postgres_database_name=$(generate_var aws_postgres_database_name $AWS_POSTGRES_DATABASE_NAME)
+  aws_postgres_database_port=$(generate_var aws_postgres_database_port $AWS_POSTGRES_DATABASE_PORT)
 fi
-# aws_postgres_subnets=$(generate aws_postgres_subnets $AWS_POSTGRES_SUBNETS) - Special case
+# aws_postgres_subnets=$(generate_var aws_postgres_subnets $AWS_POSTGRES_SUBNETS) - Special case
 #-- Security Manager --#
-create_keypair_sm_entry=$(generate create_keypair_sm_entry $CREATE_KEYPAIR_SM_ENTRY)
+create_keypair_sm_entry=$(generate_var create_keypair_sm_entry $CREATE_KEYPAIR_SM_ENTRY)
 #-- Tags --#
-additional_tags=$(generate additional_tags $ADDITIONAL_TAGS)
+additional_tags=$(generate_var additional_tags $ADDITIONAL_TAGS)
 #-- ANSIBLE --##
-application_mount_target=$(generate application_mount_target $APPLICATION_MOUNT_TARGET)
-efs_mount_target=$(generate efs_mount_target $EFS_MOUNT_TARGET)
-data_mount_target=$(generate data_mount_target $DATA_MOUNT_TARGET)
+application_mount_target=$(generate_var application_mount_target $APPLICATION_MOUNT_TARGET)
+efs_mount_target=$(generate_var efs_mount_target $EFS_MOUNT_TARGET)
+data_mount_target=$(generate_var data_mount_target $DATA_MOUNT_TARGET)
 
 
 # -------------------------------------------------- #
