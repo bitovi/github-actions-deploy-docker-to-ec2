@@ -139,28 +139,22 @@ inputs:
   aws_postgres_engine: 
     description: Which Database engine to use
     required: false
-    default: 'aurora-postgresql'
   aws_postgres_engine_version:
     description: Specify Postgres version 
     required: false
-    default: '11.13'
   aws_postgres_instance_class:
     description: Define the size of the instances in the DB cluster
     required: false
-    default: 'db.t3.medium'
   aws_postgres_subnets:
     description: 'Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`'
     required: false
-    default: ''
   aws_postgres_database_name:
     description: 'Specify a database name. Will be created if it does not exist'
     required: false
     # TODO: create another user and point to that instead
-    default: 'root'
   aws_postgres_database_port:
     description: 'Postgres database port'
     required: false
-    default: '5432'
   
   # Ansible
   application_mount_target:
