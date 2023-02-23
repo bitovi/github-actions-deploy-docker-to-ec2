@@ -184,13 +184,13 @@ The following inputs can be used as `step.with` keys
 #### **RDS Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `enable_postgres` | Boolean | Set to "true" to enable a postgres database. |
-| `postgres_engine` | String |  Which Database engine to use. Default is `aurora-postgresql`.|
-| `postgres_engine_version` | String |  Specify Postgres version.  More information [here](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Updates.20180305.html). Default is `11.13`. |
-| `postgres_instance_class` | String | Define the size of the instances in the DB cluster. Default is `db.t3.medium`. | 
-| `postgres_subnets` | String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. |
-| `postgres_database_name` | String | Specify a database name. Will be created if it does not exist. Default is `root`. |
-| `postgres_database_port` | String | Specify a listening port for the database. Default is `5432`.|
+| `aws_enable_postgres` | Boolean | Set to "true" to enable a postgres database. |
+| `aws_postgres_engine` | String |  Which Database engine to use. Default is `aurora-postgresql`.|
+| `aws_postgres_engine_version` | String |  Specify Postgres version.  More information [here](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Updates.20180305.html). Default is `11.13`. |
+| `aws_postgres_instance_class` | String | Define the size of the instances in the DB cluster. Default is `db.t3.medium`. | 
+| `aws_postgres_subnets` | String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. |
+| `aws_postgres_database_name` | String | Specify a database name. Will be created if it does not exist. Default is `root`. |
+| `aws_postgres_database_port` | String | Specify a listening port for the database. Default is `5432`.|
 <hr/>
 <br/>
 
@@ -289,7 +289,7 @@ An example EFS Zone mapping;
 
 ## Adding external Postgres database (AWS RDS)
 
-If `enable_postgres` is set to `true`, this action will deploy an RDS cluster for Postgres.
+If `aws_enable_postgres` is set to `true`, this action will deploy an RDS cluster for Postgres.
 
 ### Environment variables
 The following environment variables are added to the `.env` file in your app's `docker-compose.yaml` file.
@@ -353,7 +353,7 @@ Specifically, the following resources will be created:
 - AWS Security Group
   - AWS Security Group Rule - Allows access to the cluster's db port: `5432`
 - AWS RDS Aurora Postgres
-  - Includes a single database (set by the input: `postgres_database_name`. defaults to `root`)
+  - Includes a single database (set by the input: `aws_postgres_database_name`. defaults to `root`)
 
 Additional details about the cluster that's created:
 - Automated backups (7 Days)

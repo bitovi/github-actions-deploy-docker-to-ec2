@@ -133,34 +133,28 @@ inputs:
     default: false
     
   # RDS
-  enable_postgres:
+  aws_enable_postgres:
     description: Set to "true" to enable a postgres database
     required: false
-  postgres_engine: 
+  aws_postgres_engine: 
     description: Which Database engine to use
     required: false
-    default: 'aurora-postgresql'
-  postgres_engine_version:
+  aws_postgres_engine_version:
     description: Specify Postgres version 
     required: false
-    default: '11.13'
-  postgres_instance_class:
+  aws_postgres_instance_class:
     description: Define the size of the instances in the DB cluster
     required: false
-    default: 'db.t3.medium'
-  postgres_subnets:
+  aws_postgres_subnets:
     description: 'Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`'
     required: false
-    default: ''
-  postgres_database_name:
+  aws_postgres_database_name:
     description: 'Specify a database name. Will be created if it does not exist'
     required: false
     # TODO: create another user and point to that instead
-    default: 'root'
-  postgres_database_port:
+  aws_postgres_database_port:
     description: 'Postgres database port'
     required: false
-    default: '5432'
   
   # Ansible
   application_mount_target:
@@ -219,13 +213,13 @@ runs:
         APP_DIRECTORY: ${{ inputs.app_directory }}
         CREATE_KEYPAIR_SM_ENTRY: ${{ inputs.create_keypair_sm_entry }}
         ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
-        ENABLE_POSTGRES: ${{ inputs.enable_postgres }}
-        POSTGRES_ENGINE:  ${{ inputs.postgres_engine }}
-        POSTGRES_ENGINE_VERSION:  ${{ inputs.postgres_engine_version }}
-        POSTGRES_INSTANCE_CLASS: ${{ inputs.postgres_instance_class }}
-        POSTGRES_SUBNETS: ${{ inputs.postgres_subnets }}
-        POSTGRES_DATABASE_NAME: ${{ inputs.postgres_database_name }}
-        POSTGRES_DATABASE_PORT: ${{ inputs.postgres_database_port}}
+        AWS_ENABLE_POSTGRES: ${{ inputs.aws_enable_postgres }}
+        AWS_POSTGRES_ENGINE:  ${{ inputs.aws_postgres_engine }}
+        AWS_POSTGRES_ENGINE_VERSION:  ${{ inputs.aws_postgres_engine_version }}
+        AWS_POSTGRES_INSTANCE_CLASS: ${{ inputs.aws_postgres_instance_class }}
+        AWS_POSTGRES_SUBNETS: ${{ inputs.aws_postgres_subnets }}
+        AWS_POSTGRES_DATABASE_NAME: ${{ inputs.aws_postgres_database_name }}
+        AWS_POSTGRES_DATABASE_PORT: ${{ inputs.aws_postgres_database_port}}
         AWS_CREATE_EFS: ${{ inputs.aws_create_efs }}
         AWS_CREATE_HA_EFS: ${{ inputs.aws_create_ha_efs }}
         AWS_CREATE_EFS_REPLICA: ${{ inputs.aws_create_efs_replica }}
@@ -252,18 +246,25 @@ runs:
       run: |
         echo "## VM Created! :rocket:" >> $GITHUB_STEP_SUMMARY
         echo " ${{ steps.deploy.outputs.vm_url }}" >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_state_bucket_destroy == 'false' }}
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.stack_destroy == 'true' && inputs.tf_state_bucket_destroy == 'false' }}
       name: Print result destroyed
       shell: bash
       run: |
         echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
         echo "Infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.tf_state_bucket_destroy == 'true' }}
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.stack_destroy == 'true' && inputs.tf_state_bucket_destroy == 'true' }}
       name: Print result destroyed
       shell: bash
       run: |
         echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
         echo "Buckets and infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
+    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.stack_destroy == 'false' }}
+      name: Print result destroyed
+      shell: bash
+      run: |
+        echo "## Deploy finished! But no URL found. :thinking: " >> $GITHUB_STEP_SUMMARY
+        echo "If expecting an URL, please check the logs for possible  errors." >> $GITHUB_STEP_SUMMARY
+        echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
     - if: ${{ failure() }} 
       name: Print error result
       shell: bash
