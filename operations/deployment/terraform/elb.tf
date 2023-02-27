@@ -1,5 +1,7 @@
 data "aws_elb_service_account" "main" {}
 resource "aws_s3_bucket" "lb_access_logs" {
+  # KNOWN ISSUES
+  # https://github.com/hashicorp/terraform-provider-aws/issues/18311
   bucket = var.lb_access_bucket_name
   force_destroy = true
   tags = {
