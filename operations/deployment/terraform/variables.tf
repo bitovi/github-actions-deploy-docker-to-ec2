@@ -53,6 +53,11 @@ variable "ec2_instance_public_ip" {
   default     = "true"
   description = "Attach public IP to the EC2 instance"
 }
+variable "ec2_volume_size" {
+  type        = string
+  default     = "8"
+  description = "Size (in GB) of the VM's storage drive"
+}
 
 variable "security_group_name" {
   type        = string
