@@ -100,7 +100,7 @@ lb_healthcheck=$(generate_var lb_healthcheck $LB_HEALTHCHECK)
 #-- Logging --#
 lb_access_bucket_name=$(generate_var lb_access_bucket_name $LB_LOGS_BUCKET)
 #-- Security Groups --#
-security_group_name=$(generate_var security_group_name $SECURITY_GROUP_NAME)
+#security_group_name=$(generate_var security_group_name $SECURITY_GROUP_NAME) - Fixed
 #-- EC2 --#
 ec2_instance_type=$(generate_var ec2_instance_type $EC2_INSTANCE_TYPE)
 # ec2_iam_instance_profile=$(generate_var ec2_iam_instance_profile EC2_INSTANCE_PROFILE - Special case

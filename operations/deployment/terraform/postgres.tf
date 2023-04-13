@@ -1,6 +1,6 @@
 resource "aws_security_group" "pg_security_group" {
   count = var.aws_enable_postgres == "true" ? 1 : 0
-  name        = var.aws_security_group_name_pg != "" ? var.aws_security_group_name_pg : "SG for ${var.aws_resource_identifier} - PG"
+  name        = var.aws_security_group_name_pg
   description = "SG for ${var.aws_resource_identifier} - PG"
   egress {
     from_port   = 0
