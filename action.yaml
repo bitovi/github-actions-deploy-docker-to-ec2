@@ -72,6 +72,11 @@ inputs:
   ec2_instance_type: 
     description: 'The AWS Instance type'
     required: false
+  ec2_volume_size: 
+    description: 'The size of the volume (in GB) on the AWS Instance'
+    required: false
+    default: "8"
+
   
   # EFS
   aws_create_efs:
@@ -200,6 +205,7 @@ runs:
         LB_HEALTHCHECK: ${{ inputs.lb_healthcheck }}
         EC2_INSTANCE_PROFILE: ${{ inputs.ec2_instance_profile }}
         EC2_INSTANCE_TYPE: ${{ inputs.ec2_instance_type }}
+        EC2_VOLUME_SIZE: ${{ inputs.ec2_volume_size }}
         STACK_DESTROY: ${{ inputs.stack_destroy }}
         AWS_RESOURCE_IDENTIFIER: ${{ inputs.aws_resource_identifier }}
         DOMAIN_NAME: ${{ inputs.domain_name }}

@@ -148,6 +148,7 @@ additional_tags=$(generate_var additional_tags $ADDITIONAL_TAGS)
 application_mount_target=$(generate_var application_mount_target $APPLICATION_MOUNT_TARGET)
 efs_mount_target=$(generate_var efs_mount_target $EFS_MOUNT_TARGET)
 data_mount_target=$(generate_var data_mount_target $DATA_MOUNT_TARGET)
+ec2_volume_size=$(generate_var ec2_volume_size $EC2_VOLUME_SIZE)
 
 
 # -------------------------------------------------- #
@@ -175,6 +176,7 @@ $security_group_name
 $ec2_instance_type
 $ec2_instance_profile
 $ec2_iam_instance_profile
+$ec2_volume_size
 
 #-- AWS --#
 $aws_resource_identifier

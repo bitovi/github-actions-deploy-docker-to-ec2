@@ -66,7 +66,9 @@ resource "aws_instance" "server" {
   key_name                    = aws_key_pair.aws_key.key_name
   monitoring                  = true
   iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
-
+  root_block_device {
+    volume_size = tonumber(var.ec2_volume_size)
+  }
   tags = {
     Name = "${var.aws_resource_identifier} - Instance"
   }
