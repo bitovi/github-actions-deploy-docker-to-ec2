@@ -61,12 +61,12 @@ variable "ec2_volume_size" {
 
 variable "security_group_name" {
   type        = string
-  default     = "SG for deployment"
+  default     = ""
   description = "Name of the security group to use"
 }
 variable "aws_security_group_name_pg" {
   type        = string
-  default     = "SG for postgres deployment"
+  default     = ""
   description = "Name of the security group to use for postgres"
 }
 variable "ec2_iam_instance_profile" {
