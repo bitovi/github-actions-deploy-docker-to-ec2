@@ -1,5 +1,5 @@
 resource "aws_security_group" "ec2_security_group" {
-  name        = var.security_group_name != "" ? var.security_group_name : "SG for ${var.aws_resource_identifier} - EC2"
+  name        = ${var.aws_resource_identifier}"
   description = "SG for ${var.aws_resource_identifier}"
   vpc_id      = data.aws_vpc.default.id
   egress {
