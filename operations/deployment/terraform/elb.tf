@@ -31,10 +31,10 @@ resource "aws_s3_bucket_policy" "allow_access_from_another_account" {
 POLICY
 }
 
-resource "aws_s3_bucket_acl" "lb_access_logs_acl" {
-  bucket = aws_s3_bucket.lb_access_logs.id
-  acl    = "private"
-}
+# resource "aws_s3_bucket_acl" "lb_access_logs_acl" {
+#   bucket = aws_s3_bucket.lb_access_logs.id
+#   acl    = "private"
+# }
 
 resource "aws_elb" "vm_ssl" {
   count              = local.cert_available ? 1 : 0
