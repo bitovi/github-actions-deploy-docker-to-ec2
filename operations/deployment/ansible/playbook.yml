@@ -1,6 +1,8 @@
 - hosts: bitops_servers
   become: true
   tasks:
+  - name: Wait for it to come up
+    include_tasks: tasks/wait_for_connection.yml
   - name: Include install
     include_tasks: tasks/install.yml
   - name: Include fetch
@@ -13,5 +15,7 @@
     include_tasks: tasks/mount.yml
     when: mount_efs
 
+  - name: Wait for it to come up
+    include_tasks: tasks/wait_for_connection.yml
   - name: Include start
     include_tasks: tasks/start.yml
