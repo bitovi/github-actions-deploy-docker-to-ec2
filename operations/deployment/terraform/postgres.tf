@@ -62,7 +62,7 @@ module "rds_cluster" {
   skip_final_snapshot                    = true
   create_db_cluster_parameter_group      = true
   db_cluster_parameter_group_name        = var.aws_resource_identifier
-  db_cluster_parameter_group_family      = "aurora-postgresql11"
+  db_cluster_parameter_group_family      = var.aws_postgres_group_family
   db_cluster_parameter_group_description = "${var.aws_resource_identifier}  cluster parameter group"
   db_cluster_parameter_group_parameters = [
     {
@@ -77,7 +77,7 @@ module "rds_cluster" {
   ]
   create_db_parameter_group      = true
   db_parameter_group_name        = var.aws_resource_identifier
-  db_parameter_group_family      = "aurora-postgresql11"
+  db_parameter_group_family      = var.aws_postgres_group_family
   db_parameter_group_description = "${var.aws_resource_identifier} example DB parameter group"
   db_parameter_group_parameters = [
     {

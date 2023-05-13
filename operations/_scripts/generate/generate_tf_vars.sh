@@ -135,6 +135,7 @@ if [[ $AWS_ENABLE_POSTGRES = true ]]; then
   aws_enable_postgres=$(generate_var aws_enable_postgres $AWS_ENABLE_POSTGRES)
   aws_postgres_engine=$(generate_var aws_postgres_engine $AWS_POSTGRES_ENGINE)
   aws_postgres_engine_version=$(generate_var aws_postgres_engine_version $AWS_POSTGRES_ENGINE_VERSION)
+  aws_postgres_group_family=$(generate_var aws_postgres_group_family $AWS_POSTGRES_GROUP_FAMILY)
   aws_postgres_instance_class=$(generate_var aws_postgres_instance_class $AWS_POSTGRES_INSTANCE_CLASS)
   aws_postgres_database_name=$(generate_var aws_postgres_database_name $AWS_POSTGRES_DATABASE_NAME)
   aws_postgres_database_port=$(generate_var aws_postgres_database_port $AWS_POSTGRES_DATABASE_PORT)
@@ -209,6 +210,7 @@ $aws_security_group_name_pg
 $aws_enable_postgres
 $aws_postgres_engine
 $aws_postgres_engine_version
+$aws_postgres_group_family
 $aws_postgres_instance_class
 $aws_postgres_database_name
 $aws_postgres_database_port

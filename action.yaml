@@ -160,7 +160,11 @@ inputs:
   aws_postgres_database_port:
     description: 'Postgres database port'
     required: false
-  
+
+  aws_postgres_database_group_family:
+    description: 'Postgres database group family'
+    required: false 
+
   # Ansible
   application_mount_target:
     description: "Directory path in application env to mount directory, default is `data`"
@@ -222,6 +226,7 @@ runs:
         AWS_ENABLE_POSTGRES: ${{ inputs.aws_enable_postgres }}
         AWS_POSTGRES_ENGINE:  ${{ inputs.aws_postgres_engine }}
         AWS_POSTGRES_ENGINE_VERSION:  ${{ inputs.aws_postgres_engine_version }}
+        AWS_POSTGRES_GROUP_FAMILY: ${{ inputs.aws_postgres_group_family }}
         AWS_POSTGRES_INSTANCE_CLASS: ${{ inputs.aws_postgres_instance_class }}
         AWS_POSTGRES_SUBNETS: ${{ inputs.aws_postgres_subnets }}
         AWS_POSTGRES_DATABASE_NAME: ${{ inputs.aws_postgres_database_name }}
