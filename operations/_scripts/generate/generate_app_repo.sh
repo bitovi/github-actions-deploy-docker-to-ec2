@@ -15,7 +15,6 @@ if [ -n "$APP_DIRECTORY" ]; then
     TARGET_PATH="${TARGET_PATH}/${APP_DIRECTORY}"
 fi
 
-rm -rf "${GITHUB_ACTION_PATH}/operations/deployment/ansible/app/${GITHUB_REPO_NAME}/*"
 cp -rf "$TARGET_PATH"/* "${GITHUB_ACTION_PATH}/operations/deployment/ansible/app/${GITHUB_REPO_NAME}/"
 
 if [ -s "$TARGET_PATH/$REPO_ENV" ]; then
