@@ -178,7 +178,12 @@ variable "aws_postgres_database_port" {
   default     = "5432"
   description = "database port"
 }
-
+ 
+variable "aws_postgres_group_family" {
+  type        = string
+  default     = "aurora-postgresql11"
+  description = "postgres group family"
+}
 
 ## -- EFS -- ##
 variable "aws_create_efs" {
