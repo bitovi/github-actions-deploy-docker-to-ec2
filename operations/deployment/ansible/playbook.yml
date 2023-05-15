@@ -5,8 +5,6 @@
   - name: Wait for hosts to come up
     wait_for_connection:
       timeout: 300
-  - name: Gather facts
-    setup:
 
 - name: Ansible tasks
   hosts: bitops_servers
