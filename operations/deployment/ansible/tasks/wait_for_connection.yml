@@ -1,4 +1,0 @@
-- name: "Wait 300 seconds for connection to come up"
-  wait_for_connection:
-    delay: 0
-    timeout: 300
