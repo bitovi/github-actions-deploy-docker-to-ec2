@@ -212,7 +212,7 @@ $aws_security_group_name_pg
 $aws_enable_postgres
 $aws_postgres_engine
 $aws_postgres_engine_version
-$aws_postgres_group_family
+$aws_postgres_database_group_family
 $aws_postgres_instance_class
 $aws_postgres_database_name
 $aws_postgres_database_port
