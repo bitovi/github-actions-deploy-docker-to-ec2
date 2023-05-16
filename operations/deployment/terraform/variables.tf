@@ -185,6 +185,18 @@ variable "aws_postgres_group_family" {
   description = "postgres group family"
 }
 
+variable "aws_postgres_database_protection" {
+  type        = bool
+  default     = false
+  description = "Protects the database from deletion."
+}
+
+variable "aws_postgres_database_final_snapshot" {
+  type        = string
+  default     = ""
+  description = "Generates a snapshot of the database before deletion."
+}
+
 ## -- EFS -- ##
 variable "aws_create_efs" {
   type        = bool

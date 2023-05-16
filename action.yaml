@@ -160,10 +160,15 @@ inputs:
   aws_postgres_database_port:
     description: 'Postgres database port'
     required: false
-
   aws_postgres_database_group_family:
     description: 'Postgres database group family'
     required: false 
+  aws_postgres_database_protection:
+    description: 'Protects the database from deletion.'
+    required: false
+  aws_postgres_database_final_snapshot:
+    description: 'Generates a snapshot of the database before deletion.'
+    required: false
 
   # Ansible
   application_mount_target:
@@ -231,6 +236,8 @@ runs:
         AWS_POSTGRES_SUBNETS: ${{ inputs.aws_postgres_subnets }}
         AWS_POSTGRES_DATABASE_NAME: ${{ inputs.aws_postgres_database_name }}
         AWS_POSTGRES_DATABASE_PORT: ${{ inputs.aws_postgres_database_port}}
+        AWS_POSTGRES_DATABASE_PROTECTION: ${{ inputs.aws_postgres_database_protection }}
+        AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT: ${{ inputs.aws_postgres_database_final_snapshot }}
         AWS_CREATE_EFS: ${{ inputs.aws_create_efs }}
         AWS_CREATE_HA_EFS: ${{ inputs.aws_create_ha_efs }}
         AWS_CREATE_EFS_REPLICA: ${{ inputs.aws_create_efs_replica }}

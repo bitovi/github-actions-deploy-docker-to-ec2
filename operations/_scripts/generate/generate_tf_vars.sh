@@ -139,6 +139,8 @@ if [[ $AWS_ENABLE_POSTGRES = true ]]; then
   aws_postgres_instance_class=$(generate_var aws_postgres_instance_class $AWS_POSTGRES_INSTANCE_CLASS)
   aws_postgres_database_name=$(generate_var aws_postgres_database_name $AWS_POSTGRES_DATABASE_NAME)
   aws_postgres_database_port=$(generate_var aws_postgres_database_port $AWS_POSTGRES_DATABASE_PORT)
+  aws_postgres_database_protection=$(generate_var aws_postgres_database_protection $AWS_POSTGRES_DATABASE_PROTECTION)
+  aws_postgres_database_final_snapshot=$(generate_var aws_postgres_database_final_snapshot $AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT)
 fi
 # aws_postgres_subnets=$(generate_var aws_postgres_subnets $AWS_POSTGRES_SUBNETS) - Special case
 #-- Security Manager --#
@@ -215,6 +217,8 @@ $aws_postgres_instance_class
 $aws_postgres_database_name
 $aws_postgres_database_port
 $aws_postgres_subnets
+$aws_postgres_database_protection
+$aws_postgres_database_final_snapshot
 
 #-- Security Manager --#
 $create_keypair_sm_entry
