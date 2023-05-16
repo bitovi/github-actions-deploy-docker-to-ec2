@@ -179,7 +179,7 @@ variable "aws_postgres_database_port" {
   description = "database port"
 }
  
-variable "aws_postgres_group_family" {
+variable "aws_postgres_database_group_family" {
   type        = string
   default     = "aurora-postgresql11"
   description = "postgres group family"
