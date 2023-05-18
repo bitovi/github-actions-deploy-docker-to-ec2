@@ -1,15 +1,16 @@
 # copy the repo code to the VM
 - name: syncrhonize repo
   ansible.posix.synchronize:
-    # src: "{{ item }}"
-    src: "{{ lookup('ansible.builtin.env', 'BITOPS_OPSREPO_ENVIRONMENT_DIR') }}/app/{{ app_repo_name }}/*"
+    become: yes
+    src: "{{ item }}"
+    # src: "{{ lookup('ansible.builtin.env', 'BITOPS_OPSREPO_ENVIRONMENT_DIR') }}/app/{{ app_repo_name }}"
     dest: "{{ app_install_root }}"
-    rsync_opts:
-      - "--include=*"
-      - "--include=.*"
-  # with_fileglob:
-  #   - "{{ lookup('ansible.builtin.env', 'BITOPS_OPSREPO_ENVIRONMENT_DIR') }}/app/{{ app_repo_name }}/*"
-  #   - "{{ lookup('ansible.builtin.env', 'BITOPS_OPSREPO_ENVIRONMENT_DIR') }}/app/{{ app_repo_name }}/.*"
+    # rsync_opts:
+    #   - "--include=*"
+    #   - "--include=.*"
+  with_fileglob:
+    - "{{ lookup('ansible.builtin.env', 'BITOPS_OPSREPO_ENVIRONMENT_DIR') }}/app/{{ app_repo_name }}/*"
+    - "{{ lookup('ansible.builtin.env', 'BITOPS_OPSREPO_ENVIRONMENT_DIR') }}/app/{{ app_repo_name }}/.*"
     
   register: synchro_repo_output
 
