@@ -12,7 +12,7 @@
     path: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}/"
   register: check_efs_mount
 
-- name: stat test
+- name: Stat test
   debug:
     msg: "The file or directory exists"
   when: check_efs_mount.stat.exists

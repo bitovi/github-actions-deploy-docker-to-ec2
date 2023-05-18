@@ -1,4 +1,13 @@
-- hosts: bitops_servers
+- name: Ensure hosts is up and running
+  hosts: bitops_servers
+  gather_facts: no
+  tasks:
+  - name: Wait for hosts to come up
+    wait_for_connection:
+      timeout: 300
+
+- name: Ansible tasks
+  hosts: bitops_servers
   become: true
   tasks:
   - name: Include install
@@ -12,6 +21,5 @@
   - name: Mount efs
     include_tasks: tasks/mount.yml
     when: mount_efs
-
   - name: Include start
     include_tasks: tasks/start.yml
