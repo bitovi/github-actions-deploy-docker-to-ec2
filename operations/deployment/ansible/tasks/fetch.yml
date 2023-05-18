@@ -2,7 +2,7 @@
 - name: syncrhonize repo
   ansible.posix.synchronize:
     # src: "{{ item }}"
-    src: "{{ lookup('ansible.builtin.env', 'BITOPS_OPSREPO_ENVIRONMENT_DIR') }}/app/{{ app_repo_name }}"
+    src: "{{ lookup('ansible.builtin.env', 'BITOPS_OPSREPO_ENVIRONMENT_DIR') }}/app/{{ app_repo_name }}/*"
     dest: "{{ app_install_root }}"
     rsync_opts:
       - "--include=*"
