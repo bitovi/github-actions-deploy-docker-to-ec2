@@ -1,8 +1,12 @@
 # copy the repo code to the VM
 - name: syncrhonize repo
   ansible.posix.synchronize:
-    src: "{{ lookup('ansible.builtin.env', 'BITOPS_OPSREPO_ENVIRONMENT_DIR') }}/app/{{ app_repo_name }}"
+    src: "{{ item }}"
     dest: "{{ app_install_root }}"
+  with_fileglob:
+    - "{{ lookup('ansible.builtin.env', 'BITOPS_OPSREPO_ENVIRONMENT_DIR') }}/app/{{ app_repo_name }}/*"
+    - "{{ lookup('ansible.builtin.env', 'BITOPS_OPSREPO_ENVIRONMENT_DIR') }}/app/{{ app_repo_name }}/.*"
+    
   register: synchro_repo_output
 
 - ansible.builtin.debug:
