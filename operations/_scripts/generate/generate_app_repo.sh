@@ -16,9 +16,9 @@ if [ -n "$APP_DIRECTORY" ]; then
 fi
 
 if [ -f "$TARGET_PATH/.ignore" ]; then
-  rsync -a --exclude-from="$TARGET_PATH/.ignore" "$TARGET_PATH"/ "${GITHUB_ACTION_PATH}/operations/deployment/app/${GITHUB_REPO_NAME}/"
+  rsync -a --exclude-from="$TARGET_PATH/.ignore" "$TARGET_PATH"/ "${GITHUB_ACTION_PATH}/operations/deployment/ansible/app/${GITHUB_REPO_NAME}/"
 else
-  rsync -a "$TARGET_PATH"/ "${GITHUB_ACTION_PATH}/operations/deployment/app/${GITHUB_REPO_NAME}/"
+  rsync -a "$TARGET_PATH"/ "${GITHUB_ACTION_PATH}/operations/deployment/ansible/app/${GITHUB_REPO_NAME}/"
 fi
 
 if [ -s "$TARGET_PATH/$REPO_ENV" ]; then
