@@ -11,11 +11,15 @@ mkdir -p "${GITHUB_ACTION_PATH}/operations/deployment/ansible/app/${GITHUB_REPO_
 
 TARGET_PATH="$GITHUB_WORKSPACE"
 if [ -n "$APP_DIRECTORY" ]; then
-    echo "APP_DIRECTORY: $APP_DIRECTORY"
-    TARGET_PATH="${TARGET_PATH}/${APP_DIRECTORY}"
+  echo "APP_DIRECTORY: $APP_DIRECTORY"
+  TARGET_PATH="${TARGET_PATH}/${APP_DIRECTORY}"
 fi
 
-cp -rf "$TARGET_PATH"/. "${GITHUB_ACTION_PATH}/operations/deployment/ansible/app/${GITHUB_REPO_NAME}/"
+if [ -f "$TARGET_PATH/.ignore" ]; then
+  rsync -a --exclude-from="$TARGET_PATH/.ignore" "$TARGET_PATH"/ "${GITHUB_ACTION_PATH}/operations/deployment/$1/app/${GITHUB_REPO_NAME}/"
+else
+  rsync -a "$TARGET_PATH"/ "${GITHUB_ACTION_PATH}/operations/deployment/$1/app/${GITHUB_REPO_NAME}/"
+fi
 
 if [ -s "$TARGET_PATH/$REPO_ENV" ]; then
   echo "Copying checked in env file from repo to Ansible deployment path"
