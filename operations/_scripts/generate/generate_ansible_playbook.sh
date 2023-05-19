@@ -21,10 +21,6 @@ echo -en "- name: Ensure hosts is up and running
 # Adding docker cleanup task to playbook
 if [[ $DOCKER_FULL_CLEANUP = true ]]; then
 echo -en "
-- name: Docker Cleanup
-  hosts: bitops_servers
-  become: true
-  tasks:
   - name: Docker Cleanup
     include_tasks: tasks/docker_cleanup.yml
 " >> $GITHUB_ACTION_PATH/operations/deployment/ansible/playbook.yml
@@ -33,10 +29,6 @@ fi
 # Adding app_pore cleanup task to playbook
 if [[ $APP_DIRECTORY_CLEANUP = true ]]; then
 echo -en "
-- name: EC2 Cleanup
-  hosts: bitops_servers
-  become: true
-  tasks:
   - name: EC2 Cleanup
     include_tasks: tasks/ec2_cleanup.yml
 " >> $GITHUB_ACTION_PATH/operations/deployment/ansible/playbook.yml
