@@ -1,0 +1,60 @@
+#!/bin/bash
+
+set -e
+
+echo "In generate_ansible_playbook.sh"
+
+echo -en "- name: Ensure hosts is up and running
+  hosts: bitops_servers
+  gather_facts: no
+  tasks:
+  - name: Wait for hosts to come up
+    wait_for_connection:
+      timeout: 300
+
+- name: Ansible tasks
+  hosts: bitops_servers
+  become: true
+  tasks:
+" >> $GITHUB_ACTION_PATH/operations/deployment/ansible/playbook.yml
+
+# Adding docker cleanup task to playbook
+if [[ $(alpha_only "$DOCKER_FULL_CLEANUP") == true ]]; then
+echo -en "
+- name: Docker Cleanup
+  hosts: bitops_servers
+  become: true
+  tasks:
+  - name: Docker Cleanup
+    include_tasks: tasks/docker_cleanup.yml
+" >> $GITHUB_ACTION_PATH/operations/deployment/ansible/playbook.yml
+fi
+
+# Adding app_pore cleanup task to playbook
+if [[ $(alpha_only "$APP_DIRECTORY_CLEANUP") == true ]]; then
+echo -en "
+- name: EC2 Cleanup
+  hosts: bitops_servers
+  become: true
+  tasks:
+  - name: EC2 Cleanup
+    include_tasks: tasks/ec2_cleanup.yml
+" >> $GITHUB_ACTION_PATH/operations/deployment/ansible/playbook.yml
+fi
+
+# Continue adding the defaults
+echo -en "
+  - name: Include install
+    include_tasks: tasks/install.yml
+  - name: Include fetch
+    include_tasks: tasks/fetch.yml
+
+    # Notes on why unmounting is required can be found in umount.yaml
+  - name: Unmount efs
+    include_tasks: tasks/umount.yml
+  - name: Mount efs
+    include_tasks: tasks/mount.yml
+    when: mount_efs
+  - name: Include start
+    include_tasks: tasks/start.yml
+" >> $GITHUB_ACTION_PATH/operations/deployment/ansible/playbook.yml
