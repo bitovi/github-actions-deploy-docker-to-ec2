@@ -7,6 +7,13 @@
     path: "{{ app_install_root }}/{{ app_repo_name }}"
   register: folder_stat
 
+- name: Stop Docker
+  docker_compose:
+    project_src: "{{ app_install_root }}/{{ app_repo_name }}"
+    state: present
+    stopped: true
+  when: folder_stat.stat.exists
+
 - name: Find the NFS volume in fstab
   shell: "grep 'nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=612,retrans=2,noresvport' /etc/fstab | awk '{print $2}'"
   register: nfs_mount_path
