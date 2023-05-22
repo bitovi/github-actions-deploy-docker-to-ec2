@@ -1,29 +1,4 @@
 # UnMount EFS
-
-# Reason for usage
-#   There is no reliable way to know when an unmount is necessary
-#   if you’ve ran a deployment which created an EC2 and an EFS and you’ve mounted the EFS and you then wanted to delete the EFS, how would you tell Ansible that unmounting is needed?
-#   Terraform is unaware of potential state changes and therefor there is no reliable way to know if an unmount is neccessary from a passed toggle. 
-#
-#   Unmounting every time ensures that if an EFS is destroyed, the mount is removed with it. 
-
-#- name: Check if efs mount directory is present
-#  stat:
-#    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}/"
-#  register: check_efs_mount
-#
-#- name: Stat test
-#  debug:
-#    msg: "The file or directory exists"
-#  when: check_efs_mount.stat.exists
-#
-#- name: Unmount efs volume
-#  ansible.posix.mount:
-#    path: "{{ app_install_root }}/{{ app_repo_name }}/{{ application_mount_target }}"
-#    state: unmounted
-#  when: check_efs_mount.stat.exists
-#
-
 - name: Check if HOST variable is defined
   shell: "grep '^HOST_DIR=' {{ app_install_root }}/{{ app_repo_name }}/.env"
   register: host_variable
