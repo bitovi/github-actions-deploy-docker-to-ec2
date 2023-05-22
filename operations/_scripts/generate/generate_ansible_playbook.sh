@@ -16,7 +16,7 @@ echo -en "- name: Ensure hosts is up and running
   hosts: bitops_servers
   become: true
   tasks:
-" >> $GITHUB_ACTION_PATH/operations/deployment/ansible/playbook.yml
+" > $GITHUB_ACTION_PATH/operations/deployment/ansible/playbook.yml
 
 # Adding docker cleanup task to playbook
 if [[ $DOCKER_FULL_CLEANUP = true ]]; then
