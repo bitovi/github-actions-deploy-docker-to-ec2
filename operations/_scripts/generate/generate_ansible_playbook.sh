@@ -40,13 +40,18 @@ echo -en "
     include_tasks: tasks/install.yml
   - name: Include fetch
     include_tasks: tasks/fetch.yml
-
     # Notes on why unmounting is required can be found in umount.yaml
   - name: Unmount efs
     include_tasks: tasks/umount.yml
+" >> $GITHUB_ACTION_PATH/operations/deployment/ansible/playbook.yml
+if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ $AWS_EFS_MOUNT_ID != "" ]]; then
+echo -en "
   - name: Mount efs
     include_tasks: tasks/mount.yml
     when: mount_efs
+" >> $GITHUB_ACTION_PATH/operations/deployment/ansible/playbook.yml
+fi
+echo -en "
   - name: Include start
     include_tasks: tasks/start.yml
 " >> $GITHUB_ACTION_PATH/operations/deployment/ansible/playbook.yml

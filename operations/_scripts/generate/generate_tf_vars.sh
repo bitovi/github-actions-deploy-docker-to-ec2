@@ -46,9 +46,17 @@ echo "GITHUB_IDENTIFIER SS: [$GITHUB_IDENTIFIER_SS]"
 # Function to generate the variable content based on the fact that it could be empty. 
 # This way, we only pass terraform variables that are defined, hence not overwriting terraform defaults. 
 
-generate_var () {
+function alpha_only() {
+    echo "$1" | tr -cd '[:alpha:]' | tr '[:upper:]' '[:lower:]'
+}
+
+function generate_var () {
   if [[ -n "$2" ]];then
-    echo "$1 = \"$2\""
+    if [[ $(alpha_only "$2") == "true" ]] || [[ $(alpha_only "$2") == "false" ]]; then
+      echo "$1 = $(alpha_only $2)"
+    else
+      echo "$1 = \"$2\""
+    fi
   fi
 }
 
@@ -118,7 +126,7 @@ create_root_cert=$(generate_var create_root_cert $CREATE_ROOT_CERT)
 create_sub_cert=$(generate_var create_sub_cert $CREATE_SUB_CERT)
 no_cert=$(generate_var no_cert $NO_CERT)
 #-- EFS --#
-if [[ $AWS_CREATE_EFS = true ]]; then
+if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ $AWS_EFS_MOUNT_ID != "" ]]; then
   aws_create_efs=$(generate_var aws_create_efs $AWS_CREATE_EFS)
   aws_create_ha_efs=$(generate_var aws_create_ha_efs $AWS_CREATE_HA_EFS)
   aws_create_efs_replica=$(generate_var aws_create_efs_replica $AWS_CREATE_EFS_REPLICA)
@@ -130,7 +138,7 @@ if [[ $AWS_CREATE_EFS = true ]]; then
   aws_mount_efs_security_group_id=$(generate_var aws_mount_efs_security_group_id $AWS_MOUNT_EFS_SECURITY_GROUP_ID)
 fi
 #-- RDS --#
-if [[ $AWS_ENABLE_POSTGRES = true ]]; then
+if [[ $(alpha_only "$AWS_POSTGRES_ENABLE") == true ]]; then
   # aws_security_group_name_pg=$(generate_var aws_security_group_name_pg $AWS_SECURITY_GROUP_NAME_PG) - Fixed
   aws_enable_postgres=$(generate_var aws_enable_postgres $AWS_ENABLE_POSTGRES)
   aws_postgres_engine=$(generate_var aws_postgres_engine $AWS_POSTGRES_ENGINE)
