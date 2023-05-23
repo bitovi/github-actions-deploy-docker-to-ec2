@@ -1,3 +1,9 @@
+- name: Check Docker exists
+  ansible.builtin.command:
+    cmd: "docker --version"
+  register: docker_check
+  ignore_errors: true
+
 - name: Stop and cleanup Docker
   docker_compose:
     project_src: "{{ app_install_root }}/{{ app_repo_name }}"
@@ -6,6 +12,8 @@
     remove_images: all
     remove_volumes: true
   register: output
+  when: docker_check.rc == 0
 
 - name: Prune Docker system
   command: docker system prune --all --force --volumes
+  when: docker_check.rc == 0
