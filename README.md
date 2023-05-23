@@ -223,7 +223,7 @@ The following inputs can be used as `step.with` keys
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `app_port` | String | Port to be expose for the container. Default is `3000` | 
-| `app_directory` | String | Relative path for the directory of the app. (i.e. where the `docker-compose.yaml` file is located). This is the directory that is copied into the EC2 instance. Default is `/`, the root of the repository. Add a `.gha-ignore` file with a list of files to be exluded. |
+| `app_directory` | String | Relative path for the directory of the app. (i.e. where the `docker-compose.yaml` file is located). This is the directory that is copied into the EC2 instance. Default is `/`, the root of the repository. Add a `.gha-ignore` file with a list of files to be exluded. (Using glob patterns). |
 <hr/>
 <br/>
 
