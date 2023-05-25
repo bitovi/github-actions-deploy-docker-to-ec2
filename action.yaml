@@ -58,7 +58,7 @@ inputs:
     description: 'Set to true to run docker-compose down and docker system prune --all --force --volumes after.'
     required: false
   app_directory:
-    description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo.'
+    description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo. Add a .gha-ignore file with a list of files to be exluded.'
   app_directory_cleanup:
     description: 'Will generate a timestamped compressed file and delete the app repo directory.'
     required: false
