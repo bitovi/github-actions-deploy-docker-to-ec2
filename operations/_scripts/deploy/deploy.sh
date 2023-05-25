@@ -29,6 +29,9 @@ export LB_LOGS_BUCKET="$(/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/gener
 # Generate bitops config
 /bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_bitops_config.sh
 
+# Generate Ansible playbook
+/bin/bash $GITHUB_ACTION_PATH/operations/_scripts/generate/generate_ansible_playbook.sh
+
 # List terraform folder
 echo "ls -al $GITHUB_ACTION_PATH/operations/deployment/terraform/"
 ls -al $GITHUB_ACTION_PATH/operations/deployment/terraform/
