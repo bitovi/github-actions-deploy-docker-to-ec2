@@ -54,8 +54,14 @@ inputs:
     default: ''
   
   # Application
+  docker_full_cleanup:
+    description: 'Set to true to run docker-compose down and docker system prune --all --force --volumes after.'
+    required: false
   app_directory:
-    description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are loc ated). This is the directory that is copied to the EC2 instance.  Default is the root of the repo. Add a .gha-ignore file with a list of files to be exluded. '
+    description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo. Add a .gha-ignore file with a list of files to be exluded.'
+  app_directory_cleanup:
+    description: 'Will generate a timestamped compressed file and delete the app repo directory.'
+    required: false
   app_port:
     description: 'Port to expose for the app'
     required: false
@@ -225,7 +231,9 @@ runs:
         CREATE_SUB_CERT: ${{ inputs.create_sub_cert }}
         NO_CERT: ${{ inputs.no_cert }}
         BITOPS_FAST_FAIL: true
+        DOCKER_FULL_CLEANUP: ${{ inputs.docker_full_cleanup }}
         APP_DIRECTORY: ${{ inputs.app_directory }}
+        APP_DIRECTORY_CLEANUP: ${{ inputs.app_directory_cleanup }}
         CREATE_KEYPAIR_SM_ENTRY: ${{ inputs.create_keypair_sm_entry }}
         ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
         AWS_ENABLE_POSTGRES: ${{ inputs.aws_enable_postgres }}
