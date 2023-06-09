@@ -92,8 +92,6 @@ aws_postgres_subnets=
 if [ -n "${AWS_POSTGRES_SUBNETS}" ]; then
   aws_postgres_subnets="aws_postgres_subnets = \"$(comma_str_to_tf_array $AWS_POSTGRES_SUBNETS)\""
 fi
-echo "AWS Postgres subnets: $aws_postgres_subnets"
-
 
 #-- Application --#
 app_port=$(generate_var app_port $APP_PORT)
