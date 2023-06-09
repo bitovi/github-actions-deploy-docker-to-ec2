@@ -4,6 +4,10 @@ set -e
 
 echo "In generate_ansible_playbook.sh"
 
+function alpha_only() {
+    echo "$1" | tr -cd '[:alpha:]' | tr '[:upper:]' '[:lower:]'
+}
+
 echo -en "- name: Ensure hosts is up and running
   hosts: bitops_servers
   gather_facts: no
