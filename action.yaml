@@ -93,6 +93,7 @@ inputs:
   app_port:
     description: 'Port to expose for the app'
     required: false
+    default: 3000
   lb_port:
     description: 'Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided'
     required: false
