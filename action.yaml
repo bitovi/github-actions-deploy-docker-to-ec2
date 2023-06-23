@@ -9,7 +9,32 @@ inputs:
     description: 'Specifies if this action should checkout the code'
     required: false
     default: 'true'
+  bitops_code_only:
+    description: 'Will run only the generation phase of BitOps, where the Terraform and Ansible code is built.'
+    required: false
+  bitops_code_store:
+    description: 'Store BitOps code as a GitHub artifact'
+    required: false
+    default: false
   
+  # GitHub Deployment repo inputs
+  gh_deployment_input_terraform:
+    description: 'Folder to store Terraform files to be included during Terraform execution.'
+    required: false
+  gh_deployment_input_ansible:
+    description: 'Folder where a whole Ansible structure is expected. If missing bitops.config.yaml a default will be generated.'
+    required: false
+  gh_deployment_input_ansible_playbook:
+    description: 'Main playbook to be looked for.'
+    required: false
+    default: playbook.yml
+  gh_deployment_input_ansible_extra_vars_file:
+    description: "Relative path to file from project root to Ansible vars file to be applied. "
+    required: false
+  gh_deployment_action_input_ansible_extra_vars_file:
+    description: "Relative path to file from project root to Ansible vars file to be applied into the Action Ansible execution. "
+    required: false
+
   # AWS
   aws_access_key_id:
     description: 'AWS access key ID'
@@ -22,10 +47,13 @@ inputs:
     required: false
   aws_default_region:
     description: 'AWS default region'
-    default: us-east-1
     required: false
+    default: us-east-1
   aws_ami_id:
     description: 'AWS AMI ID. Will default to the latest Ubuntu 22.04 server image (HVM) '
+    required: false
+  aws_ami_update:
+    description: 'Set this to true if you want to recreate the EC2 instance if there is a newer version of the AMI.'
     required: false
   tf_state_bucket:
     description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-{branch}-tf-state`'
@@ -33,9 +61,9 @@ inputs:
   tf_state_bucket_destroy:
     description: 'Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. `stack_destroy` must also be `true`'
     required: false
-    default: 'false'
   aws_resource_identifier:
     description: 'Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources.'
+    required: false
   
   # ENV files
   repo_env:
@@ -51,7 +79,6 @@ inputs:
   aws_secret_env:
     description: 'Secret name to pull env variables from AWS Secret Manager'
     required: false
-    default: ''
   
   # Application
   docker_full_cleanup:
@@ -59,6 +86,7 @@ inputs:
     required: false
   app_directory:
     description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo. Add a .gha-ignore file with a list of files to be exluded.'
+    required: false
   app_directory_cleanup:
     description: 'Will generate a timestamped compressed file and delete the app repo directory.'
     required: false
@@ -75,6 +103,7 @@ inputs:
   # EC2 Instance
   ec2_instance_profile:
     description: 'The AWS IAM instance profile to use for the EC2 instance'
+    required: false
   ec2_instance_type: 
     description: 'The AWS Instance type'
     required: false
@@ -82,31 +111,50 @@ inputs:
     description: 'The size of the volume (in GB) on the AWS Instance'
     required: false
     default: "8"
+  ec2_root_preserve:
+    description: 'Set this to true to avoid deletion of root volume on termination. Defaults to false.'
+    required: false
+  ec2_user_data_file: 
+    description: 'Relative path in the repo for a user provided script to be executed with Terraform EC2 Instance creation.'
+    required: false
+  ec2_user_data_replace_on_change:
+    description: 'If user_data file changes, instance will stop and start. Hence public IP will change. Defaults to true.'
+    required: false
 
   
   # EFS
   aws_create_efs:
     description: "Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack"
+    required: false
   aws_create_ha_efs:
     description: Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)
+    required: false
   aws_create_efs_replica:
     description: Toggle to indiciate whether a read-only replica should be created for the EFS primary file system
+    required: false
   aws_enable_efs_backup_policy:
     description: Toggle to indiciate whether the EFS should have a backup policy, default is `false`
+    required: false
   aws_efs_zone_mapping:
     description: Information on Zone Mapping can be found in the [README.md](README.md#efs-zone-mapping)
+    required: false
   aws_efs_transition_to_inactive:
     description: Indicates how long it takes to transition files to the IA storage class
+    required: false
   aws_replication_configuration_destination:
     description: "AWS Region to target for replication"
+    required: false
   aws_mount_efs_id:
     description: ID of existing EFS
+    required: false
   aws_mount_efs_security_group_id:
     description: ID of the primary security group used by the existing EFS
+    required: false
   
   # Stack management
   stack_destroy:
     description: 'Set to "true" to Destroy the stack. Will delete the elb_logs bucket after the destroy action runs.'
+    required: false
   
   # Domains
   domain_name:
@@ -114,6 +162,7 @@ inputs:
     required: false
   sub_domain:
     description: 'Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}`'
+    required: false
   root_domain:
     description: 'Deploy to root domain. Will generate two DNS recrods, one for root, another for www'
     required: false
@@ -133,14 +182,15 @@ inputs:
   # Terraform
   targets:
     description: 'A list of targets to create before the full stack creation. Example: `'
+    required: false
   additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
    
   # Secret Manager
   create_keypair_sm_entry:
-    required: false
     description: "Generates and manages a secret manager entry that contains the public and private keys created for the ec2 instance."
+    required: false
     default: false
     
   # RDS
@@ -162,7 +212,6 @@ inputs:
   aws_postgres_database_name:
     description: 'Specify a database name. Will be created if it does not exist'
     required: false
-    # TODO: create another user and point to that instead
   aws_postgres_database_port:
     description: 'Postgres database port'
     required: false
@@ -179,11 +228,14 @@ inputs:
   # Ansible
   application_mount_target:
     description: "Directory path in application env to mount directory, default is `data`"
+    required: false
     default: data
   data_mount_target:
     description: "Directory path within docker env to mount directory to, default is `/data`"
+    required: false
   efs_mount_target:
     description: "Directory path in efs to mount directory to, default is `/`"
+    required: false
 
 outputs:
   vm_url:
@@ -197,104 +249,121 @@ runs:
       if: ${{ inputs.checkout == 'true' }}
       uses: actions/checkout@v3
 
+    - name: Invert boolean Variable
+      shell: bash
+      id: set-cert
+      if: ${{ inputs.no_cert == 'false' }}
+      run: echo "enable_cert=true" >> $GITHUB_OUTPUT
+
+    - name: Set healtcheck default
+      shell: bash
+      id: set-healthcheck
+      if: ${{ inputs.lb_healthcheck == '' }}
+      run: echo "lb_healthcheck=HTTP:${{ inputs.app_port }}/" >> $GITHUB_OUTPUT
+      
     - name: Deploy with BitOps
       id: deploy
-      shell: bash
-      env:
-        GITHUB_ACTION_PATH: ${{ github.action_path }}
-        BITOPS_ENVIRONMENT: deployment
-        TERRAFORM_TARGETS: ${{ inputs.targets }}
-        AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
-        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
-        AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
-        AWS_DEFAULT_REGION: ${{ inputs.aws_default_region }}
-        AWS_AMI_ID: ${{ inputs.aws_ami_id }}
-        TF_STATE_BUCKET: ${{ inputs.tf_state_bucket }}
-        TF_STATE_BUCKET_DESTROY: ${{ inputs.tf_state_bucket_destroy }}
-        REPO_ENV: ${{ inputs.repo_env }}
-        GHS_ENV: ${{ inputs.dot_env }}
-        GHV_ENV: ${{ inputs.ghv_env }}
-        AWS_SECRET_ENV: ${{ inputs.aws_secret_env }}
-        APP_PORT: ${{ inputs.app_port }}
-        LB_PORT: ${{ inputs.lb_port }}
-        LB_HEALTHCHECK: ${{ inputs.lb_healthcheck }}
-        EC2_INSTANCE_PROFILE: ${{ inputs.ec2_instance_profile }}
-        EC2_INSTANCE_TYPE: ${{ inputs.ec2_instance_type }}
-        EC2_VOLUME_SIZE: ${{ inputs.ec2_volume_size }}
-        STACK_DESTROY: ${{ inputs.stack_destroy }}
-        AWS_RESOURCE_IDENTIFIER: ${{ inputs.aws_resource_identifier }}
-        DOMAIN_NAME: ${{ inputs.domain_name }}
-        SUB_DOMAIN: ${{ inputs.sub_domain }}
-        ROOT_DOMAIN: ${{ inputs.root_domain }}
-        CERT_ARN: ${{ inputs.cert_arn }}
-        CREATE_ROOT_CERT: ${{ inputs.create_root_cert }}
-        CREATE_SUB_CERT: ${{ inputs.create_sub_cert }}
-        NO_CERT: ${{ inputs.no_cert }}
-        BITOPS_FAST_FAIL: true
-        DOCKER_FULL_CLEANUP: ${{ inputs.docker_full_cleanup }}
-        APP_DIRECTORY: ${{ inputs.app_directory }}
-        APP_DIRECTORY_CLEANUP: ${{ inputs.app_directory_cleanup }}
-        CREATE_KEYPAIR_SM_ENTRY: ${{ inputs.create_keypair_sm_entry }}
-        ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
-        AWS_ENABLE_POSTGRES: ${{ inputs.aws_enable_postgres }}
-        AWS_POSTGRES_ENGINE:  ${{ inputs.aws_postgres_engine }}
-        AWS_POSTGRES_ENGINE_VERSION:  ${{ inputs.aws_postgres_engine_version }}
-        AWS_POSTGRES_DATABASE_GROUP_FAMILY: ${{ inputs.aws_postgres_database_group_family }}
-        AWS_POSTGRES_INSTANCE_CLASS: ${{ inputs.aws_postgres_instance_class }}
-        AWS_POSTGRES_SUBNETS: ${{ inputs.aws_postgres_subnets }}
-        AWS_POSTGRES_DATABASE_NAME: ${{ inputs.aws_postgres_database_name }}
-        AWS_POSTGRES_DATABASE_PORT: ${{ inputs.aws_postgres_database_port}}
-        AWS_POSTGRES_DATABASE_PROTECTION: ${{ inputs.aws_postgres_database_protection }}
-        AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT: ${{ inputs.aws_postgres_database_final_snapshot }}
-        AWS_CREATE_EFS: ${{ inputs.aws_create_efs }}
-        AWS_CREATE_HA_EFS: ${{ inputs.aws_create_ha_efs }}
-        AWS_CREATE_EFS_REPLICA: ${{ inputs.aws_create_efs_replica }}
-        AWS_ENABLE_EFS_BACKUP_POLICY: ${{ inputs.aws_enable_efs_backup_policy }}
-        AWS_EFS_ZONE_MAPPING: ${{ inputs.aws_efs_zone_mapping }}
-        AWS_EFS_TRANSITION_TO_INACTIVE: ${{ inputs.aws_efs_transition_to_inactive }}
-        AWS_EFS_REPLICA_DESTINATION: ${{ inputs.aws_replication_configuration_destination }}
-        AWS_MOUNT_EFS_ID: ${{ inputs.aws_mount_efs_id }}
-        AWS_MOUNT_EFS_SECURITY_GROUP_ID: ${{ inputs.aws_mount_efs_security_group_id }}
-        APPLICATION_MOUNT_TARGET: ${{ inputs.application_mount_target }}
-        EFS_MOUNT_TARGET: ${{ inputs.efs_mount_target }}
-        DATA_MOUNT_TARGET: ${{ inputs.data_mount_target }}
+      uses: bitovi/github-actions-commons@main
+      with:
+        # Current repo vars
+        gh_action_repo: ${{ github.action_path }}
 
-      run: |
-        echo "running operations/_scripts/deploy/deploy.sh"
-        $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
-        echo "running operations/_scripts/deploy/export_vars.sh"
-        $GITHUB_ACTION_PATH/operations/_scripts/deploy/export_vars.sh
+        bitops_code_only: ${{ inputs.bitops_code_only }}
+        bitops_code_store: ${{ inputs.bitops_code_store }}
 
-    # output results to GitHub
-    - if: ${{ success() && steps.deploy.outputs.vm_url != '' }}
-      name: Print result created
-      shell: bash
-      run: |
-        echo "## VM Created! :rocket:" >> $GITHUB_STEP_SUMMARY
-        echo " ${{ steps.deploy.outputs.vm_url }}" >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.stack_destroy == 'true' && inputs.tf_state_bucket_destroy == 'false' }}
-      name: Print result destroyed
-      shell: bash
-      run: |
-        echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
-        echo "Infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.stack_destroy == 'true' && inputs.tf_state_bucket_destroy == 'true' }}
-      name: Print result destroyed
-      shell: bash
-      run: |
-        echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
-        echo "Buckets and infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.stack_destroy == 'false' }}
-      name: Print result destroyed
-      shell: bash
-      run: |
-        echo "## Deploy finished! But no URL found. :thinking: " >> $GITHUB_STEP_SUMMARY
-        echo "If expecting an URL, please check the logs for possible  errors." >> $GITHUB_STEP_SUMMARY
-        echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
-    - if: ${{ failure() }} 
-      name: Print error result
-      shell: bash
-      run: |
-        echo "## Workflow failed to run :fire:" >> $GITHUB_STEP_SUMMARY
-        echo "Please check the logs for possible errors." >> $GITHUB_STEP_SUMMARY
-        echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
+        # Deployment repo
+        gh_deployment_input_terraform: ${{ inputs.gh_deployment_input_terraform }}
+        gh_deployment_input_ansible: ${{ inputs.gh_deployment_input_ansible }}
+        gh_deployment_input_ansible_playbook: ${{ inputs.gh_deployment_input_ansible_playbook }}
+        gh_deployment_input_ansible_extra_vars_file: ${{ inputs.gh_deployment_input_ansible_extra_vars_file }}
+        gh_deployment_action_input_ansible_extra_vars_file: ${{ inputs.gh_deployment_action_input_ansible_extra_vars_file }}
+        
+        # Action repo
+        gh_action_input_terraform: ${{ inputs.gh_action_input_terraform }}
+        gh_action_input_ansible: ${{ inputs.gh_action_input_ansible }}
+        gh_action_input_ansible_playbook: ${{ inputs.gh_action_input_ansible_playbook }}
+
+
+        # Action main inputs
+        checkout: ${{ inputs.checkout }}
+        tf_stack_destroy: ${{ inputs.stack_destroy }}
+        tf_state_bucket: ${{ inputs.tf_state_bucket }}
+        tf_state_bucket_destroy: ${{ inputs.tf_state_bucket_destroy }}
+        tf_state_bucket_provider: 'aws'
+        tf_targets: ${{ inputs.targets }}
+
+
+        # AWS
+        aws_access_key_id: ${{ inputs.aws_access_key_id }}
+        aws_secret_access_key: ${{ inputs.aws_secret_access_key }}
+        aws_session_token: ${{ inputs.aws_session_token }}
+        aws_default_region: ${{ inputs.aws_default_region }}
+        aws_resource_identifier: ${{ inputs.aws_resource_identifier }}
+        aws_additional_tags: ${{ inputs.additional_tags }}
+
+        # ENV
+        env_aws_secret: ${{ inputs.aws_secret_env }}
+        env_repo: ${{ inputs.repo_env }}
+        env_ghs: ${{ inputs.dot_env }}
+        env_ghv: ${{ inputs.ghv_env }}
+
+        # EC2
+        aws_ec2_instance_create: true
+        aws_ec2_ami_id: ${{ inputs.aws_ami_id }}
+        aws_ec2_ami_update: ${{ inputs.aws_ami_update }}
+        aws_ec2_iam_instance_profile: ${{ inputs.ec2_instance_profile }}
+        aws_ec2_instance_type: ${{ inputs.ec2_instance_type }}
+        aws_ec2_instance_root_vol_size: ${{ inputs.ec2_volume_size }}
+        aws_ec2_instance_root_vol_preserve: ${{ inputs.ec2_root_preserve }}
+        aws_ec2_create_keypair_sm: ${{ inputs.create_keypair_sm_entry }}
+        aws_ec2_instance_public_ip: true
+        aws_ec2_user_data_file: ${{ inputs.ec2_user_data_file }}
+        aws_ec2_user_data_replace_on_change: ${{ inputs.ec2_user_data_replace_on_change }}
+
+        # AWS Route53 Domains abd Certificates
+        aws_r53_enable: true
+        aws_r53_domain_name: ${{ inputs.domain_name }}
+        aws_r53_sub_domain_name: ${{ inputs.sub_domain }}
+        aws_r53_root_domain_deploy: ${{ inputs.root_domain }}
+        aws_r53_enable_cert: ${{ steps.set-cert.outputs.enable_cert }}
+        aws_r53_cert_arn: ${{ inputs.cert_arn }}
+        aws_r53_create_root_cert: ${{ inputs.create_root_cert }}
+        aws_r53_create_sub_cert: ${{ inputs.create_sub_cert }}
+
+        # AWS ELB
+        aws_elb_create: true
+        aws_elb_app_port: ${{ inputs.app_port }}
+        aws_elb_listen_port: ${{ inputs.lb_port }}
+        aws_elb_healthcheck: ${{ steps.set-healthcheck.outputs.lb_healthcheck }}
+
+        # AWS EFS
+        aws_efs_create: ${{ inputs.aws_create_efs }}
+        aws_efs_create_ha: ${{ inputs.aws_create_ha_efs }}
+        aws_efs_create_replica: ${{ inputs.aws_create_efs_replica }}
+        aws_efs_enable_backup_policy: ${{ inputs.aws_enable_efs_backup_policy }}
+        aws_efs_zone_mapping: ${{ inputs.aws_efs_zone_mapping }}
+        aws_efs_transition_to_inactive: ${{ inputs.aws_efs_transition_to_inactive }}
+        aws_efs_replication_destination: ${{ inputs.aws_replication_configuration_destination }}
+        aws_efs_mount_id: ${{ inputs.aws_mount_efs_id }}
+        aws_efs_mount_security_group_id: ${{ inputs.aws_mount_efs_security_group_id }}
+        aws_efs_ec2_mount_point: ${{ inputs.application_mount_target }}
+        aws_efs_mount_target: ${{ inputs.efs_mount_target }}
+
+        # POSTGRES
+        aws_postgres_enable: ${{ inputs.aws_enable_postgres }}
+        aws_postgres_engine:  ${{ inputs.aws_postgres_engine }}
+        aws_postgres_engine_version:  ${{ inputs.aws_postgres_engine_version }}
+        aws_postgres_database_group_family:  ${{ inputs.aws_postgres_database_group_family }}
+        aws_postgres_instance_class: ${{ inputs.aws_postgres_instance_class }}
+        aws_postgres_subnets: ${{ inputs.aws_postgres_subnets }}
+        aws_postgres_database_name: ${{ inputs.aws_postgres_database_name }}
+        aws_postgres_database_port: ${{ inputs.aws_postgres_database_port}}
+        aws_postgres_database_protection: ${{ inputs.aws_postgres_database_protection }}
+        aws_postgres_database_final_snapshot: ${{ inputs.aws_postgres_database_final_snapshot }}
+
+        # DOCKER
+        docker_install: true
+        docker_full_cleanup: ${{ inputs.docker_full_cleanup }}
+        docker_repo_app_directory: ${{ inputs.app_directory }}
+        docker_repo_app_directory_cleanup: ${{ inputs.app_directory_cleanup }}
+        docker_efs_mount_target: ${{ inputs.data_mount_target }}
