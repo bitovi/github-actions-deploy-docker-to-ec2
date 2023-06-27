@@ -192,7 +192,6 @@ inputs:
   create_keypair_sm_entry:
     description: "Generates and manages a secret manager entry that contains the public and private keys created for the ec2 instance."
     required: false
-    default: false
     
   # RDS
   aws_enable_postgres:
@@ -253,7 +252,7 @@ runs:
     - name: Invert boolean Variable
       shell: bash
       id: set-cert
-      if: ${{ inputs.no_cert == 'false' }}
+      if: ${{ inputs.no_cert != 'true' }}
       run: echo "enable_cert=true" >> $GITHUB_OUTPUT
 
     - name: Set healtcheck default
