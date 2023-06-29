@@ -215,6 +215,12 @@ inputs:
   aws_postgres_database_port:
     description: 'Postgres database port'
     required: false
+  aws_postgres_initial_snapshot:
+    description: 'Creates an initial snapshot of the DB. Could be used only once.'
+    required: false
+  aws_postgres_database_wipe:
+    description: 'Rollbacks DB to the initial snapshot.'
+    required: false
   aws_postgres_database_group_family:
     description: 'Postgres database group family'
     required: false 
@@ -358,6 +364,8 @@ runs:
         aws_postgres_subnets: ${{ inputs.aws_postgres_subnets }}
         aws_postgres_database_name: ${{ inputs.aws_postgres_database_name }}
         aws_postgres_database_port: ${{ inputs.aws_postgres_database_port}}
+        aws_postgres_initial_snapshot: ${{ inputs.aws_postgres_initial_snapshot }}
+        aws_postgres_database_wipe: ${{ inputs.aws_postgres_database_wipe }}
         aws_postgres_database_protection: ${{ inputs.aws_postgres_database_protection }}
         aws_postgres_database_final_snapshot: ${{ inputs.aws_postgres_database_final_snapshot }}
 
