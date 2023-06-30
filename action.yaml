@@ -209,21 +209,24 @@ inputs:
   aws_postgres_subnets:
     description: 'Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`'
     required: false
+  aws_postgres_cluster_name:
+    description: 'Specify a cluster name. Will be created if it does not exist'
+    required: false
   aws_postgres_database_name:
     description: 'Specify a database name. Will be created if it does not exist'
     required: false
   aws_postgres_database_port:
     description: 'Postgres database port'
     required: false
-  aws_postgres_initial_snapshot:
-    description: 'Creates an initial snapshot of the DB. Could be used only once.'
+  aws_postgres_restore_snapshot:
+    description: 'Restore a snapshot to the DB. Should be used only once. Changes in this value will destroy and recreate the database completely.'
     required: false
-  aws_postgres_database_wipe:
-    description: 'Rollbacks DB to the initial snapshot.'
+  aws_postgres_snapshot_name:
+    description: 'Takes a snapshot of the cluster using that name. If none definded, no snapshot will be made. If snap already exists, no new one will be created.'
     required: false
-  aws_postgres_database_group_family:
-    description: 'Postgres database group family'
-    required: false 
+  aws_postgres_snapshot_overwrite:
+    description: 'If the snapshot name is the same as an existing one, will destroy and create a new one.'
+    required: false
   aws_postgres_database_protection:
     description: 'Protects the database from deletion.'
     required: false
@@ -362,10 +365,12 @@ runs:
         aws_postgres_database_group_family:  ${{ inputs.aws_postgres_database_group_family }}
         aws_postgres_instance_class: ${{ inputs.aws_postgres_instance_class }}
         aws_postgres_subnets: ${{ inputs.aws_postgres_subnets }}
+        aws_postgres_cluster_name: ${{ inputs.aws_postgres_cluster_name }}
         aws_postgres_database_name: ${{ inputs.aws_postgres_database_name }}
         aws_postgres_database_port: ${{ inputs.aws_postgres_database_port}}
-        aws_postgres_initial_snapshot: ${{ inputs.aws_postgres_initial_snapshot }}
-        aws_postgres_database_wipe: ${{ inputs.aws_postgres_database_wipe }}
+        aws_postgres_restore_snapshot: ${{ inputs.aws_postgres_restore_snapshot }}
+        aws_postgres_snapshot_name: ${{ inputs.aws_postgres_snapshot_name }}
+        aws_postgres_snapshot_overwrite: ${{ inputs.aws_postgres_snapshot_overwrite }}
         aws_postgres_database_protection: ${{ inputs.aws_postgres_database_protection }}
         aws_postgres_database_final_snapshot: ${{ inputs.aws_postgres_database_final_snapshot }}
 
