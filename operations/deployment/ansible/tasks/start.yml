@@ -5,6 +5,8 @@
     build: yes
     recreate: always
     nocache: yes
+    remove_orphans: "{{ docker_remove_orphans }}"
+
   register: output
 
 - ansible.builtin.debug:

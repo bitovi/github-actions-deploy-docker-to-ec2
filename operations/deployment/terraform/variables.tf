@@ -256,6 +256,12 @@ variable "aws_replication_configuration_destination" {
   description = "AWS Region to target for replication"
 }
 
+variable "docker_remove_orphans" {
+  type        = bool
+  description = "ddefine if ansible should clean orphans"
+  default     = false
+}
+
 ## -- --- -- ##
 variable "availability_zone" {
   type        = string
