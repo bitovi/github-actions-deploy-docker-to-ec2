@@ -54,6 +54,9 @@ inputs:
     default: ''
   
   # Application
+  docker_remove_orphans:
+    description: 'Toggle --remove-orphans flag. Defaults to false.'
+    required: false
   docker_full_cleanup:
     description: 'Set to true to run docker-compose down and docker system prune --all --force --volumes after.'
     required: false
@@ -231,6 +234,7 @@ runs:
         CREATE_SUB_CERT: ${{ inputs.create_sub_cert }}
         NO_CERT: ${{ inputs.no_cert }}
         BITOPS_FAST_FAIL: true
+        DOCKER_REMOVE_ORPHANS: ${{ inputs.docker_remove_orphans }}
         DOCKER_FULL_CLEANUP: ${{ inputs.docker_full_cleanup }}
         APP_DIRECTORY: ${{ inputs.app_directory }}
         APP_DIRECTORY_CLEANUP: ${{ inputs.app_directory_cleanup }}
