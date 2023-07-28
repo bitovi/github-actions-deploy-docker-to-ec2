@@ -49,12 +49,6 @@ inputs:
     description: 'AWS default region'
     required: false
     default: us-east-1
-  aws_ami_id:
-    description: 'AWS AMI ID. Will default to the latest Ubuntu 22.04 server image (HVM) '
-    required: false
-  aws_ami_update:
-    description: 'Set this to true if you want to recreate the EC2 instance if there is a newer version of the AMI.'
-    required: false
   tf_state_bucket:
     description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-{branch}-tf-state`'
     required: false
@@ -81,6 +75,9 @@ inputs:
     required: false
   
   # Application
+  docker_remove_orphans:
+    description: 'Toggle --remove-orphans flag. Defaults to false.'
+    required: false
   docker_full_cleanup:
     description: 'Set to true to run docker-compose down and docker system prune --all --force --volumes after.'
     required: false
@@ -107,6 +104,12 @@ inputs:
     required: false
   ec2_instance_type: 
     description: 'The AWS Instance type'
+    required: false
+  ec2_ami_id:
+    description: 'AWS AMI ID. Will default to the latest Ubuntu 22.04 server image (HVM) '
+    required: false
+  ec2_ami_update:
+    description: 'Set this to true if you want to recreate the EC2 instance if there is a newer version of the AMI.'
     required: false
   ec2_volume_size: 
     description: 'The size of the volume (in GB) on the AWS Instance'
@@ -192,37 +195,51 @@ inputs:
   create_keypair_sm_entry:
     description: "Generates and manages a secret manager entry that contains the public and private keys created for the ec2 instance."
     required: false
-    default: false
     
-  # RDS
-  aws_enable_postgres:
-    description: Set to "true" to enable a postgres database
+  # AWS RDS
+  aws_aurora_enable:
+    description: 'Set to "true" to enable a postgres database'
     required: false
-  aws_postgres_engine: 
-    description: Which Database engine to use
+  aws_aurora_engine: 
+    description: 'Which Database engine to use'
     required: false
-  aws_postgres_engine_version:
-    description: Specify Postgres version 
+  aws_aurora_engine_version:
+    description: 'Specify Postgres version'
     required: false
-  aws_postgres_instance_class:
-    description: Define the size of the instances in the DB cluster
-    required: false
-  aws_postgres_subnets:
-    description: 'Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`'
-    required: false
-  aws_postgres_database_name:
-    description: 'Specify a database name. Will be created if it does not exist'
-    required: false
-  aws_postgres_database_port:
-    description: 'Postgres database port'
-    required: false
-  aws_postgres_database_group_family:
+  aws_aurora_database_group_family:
     description: 'Postgres database group family'
     required: false 
-  aws_postgres_database_protection:
+  aws_aurora_instance_class:
+    description: 'Define the size of the instances in the DB cluster'
+    required: false
+  aws_aurora_security_group_name:
+    description:  'The name of the Postgres security group'
+    required: false
+  aws_aurora_subnets:
+    description: 'Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`'
+    required: false
+  aws_aurora_cluster_name:
+    description: 'Specify a cluster name. Will be created if it does not exist'
+    required: false
+  aws_aurora_database_name:
+    description: 'Specify a database name. Will be created if it does not exist'
+    required: false
+  aws_aurora_database_port:
+    description: 'Postgres database port'
+    required: false
+  aws_aurora_restore_snapshot:
+    description: 'Restore a snapshot to the DB. Should be used only once. Changes in this value will destroy and recreate the database completely.'
+    required: false
+  aws_aurora_snapshot_name:
+    description: 'Takes a snapshot of the cluster using that name. If none definded, no snapshot will be made. If snap already exists, no new one will be created.'
+    required: false
+  aws_aurora_snapshot_overwrite:
+    description: 'If the snapshot name is the same as an existing one, will destroy and create a new one.'
+    required: false
+  aws_aurora_database_protection:
     description: 'Protects the database from deletion.'
     required: false
-  aws_postgres_database_final_snapshot:
+  aws_aurora_database_final_snapshot:
     description: 'Generates a snapshot of the database before deletion.'
     required: false
 
@@ -253,7 +270,7 @@ runs:
     - name: Invert boolean Variable
       shell: bash
       id: set-cert
-      if: ${{ inputs.no_cert == 'false' }}
+      if: ${{ inputs.no_cert != 'true' }}
       run: echo "enable_cert=true" >> $GITHUB_OUTPUT
 
     - name: Set healtcheck default
@@ -264,7 +281,7 @@ runs:
       
     - name: Deploy with BitOps
       id: deploy
-      uses: bitovi/github-actions-commons@main
+      uses: bitovi/github-actions-commons@v0.0.2
       with:
         # Current repo vars
         gh_action_repo: ${{ github.action_path }}
@@ -310,8 +327,8 @@ runs:
 
         # EC2
         aws_ec2_instance_create: true
-        aws_ec2_ami_id: ${{ inputs.aws_ami_id }}
-        aws_ec2_ami_update: ${{ inputs.aws_ami_update }}
+        aws_ec2_ami_id: ${{ inputs.ec2_ami_id }}
+        aws_ec2_ami_update: ${{ inputs.ec2_ami_update }}
         aws_ec2_iam_instance_profile: ${{ inputs.ec2_instance_profile }}
         aws_ec2_instance_type: ${{ inputs.ec2_instance_type }}
         aws_ec2_instance_root_vol_size: ${{ inputs.ec2_volume_size }}
@@ -350,20 +367,26 @@ runs:
         aws_efs_ec2_mount_point: ${{ inputs.application_mount_target }}
         aws_efs_mount_target: ${{ inputs.efs_mount_target }}
 
-        # POSTGRES
-        aws_postgres_enable: ${{ inputs.aws_enable_postgres }}
-        aws_postgres_engine:  ${{ inputs.aws_postgres_engine }}
-        aws_postgres_engine_version:  ${{ inputs.aws_postgres_engine_version }}
-        aws_postgres_database_group_family:  ${{ inputs.aws_postgres_database_group_family }}
-        aws_postgres_instance_class: ${{ inputs.aws_postgres_instance_class }}
-        aws_postgres_subnets: ${{ inputs.aws_postgres_subnets }}
-        aws_postgres_database_name: ${{ inputs.aws_postgres_database_name }}
-        aws_postgres_database_port: ${{ inputs.aws_postgres_database_port}}
-        aws_postgres_database_protection: ${{ inputs.aws_postgres_database_protection }}
-        aws_postgres_database_final_snapshot: ${{ inputs.aws_postgres_database_final_snapshot }}
+        # AWS AURORA
+        aws_aurora_enable: ${{ inputs.aws_aurora_enable }}
+        aws_aurora_engine:  ${{ inputs.aws_aurora_engine }}
+        aws_aurora_engine_version:  ${{ inputs.aws_aurora_engine_version }}
+        aws_aurora_database_group_family:  ${{ inputs.aws_aurora_database_group_family }}
+        aws_aurora_instance_class: ${{ inputs.aws_aurora_instance_class }}
+        aws_aurora_security_group_name: ${{ inputs.aws_aurora_security_group_name }}
+        aws_aurora_subnets: ${{ inputs.aws_aurora_subnets }}
+        aws_aurora_cluster_name: ${{ inputs.aws_aurora_cluster_name }}
+        aws_aurora_database_name: ${{ inputs.aws_aurora_database_name }}
+        aws_aurora_database_port: ${{ inputs.aws_aurora_database_port}}
+        aws_aurora_restore_snapshot: ${{ inputs.aws_aurora_restore_snapshot }}
+        aws_aurora_snapshot_name: ${{ inputs.aws_aurora_snapshot_name }}
+        aws_aurora_snapshot_overwrite: ${{ inputs.aws_aurora_snapshot_overwrite }}
+        aws_aurora_database_protection: ${{ inputs.aws_aurora_database_protection }}
+        aws_aurora_database_final_snapshot: ${{ inputs.aws_aurora_database_final_snapshot }}
 
         # DOCKER
         docker_install: true
+        docker_remove_orphans: ${{ inputs.docker_remove_orphans }}
         docker_full_cleanup: ${{ inputs.docker_full_cleanup }}
         docker_repo_app_directory: ${{ inputs.app_directory }}
         docker_repo_app_directory_cleanup: ${{ inputs.app_directory_cleanup }}

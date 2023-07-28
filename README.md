@@ -120,7 +120,7 @@ jobs:
 1. [Secrets and Environment Variables](#secrets-and-environment-variables-inputs)
 1. [EC2](#ec2-inputs)
 1. [EFS](#efs-inputs)
-1. [RDS](#rds-inputs)
+1. [Aurora Inputs (RDS)](#aurora-inputs)
 1. [Certificates](#certificate-inputs)
 1. [Load Balancer](#load-balancer-inputs)
 1. [Application](#application-inputs)
@@ -160,8 +160,8 @@ The following inputs can be used as `step.with` keys
 #### **EC2 Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `aws_ami_id` | String | AWS AMI ID. Will default to latest Ubuntu 22.04 server image (HVM). Accepts `ami-###` values. |
-| `aws_ec2_ami_update` | Boolean | Set this to `true` if you want to recreate the EC2 instance if there is a newer version of the AMI. Defaults to `false`.|
+| `ec2_ami_id` | String | AWS AMI ID. Will default to latest Ubuntu 22.04 server image (HVM). Accepts `ami-###` values. |
+| `ec2_ami_update` | Boolean | Set this to `true` if you want to recreate the EC2 instance if there is a newer version of the AMI. Defaults to `false`.|
 | `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`|
 | `ec2_instance_type` | String | The AWS IAM instance type to use. Default is `t2.small`. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference. |
 | `ec2_volume_size` | Integer | The size of the volume (in GB) on the AWS Instance. | 
@@ -190,19 +190,24 @@ The following inputs can be used as `step.with` keys
 <hr/>
 <br/>
 
-#### **RDS Inputs**
+#### **Aurora Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `aws_enable_postgres` | Boolean | Set to "true" to enable a postgres database. |
-| `aws_postgres_engine` | String |  Which Database engine to use. Default is `aurora-postgresql`.|
-| `aws_postgres_engine_version` | String |  Specify Postgres version.  More information [here](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Updates.20180305.html). Default is `11.13`. |
-| `aws_postgres_instance_class` | String | Define the size of the instances in the DB cluster. Default is `db.t3.medium`. | 
-| `aws_postgres_subnets` | String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. |
-| `aws_postgres_database_name` | String | Specify a database name. Will be created if it does not exist. Default is `root`. |
-| `aws_postgres_database_port` | String | Specify a listening port for the database. Default is `5432`.|
-| `aws_postgres_database_group_family` | String | Specify aws postgres group family. Default is `aurora-postgresql11`. See [this](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/rds/create-db-parameter-group.html).|
-| `aws_postgres_database_protection` | Boolean | Protects the database from deletion. Default is `false`.|
-| `aws_postgres_database_final_snapshot` | Boolean | Creates a snapshot before deletion. If a string is passed, it will be used as snapsthot name. Defaults to `false`.|
+| `aws_aurora_enable` | Boolean | Set to `true` to enable an [Aurora database](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html). (Postgres or MySQL). |
+| `aws_aurora_engine` | String |  Which Database engine to use. Default is `aurora-postgresql`.|
+| `aws_aurora_engine_version` | String |  Specify database version.  More information [Postgres](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Updates.20180305.html) or [MySQL](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraMySQLReleaseNotes/Welcome.html). Default is `11.17`. (Postgres) |
+| `aws_aurora_database_group_family` | String | Specify aws database group family. Default is `aurora-postgresql11`. See [this](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/rds/create-db-parameter-group.html).|
+| `aws_aurora_instance_class` | String | Define the size of the instances in the DB cluster. Default is `db.t3.medium`. | 
+| `aws_aurora_security_group_name` | String | The name of the database security group. Defaults to `SG for ${aws_resource_identifier} - Aurora`. |
+| `aws_aurora_subnets` | String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. |
+| `aws_aurora_cluster_name` | String | Specify a cluster name. Will be created if it does not exist. Defaults to `aws_resource_identifier`. |
+| `aws_aurora_database_name` | String | Specify a database name. Will be created if it does not exist. Defaults to `aws_resource_identifier`. |
+| `aws_aurora_database_port` | String | Specify a listening port for the database. Default is `5432`.|
+| `aws_aurora_restore_snapshot` | String | Restore a snapshot to the DB. Should be set only once. Changes in this value will destroy and recreate the database completely. | 
+| `aws_aurora_snapshot_name` | String | Specify a database name. Will be created if it does not exist. Won't overwrite. |
+| `aws_aurora_snapshot_overwrite` | Boolean | Set to true to overwrite the snapshot. |
+| `aws_aurora_database_protection` | Boolean | Protects the database from deletion. Default is `false`.|
+| `aws_aurora_database_final_snapshot` | Boolean | Creates a snapshot before deletion. If a string is passed, it will be used as snapsthot name. Defaults to `false`.|
 <hr/>
 <br/>
 
@@ -313,9 +318,9 @@ An example EFS Zone mapping;
 }
 ```
 
-## Adding external Postgres database (AWS RDS)
+## Adding external Aurora database (AWS RDS)
 
-If `aws_enable_postgres` is set to `true`, this action will deploy an RDS cluster for Postgres.
+If `aws_aurora_enable` is set to `true`, this action will deploy an RDS cluster for Postgres as a default. 
 
 ### Environment variables
 The following environment variables are added to the `.env` file in your app's `docker-compose.yaml` file.
@@ -333,17 +338,18 @@ services:
 The available environment variables are:
 | Variable | Description |
 |----------|-------------|
-| `POSTGRES_CLUSTER_ENDPOINT` (and `PGHOST`) | Writer endpoint for the cluster |
-| `POSTGRES_CLUSTER_PORT` (and `PGPORT`) | The database port |
-| `POSTGRES_CLUSTER_MASTER_PASSWORD` (and `PG_PASSWORD`) | database root password |
-| `POSTGRES_CLUSTER_MASTER_USERNAME` (and `PG_USER`) | The database master username |
-| `POSTGRES_CLUSTER_DATABASE_NAME` (and `PGDATABASE`) | Name for an automatically created database on cluster creation |
-| `POSTGRES_CLUSTER_ARN` | Amazon Resource Name (ARN) of cluster |
-| `POSTGRES_CLUSTER_ID` | The RDS Cluster Identifier |
-| `POSTGRES_CLUSTER_RESOURCE_ID` | The RDS Cluster Resource ID |
-| `POSTGRES_CLUSTER_READER_ENDPOINT` | A read-only endpoint for the cluster, automatically load-balanced across replicas |
-| `POSTGRES_CLUSTER_ENGINE_VERSION_ACTUAL` | The running version of the cluster database |
-| `POSTGRES_CLUSTER_HOSTED_ZONE_ID`| The Route53 Hosted Zone ID of the endpoint |
+| `AURORA_CLUSTER_ENGINE` (and `DBA_ENGINE`) | Engine name - ( mysql/postgres ) |
+| `AURORA_CLUSTER_ENDPOINT` (and `DBA_HOST`) | Writer endpoint for the cluster |
+| `AURORA_CLUSTER_PORT` (and `DBA_PORT`) | The database port |
+| `AURORA_CLUSTER_MASTER_PASSWORD` (and `DBA_PASSWORD`) | database root password |
+| `AURORA_CLUSTER_MASTER_USERNAME` (and `DBA_USER`) | The database master username |
+| `AURORA_CLUSTER_DATABASE_NAME` (and `DBA_NAME`) | Name for an automatically created database on cluster creation |
+| `AURORA_CLUSTER_ARN` | Amazon Resource Name (ARN) of cluster |
+| `AURORA_CLUSTER_ID` | The RDS Cluster Identifier |
+| `AURORA_CLUSTER_RESOURCE_ID` | The RDS Cluster Resource ID |
+| `AURORA_CLUSTER_READER_ENDPOINT` | A read-only endpoint for the cluster, automatically load-balanced across replicas |
+| `AURORA_CLUSTER_ENGINE_VERSION_ACTUAL` | The running version of the cluster database |
+| `AURORA_CLUSTER_HOSTED_ZONE_ID`| The Route53 Hosted Zone ID of the endpoint |
 
 ### AWS Root Certs
 The AWS root certificate is downloaded and accessible via the `rds-combined-ca-bundle.pem` file in root of your app repo/directory.
@@ -356,11 +362,11 @@ const { Client } = require('pg')
 
 // set up client
 const client = new Client({
-  host: process.env.PGHOST,
-  port: process.env.PGPORT,
-  user: process.env.PG_USER,
-  password: process.env.PG_PASSWORD,
-  database: process.env.PGDATABASE,
+  host: process.env.DBA_HOST,
+  port: process.env.DBA_PORT,
+  user: process.env.DBA_USER,
+  password: process.env.DBA_PASSWORD,
+  database: process.env.DBA_NAME,
   ssl: {
     ca: fs.readFileSync('rds-combined-ca-bundle.pem').toString()
   }
@@ -374,12 +380,12 @@ await client.end();
 console.log(`Hello SQL timestamp: ${result.rows[0].now}`);
 ```
 
-### Postgres Infrastructure and Cluster Details
+### Aurora Infrastructure and Cluster Details
 Specifically, the following resources will be created:
 - AWS Security Group
   - AWS Security Group Rule - Allows access to the cluster's db port: `5432`
-- AWS RDS Aurora Postgres
-  - Includes a single database (set by the input: `aws_postgres_database_name`. defaults to `root`)
+- AWS RDS Aurora
+  - Includes a single database (set by the input: `aws_aurora_database_name`. defaults to `root`)
 
 Additional details about the cluster that's created:
 - Automated backups (7 Days)
@@ -387,6 +393,7 @@ Additional details about the cluster that's created:
 - Encrypted Storage
 - Monitoring enabled
 - Sends logs to AWS Cloudwatch
+
 
 > _**For more details**, see [operations/deployment/terraform/postgres.tf](operations/deployment/terraform/postgres.tf)_
 
