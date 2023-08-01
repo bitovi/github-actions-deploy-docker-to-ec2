@@ -16,6 +16,7 @@ resource "local_file" "ansible_inventory" {
     application_mount_target = var.application_mount_target
     efs_mount_target         = var.efs_mount_target != null ? var.efs_mount_target : ""
     data_mount_target        = var.data_mount_target
+    docker_remove_orphans    = var.docker_remove_orphans
   })
   filename = format("%s/%s", abspath(path.root), "inventory.yaml")
 }
