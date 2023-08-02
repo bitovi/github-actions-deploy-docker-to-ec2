@@ -48,7 +48,7 @@ echo -en "
   - name: Unmount efs
     include_tasks: tasks/umount.yml
 " >> $GITHUB_ACTION_PATH/operations/deployment/ansible/playbook.yml
-if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ $AWS_EFS_MOUNT_ID != "" ]]; then
+if [[ $(alpha_only "$AWS_EFS_CREATE") == true ]] || [[ $(alpha_only "$AWS_EFS_CREATE_HA") == true ]] || [[ $AWS_MOUNT_EFS_ID != "" ]]; then
 echo -en "
   - name: Mount efs
     include_tasks: tasks/mount.yml
