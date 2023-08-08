@@ -15,6 +15,10 @@ You can **get help or ask questions** on our [Discord channel](https://discord.g
 
 Or, you can hire us for training, consulting, or development. [Set up a free consultation](https://www.bitovi.com/devops-consulting).
 
+## BREAKING CHANGES!!!
+1. AWS RDS was renamed to Aurora, as we support both Postgres or MySQL engines.
+2. EFS variable names changed completely for standarization purposes. 
+3. VPC Implementation - Default VPC if none specified. Create one or import existing one.
 
 ## Requirements
 
@@ -69,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: deploy
-        uses: bitovi/github-actions-deploy-docker-to-ec2@v0.5.0
+        uses: bitovi/github-actions-deploy-docker-to-ec2@commons
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -119,6 +123,7 @@ jobs:
 1. [Action Defaults](#action-defaults-inputs)
 1. [Secrets and Environment Variables](#secrets-and-environment-variables-inputs)
 1. [EC2](#ec2-inputs)
+1. [VPC](#vpc-inputs)
 1. [EFS](#efs-inputs)
 1. [Aurora Inputs (RDS)](#aurora-inputs)
 1. [Certificates](#certificate-inputs)
@@ -172,21 +177,35 @@ The following inputs can be used as `step.with` keys
 <hr/>
 <br/>
 
+#### **VPC Inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `aws_vpc_create` | Boolean | Define if a VPC should be created |
+| `aws_vpc_name` | String | Define a name for the VPC. Defaults to `VPC for ${aws_resource_identifier}`. |
+| `aws_vpc_cidr_block` | String | Define Base CIDR block which is divided into subnet CIDR blocks. Defaults to `10.0.0.0/16`. |
+| `aws_vpc_public_subnets` | String | Comma separated list of public subnets. Defaults to `10.10.110.0/24`|
+| `aws_vpc_private_subnets` | String | Comma separated list of private subnets. If no input, no private subnet will be created. Defaults to `<none>`. |
+| `aws_vpc_availability_zones` | String | Comma separated list of availability zones. Defaults to `aws_default_region+<random>` value. If a list is defined, the first zone will be the one used for the EC2 instance. |
+| `aws_vpc_id` | String | AWS VPC ID. Accepts `vpc-###` values. |
+| `aws_vpc_subnet_id` | String | AWS VPC Subnet ID. If none provided, will pick one. (Ideal when there's only one) |
+<hr/>
+<br/>
+
 #### **EFS Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `aws_create_efs` | Boolean | Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack |
-| `aws_create_ha_efs` | Boolean | Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region) |
-| `aws_create_efs_replica` | Boolean | Toggle to indiciate whether a read-only replica should be created for the EFS primary file system |
-| `aws_enable_efs_backup_policy` | Boolean | Toggle to indiciate whether the EFS should have a backup policy |
-| `aws_efs_zone_mapping` | JSON | Zone Mapping in the form of `{\"<availabillity zone>\":{\"subnet_id\":\"subnet-abc123\", \"security_groups\":\[\"sg-abc123\"\]} }` |
+| `aws_efs_create` | Boolean | Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack |
+| `aws_efs_create_ha` | Boolean | Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region) |
+| `aws_efs_fs_id` | String | ID of existing EFS. |
+| `aws_efs_vpc_id` | String | ID of the VPC for the EFS mount target. If aws_efs_create_ha is set to true, will create one mount target per subnet available in the VPC. If not, will create one in an automated selected region. |
+| `aws_efs_subnet_ids` | String | ID (or ID's) of the subnet for the EFS mount target. (Comma separated string.) |
+| `aws_efs_security_group_name` | String | The name of the EFS security group. Defaults to `SG for ${aws_resource_identifier} - EFS`. |
+| `aws_efs_create_replica` | Boolean | Toggle to indiciate whether a read-only replica should be created for the EFS primary file system |
+| `aws_efs_replication_destination` | String | AWS Region to target for replication. |
+| `aws_efs_enable_backup_policy` | Boolean | Toggle to indiciate whether the EFS should have a backup policy |
 | `aws_efs_transition_to_inactive` | String | Indicates how long it takes to transition files to the IA storage class. |
-| `aws_replication_configuration_destination` | String | AWS Region to target for replication. |
-| `aws_mount_efs_id` | String | ID of existing EFS. |
-| `aws_mount_efs_security_group_id` | String | ID of the primary security group used by the existing EFS. |
-| `application_mount_target` | String | The application_mount_target input represents the folder path within the EC2 instance to the data directory. Default is `/user/ubuntu/<application_repo>/data`. Additionally this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
-| `data_mount_target` | String | The data_mount_target input represents the target volume directory within the docker compose container. Default is `/data`. Additionally this value is loaded into the docker-compose container `.env` file as `TARGET_DIR`. |
-| `efs_mount_target` | String | Directory path in efs to mount directory to. Default is `/`. |
+| `aws_efs_mount_target` | String | Directory path in efs to mount directory to. Default is `/`. |
+| `aws_efs_ec2_mount_point` | String | The aws_efs_ec2_mount_point input represents the folder path within the EC2 instance to the data directory. Default is `/user/ubuntu/<application_repo>/data`. Additionally this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
 <hr/>
 <br/>
 
@@ -301,23 +320,12 @@ Users looking to add non-ephemeral storage to their created EC2 instance have th
 
 ### 1. Create EFS
 
-Option 1, you have access to the `create_efs` attribute which will create a EFS resource and mount it to the EC2 instance in the application directory at the path: "app_root/data".
+Option 1, you have access to the `aws_efs_create` attribute which will create a EFS resource and mount it to the EC2 instance in the application directory at the path: "app_root/data".
 
 > :warning: Be very careful here! The **EFS is fully managed by Terraform**. Therefor **it will be destroyed upon stack destruction**.
 
 ### 2. Mount EFS
-Option 2, you have access to the `mount_efs` attributes. Requiring an existing EFS id and optionally a primary security group id the existing EFS will be attached to the ec2 security group to allow traffic.
-
-### EFS Zone Mapping
-An example EFS Zone mapping;
-```
-{
-  "a": {
-    "subnet_id": "subnet-foo123",
-    "security_groups: ["sg-foo123", "sg-bar456"]
-  }
-}
-```
+Option 2, you have access to the `aws_efs_fs_id` attributes, which will mount an existing EFS Volume. 
 
 ## Adding external Aurora database (AWS RDS)
 

@@ -125,34 +125,67 @@ inputs:
     description: 'If user_data file changes, instance will stop and start. Hence public IP will change. Defaults to true.'
     required: false
 
-  
-  # EFS
-  aws_create_efs:
-    description: "Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack"
+  # AWS VPC Inputs
+  aws_vpc_create:
+    description: 'Define if a VPC should be created'
     required: false
-  aws_create_ha_efs:
-    description: Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)
+  aws_vpc_name:
+    description: 'Set a specific name for the VPC'
     required: false
-  aws_create_efs_replica:
-    description: Toggle to indiciate whether a read-only replica should be created for the EFS primary file system
+  aws_vpc_cidr_block:
+    description: 'Define Base CIDR block which is divided into subnet CIDR blocks. Defaults to 10.0.0.0/16.'
     required: false
-  aws_enable_efs_backup_policy:
-    description: Toggle to indiciate whether the EFS should have a backup policy, default is `false`
+  aws_vpc_public_subnets:
+    description: 'Comma separated list of public subnets. Defaults to 10.10.110.0/24'
     required: false
-  aws_efs_zone_mapping:
-    description: Information on Zone Mapping can be found in the [README.md](README.md#efs-zone-mapping)
+  aws_vpc_private_subnets:
+    description: 'Comma separated list of private subnets. If none, none will be created.'
+    required: false
+  aws_vpc_availability_zones:
+    description: 'Comma separated list of availability zones. Defaults to `aws_default_region.'
+    required: false
+  aws_vpc_id:
+    description: 'AWS VPC ID. Accepts `vpc-###` values.'
+    required: false
+  aws_vpc_subnet_id:
+    description: 'Specify a Subnet to be used with the instance. If none provided, will pick one.'
+    required: false
+
+  # AWS EFS
+  aws_efs_create:
+    description: 'Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack'
+    required: false
+  aws_efs_create_ha:
+    description: 'Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)'
+    required: false
+  aws_efs_fs_id:
+    description: 'ID of existing EFS'
+    required: false
+  aws_efs_vpc_id:
+    description: 'ID of the VPC for the EFS mount target. If aws_efs_create_ha is set to true, will create one mount target per subnet available in the VPC. If not, will pick one.'
+    required: false
+  aws_efs_subnet_ids:
+    description: 'ID or IDs of the subnet for the EFS mount target.'
+  aws_efs_security_group_name:
+    description:  'The name of the EFS security group'
+    required: false
+  aws_efs_create_replica:
+    description: 'Toggle to indiciate whether a read-only replica should be created for the EFS primary file system'
+    required: false
+  aws_efs_replication_destination:
+    description: 'AWS Region to target for replication'
+    required: false
+  aws_efs_enable_backup_policy:
+    description: 'Toggle to indiciate whether the EFS should have a backup policy, default is false'
     required: false
   aws_efs_transition_to_inactive:
-    description: Indicates how long it takes to transition files to the IA storage class
+    description: 'Indicates how long it takes to transition files to the IA storage class.'
     required: false
-  aws_replication_configuration_destination:
-    description: "AWS Region to target for replication"
+  aws_efs_mount_target: 
+    description: 'Directory path in the EFS volume to mount directory to. Default is /.'
     required: false
-  aws_mount_efs_id:
-    description: ID of existing EFS
-    required: false
-  aws_mount_efs_security_group_id:
-    description: ID of the primary security group used by the existing EFS
+  aws_efs_ec2_mount_point:
+    description: 'Directory path in EC2 Instance to mount the EFS volume. Default is `data`. Exported as `HOST_DIR` in `.env`'
     required: false
   
   # Stack management
@@ -338,6 +371,16 @@ runs:
         aws_ec2_user_data_file: ${{ inputs.ec2_user_data_file }}
         aws_ec2_user_data_replace_on_change: ${{ inputs.ec2_user_data_replace_on_change }}
 
+        ## AWS VPC
+        aws_vpc_create: ${{ inputs.aws_vpc_create }}
+        aws_vpc_name: ${{ inputs.aws_vpc_name }}
+        aws_vpc_cidr_block: ${{ inputs.aws_vpc_cidr_block }}
+        aws_vpc_public_subnets: ${{ inputs.aws_vpc_public_subnets }}
+        aws_vpc_private_subnets: ${{ inputs.aws_vpc_private_subnets }}
+        aws_vpc_availability_zones: ${{ inputs.aws_vpc_availability_zones }}
+        aws_vpc_id: ${{ inputs.aws_vpc_id }}
+        aws_vpc_subnet_id: ${{ inputs.aws_vpc_subnet_id }}
+
         # AWS Route53 Domains abd Certificates
         aws_r53_enable: true
         aws_r53_domain_name: ${{ inputs.domain_name }}
@@ -355,17 +398,18 @@ runs:
         aws_elb_healthcheck: ${{ steps.set-healthcheck.outputs.lb_healthcheck }}
 
         # AWS EFS
-        aws_efs_create: ${{ inputs.aws_create_efs }}
-        aws_efs_create_ha: ${{ inputs.aws_create_ha_efs }}
-        aws_efs_create_replica: ${{ inputs.aws_create_efs_replica }}
-        aws_efs_enable_backup_policy: ${{ inputs.aws_enable_efs_backup_policy }}
-        aws_efs_zone_mapping: ${{ inputs.aws_efs_zone_mapping }}
+        aws_efs_create: ${{ inputs.aws_efs_create }}
+        aws_efs_create_ha: ${{ inputs.aws_efs_create_ha }}
+        aws_efs_fs_id: ${{ inputs.aws_efs_fs_id }}
+        aws_efs_vpc_id: ${{ inputs.aws_efs_vpc_id }}
+        aws_efs_subnet_ids: ${{ inputs.aws_efs_subnet_ids }}
+        aws_efs_security_group_name: ${{ inputs.aws_efs_security_group_name }}
+        aws_efs_create_replica: ${{ inputs.aws_efs_create_replica }}
+        aws_efs_replication_destination: ${{ inputs.aws_efs_replication_destination }}
+        aws_efs_enable_backup_policy: ${{ inputs.aws_efs_enable_backup_policy }}
         aws_efs_transition_to_inactive: ${{ inputs.aws_efs_transition_to_inactive }}
-        aws_efs_replication_destination: ${{ inputs.aws_replication_configuration_destination }}
-        aws_efs_mount_id: ${{ inputs.aws_mount_efs_id }}
-        aws_efs_mount_security_group_id: ${{ inputs.aws_mount_efs_security_group_id }}
-        aws_efs_ec2_mount_point: ${{ inputs.application_mount_target }}
-        aws_efs_mount_target: ${{ inputs.efs_mount_target }}
+        aws_efs_mount_target: ${{ inputs.aws_efs_mount_target }}
+        aws_efs_ec2_mount_point: ${{ inputs.aws_efs_ec2_mount_point }}
 
         # AWS AURORA
         aws_aurora_enable: ${{ inputs.aws_aurora_enable }}
