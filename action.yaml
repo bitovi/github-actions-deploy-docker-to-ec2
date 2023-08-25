@@ -16,7 +16,7 @@ inputs:
     description: 'Store BitOps code as a GitHub artifact'
     required: false
     default: false
-  
+
   # GitHub Deployment repo inputs
   gh_deployment_input_terraform:
     description: 'Folder to store Terraform files to be included during Terraform execution.'
@@ -58,7 +58,7 @@ inputs:
   aws_resource_identifier:
     description: 'Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources.'
     required: false
-  
+
   # ENV files
   repo_env:
     description: 'File containing environment variables to be used with the app'
@@ -73,7 +73,7 @@ inputs:
   aws_secret_env:
     description: 'Secret name to pull env variables from AWS Secret Manager'
     required: false
-  
+
   # Application
   docker_remove_orphans:
     description: 'Toggle --remove-orphans flag. Defaults to false.'
@@ -97,7 +97,10 @@ inputs:
   lb_healthcheck: 
     description: 'Load balancer health check string. Defaults to HTTP:app_port'
     required: false
-  
+  lb_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+
   # EC2 Instance
   ec2_instance_profile:
     description: 'The AWS IAM instance profile to use for the EC2 instance'
@@ -124,6 +127,9 @@ inputs:
   ec2_user_data_replace_on_change:
     description: 'If user_data file changes, instance will stop and start. Hence public IP will change. Defaults to true.'
     required: false
+  ec2_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
 
   # AWS VPC Inputs
   aws_vpc_create:
@@ -149,6 +155,9 @@ inputs:
     required: false
   aws_vpc_subnet_id:
     description: 'Specify a Subnet to be used with the instance. If none provided, will pick one.'
+    required: false
+  aws_vpc_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
 
   # AWS EFS
@@ -187,12 +196,15 @@ inputs:
   aws_efs_ec2_mount_point:
     description: 'Directory path in EC2 Instance to mount the EFS volume. Default is `data`. Exported as `HOST_DIR` in `.env`'
     required: false
-  
+  aws_efs_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+
   # Stack management
   stack_destroy:
     description: 'Set to "true" to Destroy the stack. Will delete the elb_logs bucket after the destroy action runs.'
     required: false
-  
+
   # Domains
   domain_name:
     description: 'Define the root domain name for the application. e.g. app.com'
@@ -215,7 +227,10 @@ inputs:
   no_cert:
     description: 'Makes the application not to use a certificate by disabling certificate lookup.'
     required: false
-    
+  r53_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+
   # Terraform
   targets:
     description: 'A list of targets to create before the full stack creation. Example: `'
@@ -223,12 +238,12 @@ inputs:
   additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
-   
+
   # Secret Manager
   create_keypair_sm_entry:
     description: "Generates and manages a secret manager entry that contains the public and private keys created for the ec2 instance."
     required: false
-    
+
   # AWS RDS
   aws_aurora_enable:
     description: 'Set to "true" to enable a postgres database'
@@ -274,6 +289,9 @@ inputs:
     required: false
   aws_aurora_database_final_snapshot:
     description: 'Generates a snapshot of the database before deletion.'
+    required: false
+  aws_aurora_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
 
   # Ansible
@@ -334,7 +352,6 @@ runs:
         gh_action_input_ansible: ${{ inputs.gh_action_input_ansible }}
         gh_action_input_ansible_playbook: ${{ inputs.gh_action_input_ansible_playbook }}
 
-
         # Action main inputs
         checkout: ${{ inputs.checkout }}
         tf_stack_destroy: ${{ inputs.stack_destroy }}
@@ -342,7 +359,6 @@ runs:
         tf_state_bucket_destroy: ${{ inputs.tf_state_bucket_destroy }}
         tf_state_bucket_provider: 'aws'
         tf_targets: ${{ inputs.targets }}
-
 
         # AWS
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
@@ -370,6 +386,7 @@ runs:
         aws_ec2_instance_public_ip: true
         aws_ec2_user_data_file: ${{ inputs.ec2_user_data_file }}
         aws_ec2_user_data_replace_on_change: ${{ inputs.ec2_user_data_replace_on_change }}
+        aws_ec2_additional_tags: ${{ inputs.ec2_additional_tags }}
 
         ## AWS VPC
         aws_vpc_create: ${{ inputs.aws_vpc_create }}
@@ -380,6 +397,7 @@ runs:
         aws_vpc_availability_zones: ${{ inputs.aws_vpc_availability_zones }}
         aws_vpc_id: ${{ inputs.aws_vpc_id }}
         aws_vpc_subnet_id: ${{ inputs.aws_vpc_subnet_id }}
+        aws_vpc_additional_tags: ${{ inputs.aws_vpc_additional_tags }}
 
         # AWS Route53 Domains abd Certificates
         aws_r53_enable: true
@@ -390,12 +408,14 @@ runs:
         aws_r53_cert_arn: ${{ inputs.cert_arn }}
         aws_r53_create_root_cert: ${{ inputs.create_root_cert }}
         aws_r53_create_sub_cert: ${{ inputs.create_sub_cert }}
+        aws_r53_additional_tags: ${{ inputs.r53_additional_tags }}
 
         # AWS ELB
         aws_elb_create: true
         aws_elb_app_port: ${{ inputs.app_port }}
         aws_elb_listen_port: ${{ inputs.lb_port }}
         aws_elb_healthcheck: ${{ steps.set-healthcheck.outputs.lb_healthcheck }}
+        aws_elb_additional_tags: ${{ inputs.lb_additional_tags }}
 
         # AWS EFS
         aws_efs_create: ${{ inputs.aws_efs_create }}
@@ -410,6 +430,7 @@ runs:
         aws_efs_transition_to_inactive: ${{ inputs.aws_efs_transition_to_inactive }}
         aws_efs_mount_target: ${{ inputs.aws_efs_mount_target }}
         aws_efs_ec2_mount_point: ${{ inputs.aws_efs_ec2_mount_point }}
+        aws_efs_additional_tags: ${{ inputs.aws_efs_additional_tags }}
 
         # AWS AURORA
         aws_aurora_enable: ${{ inputs.aws_aurora_enable }}
@@ -427,6 +448,7 @@ runs:
         aws_aurora_snapshot_overwrite: ${{ inputs.aws_aurora_snapshot_overwrite }}
         aws_aurora_database_protection: ${{ inputs.aws_aurora_database_protection }}
         aws_aurora_database_final_snapshot: ${{ inputs.aws_aurora_database_final_snapshot }}
+        aws_aurora_additional_tags: ${{ inputs.aws_aurora_additional_tags }}
 
         # DOCKER
         docker_install: true
