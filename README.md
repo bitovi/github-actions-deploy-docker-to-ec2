@@ -101,7 +101,7 @@ jobs:
     steps:
     - id: deploy
       name: Deploy
-      uses: bitovi/github-actions-deploy-docker-to-ec2@v0.5.0
+      uses: bitovi/github-actions-deploy-docker-to-ec2@commons
       with:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -113,7 +113,7 @@ jobs:
         dot_env: ${{ secrets.DOT_ENV }}
         ghv_env: ${{ vars.VARS }}
         app_port: 3000
-        additional_tags: "{\"key1\": \"value1\",\"key2\": \"value2\"}"
+        additional_tags: '{\"key\":\"value\",\"key2\":\"value2\"}'
 
 ```
 
