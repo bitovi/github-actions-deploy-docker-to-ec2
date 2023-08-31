@@ -91,6 +91,10 @@ inputs:
     description: 'Port to expose for the app'
     required: false
     default: 3000
+  lb_create:
+    description: 'Creates or not an ELB'
+    required: false
+    default: true
   lb_port:
     description: 'Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided'
     required: false
@@ -411,7 +415,7 @@ runs:
         aws_r53_additional_tags: ${{ inputs.r53_additional_tags }}
 
         # AWS ELB
-        aws_elb_create: true
+        aws_elb_create: ${{ inputs.lb_create }}
         aws_elb_app_port: ${{ inputs.app_port }}
         aws_elb_listen_port: ${{ inputs.lb_port }}
         aws_elb_healthcheck: ${{ steps.set-healthcheck.outputs.lb_healthcheck }}
