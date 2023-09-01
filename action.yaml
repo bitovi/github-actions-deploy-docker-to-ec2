@@ -16,6 +16,9 @@ inputs:
     description: 'Store BitOps code as a GitHub artifact'
     required: false
     default: false
+  ansible_skip:
+    description: 'Skip Ansible execution after Terraform excecution.'
+    required: false
 
   # GitHub Deployment repo inputs
   gh_deployment_input_terraform:
@@ -343,6 +346,8 @@ runs:
 
         bitops_code_only: ${{ inputs.bitops_code_only }}
         bitops_code_store: ${{ inputs.bitops_code_store }}
+
+        ansible_skip: ${{ inputs.ansible_skip }}
 
         # Deployment repo
         gh_deployment_input_terraform: ${{ inputs.gh_deployment_input_terraform }}
