@@ -143,6 +143,7 @@ The following inputs can be used as `step.with` keys
 | `checkout` | Boolean | Set to `false` if the code is already checked out. (Default is `true`). |
 | `bitops_code_only` | Boolean | If `true`, will run only the generation phase of BitOps, where the Terraform and Ansible code is built. |
 | `bitops_code_store` | Boolean | Set to `true` to create a GitHub artifact with the BitOps generated code. Contains all Terraform and Ansible code. |
+| `ansible_skip` | Boolean | Set to `false` to skip Ansible execution after Terraform excecution. Defaults to `true`. |
 | `stack_destroy` | Boolean  | Set to `true` to destroy the stack - Will delete the `elb logs bucket` after the destroy action runs. |
 | `aws_access_key_id` | String | AWS access key ID |
 | `aws_secret_access_key` | String | AWS secret access key |
@@ -171,6 +172,7 @@ The following inputs can be used as `step.with` keys
 | `ec2_instance_type` | String | The AWS IAM instance type to use. Default is `t2.small`. See [this list](https://aws.amazon.com/ec2/instance-types/) for reference. |
 | `ec2_volume_size` | Integer | The size of the volume (in GB) on the AWS Instance. | 
 | `ec2_root_preserve` | Boolean | Set this to true to avoid deletion of root volume on termination. Defaults to `false`. | 
+| `ec2_instance_public_ip` | Boolean | Set to enable or not a public facing IP. Needed for Ansible to run after Terraform. Defaults to `true`. |
 | `ec2_user_data_file` | String | Relative path in the repo for a user provided script to be executed with Terraform EC2 Instance creation. See [this note](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html#user-data-shell-scripts)
 | `ec2_user_data_replace_on_change` | Boolean | If `ec2_user_data_file` file changes, instance will stop and start. Hence public IP will change. This will destroy and recreate the instance. Defaults to `true`. If not, action will fail because the EC2 IP will change on stop/start. |
 | `create_keypair_sm_entry` | Boolean | Generates and manage a secret manager entry that contains the public and private keys created for the ec2 instance. |
