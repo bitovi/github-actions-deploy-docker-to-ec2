@@ -135,6 +135,9 @@ inputs:
     description: 'Set to enable or not a public facing IP. Needed for Ansible to run after Terraform.'
     required: false
     default: true
+  ec2_port_list:
+    description: 'Comma separated list of ports to be enabled in the EC2 instance security group. (Instance only, not needed for ELB)'
+    required: false
   ec2_user_data_file: 
     description: 'Relative path in the repo for a user provided script to be executed with Terraform EC2 Instance creation.'
     required: false
@@ -401,6 +404,7 @@ runs:
         aws_ec2_instance_root_vol_preserve: ${{ inputs.ec2_root_preserve }}
         aws_ec2_create_keypair_sm: ${{ inputs.create_keypair_sm_entry }}
         aws_ec2_instance_public_ip: ${{ inputs.ec2_instance_public_ip }}
+        aws_ec2_port_list: ${{ inputs.ec2_port_list }}
         aws_ec2_user_data_file: ${{ inputs.ec2_user_data_file }}
         aws_ec2_user_data_replace_on_change: ${{ inputs.ec2_user_data_replace_on_change }}
         aws_ec2_additional_tags: ${{ inputs.ec2_additional_tags }}

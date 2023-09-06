@@ -181,6 +181,7 @@ The following inputs can be used as `step.with` keys
 | `ec2_volume_size` | Integer | The size of the volume (in GB) on the AWS Instance. | 
 | `ec2_root_preserve` | Boolean | Set this to true to avoid deletion of root volume on termination. Defaults to `false`. | 
 | `ec2_instance_public_ip` | Boolean | Set to enable or not a public facing IP. Needed for Ansible to run after Terraform. Defaults to `true`. |
+| `ec2_port_list` | String | Comma separated list of ports to be enabled in the EC2 instance security group. (NOT THE ELB) In a `xx,yy` format. |
 | `ec2_user_data_file` | String | Relative path in the repo for a user provided script to be executed with Terraform EC2 Instance creation. See [this note](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html#user-data-shell-scripts)
 | `ec2_user_data_replace_on_change` | Boolean | If `ec2_user_data_file` file changes, instance will stop and start. Hence public IP will change. This will destroy and recreate the instance. Defaults to `true`. If not, action will fail because the EC2 IP will change on stop/start. |
 | `create_keypair_sm_entry` | Boolean | Generates and manage a secret manager entry that contains the public and private keys created for the ec2 instance. |
