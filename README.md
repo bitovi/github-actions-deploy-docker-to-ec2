@@ -20,6 +20,13 @@ Or, you can hire us for training, consulting, or development. [Set up a free con
 2. EFS variable names changed completely for standarization purposes. 
 3. VPC Implementation - Default VPC if none specified. Create one or import existing one.
 
+## BREAKING CHANGES
+- aws_ami_id renamed to ec2_ami_id
+
+## NON-BREAKING CHANGES
+- ELB Healtcheck: Instead of `HTTP:app_port` now is static to `TCP:22`.
+- EC2 Instance will only have the port 22 open. Any port defined in app_port and lb_port will apply to the ELB.
+
 ## Requirements
 
 1. Files for Docker
@@ -144,6 +151,7 @@ The following inputs can be used as `step.with` keys
 | `bitops_code_only` | Boolean | If `true`, will run only the generation phase of BitOps, where the Terraform and Ansible code is built. |
 | `bitops_code_store` | Boolean | Set to `true` to create a GitHub artifact with the BitOps generated code. Contains all Terraform and Ansible code. |
 | `ansible_skip` | Boolean | Set to `false` to skip Ansible execution after Terraform excecution. Defaults to `true`. |
+| `ansible_ssh_to_private_ip` | Boolean | Make Ansible connect to the private IP of the instance. Only usefull if using a hosted runner in the same network.'  Default is `false`. | 
 | `stack_destroy` | Boolean  | Set to `true` to destroy the stack - Will delete the `elb logs bucket` after the destroy action runs. |
 | `aws_access_key_id` | String | AWS access key ID |
 | `aws_secret_access_key` | String | AWS secret access key |
@@ -241,7 +249,7 @@ The following inputs can be used as `step.with` keys
 | `cert_arn` | String | Define the certificate ARN to use for the application. **See note**. |
 | `create_root_cert` | Boolean | Generates and manage the root cert for the application. **See note**. Default is `false`. |
 | `create_sub_cert` | Boolean | Generates and manage the sub-domain certificate for the application. **See note**. Default is `false`. |
-| `no_cert` | Boolean | Set this to true if no certificate is present for the domain. **See note**. Default is `false`. |
+| `create_cert` | Boolean | Set this to true to use certificate is present for the domain. **See note**. Default is `false`. |
 <hr/>
 <br/>
 
@@ -249,7 +257,7 @@ The following inputs can be used as `step.with` keys
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `lb_port` | String | Load balancer listening port. Default is `80` if NO FQDN provided, `443` if FQDN provided. |
-| `lb_healthcheck` | String | Load balancer health check string. Default is `HTTP:app_port`. |
+| `lb_healthcheck` | String | Load balancer health check string. Default is `TCP:22`. |
 <hr/>
 <br/>
 

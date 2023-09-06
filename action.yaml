@@ -19,6 +19,9 @@ inputs:
   ansible_skip:
     description: 'Skip Ansible execution after Terraform excecution.'
     required: false
+  ansible_ssh_to_private_ip:
+    description: 'Make Ansible connect to the private IP of the instance. Only usefull if using a hosted runner in the same network.'
+    required: false
 
   # GitHub Deployment repo inputs
   gh_deployment_input_terraform:
@@ -352,6 +355,7 @@ runs:
         bitops_code_store: ${{ inputs.bitops_code_store }}
 
         ansible_skip: ${{ inputs.ansible_skip }}
+        ansible_ssh_to_private_ip: ${{ inputs.ansible_ssh_to_private_ip }}
 
         # Deployment repo
         gh_deployment_input_terraform: ${{ inputs.gh_deployment_input_terraform }}
