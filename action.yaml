@@ -349,7 +349,7 @@ runs:
       
     - name: Deploy with BitOps
       id: deploy
-      uses: bitovi/github-actions-commons@variables-cosmetics-fixes
+      uses: bitovi/github-actions-commons@main
       with:
         # Current repo vars
         gh_action_repo: ${{ github.action_path }}
