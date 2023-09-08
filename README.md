@@ -152,6 +152,7 @@ The following inputs can be used as `step.with` keys
 | `bitops_code_store` | Boolean | Set to `true` to create a GitHub artifact with the BitOps generated code. Contains all Terraform and Ansible code. |
 | `ansible_skip` | Boolean | Set to `false` to skip Ansible execution after Terraform excecution. Defaults to `true`. |
 | `ansible_ssh_to_private_ip` | Boolean | Make Ansible connect to the private IP of the instance. Only usefull if using a hosted runner in the same network.'  Default is `false`. | 
+| `ansible_start_docker_timeout` | String | Ammount of time in seconds it takes Ansible to mark as failed the startup of docker. Defaults to `300`.|
 | `stack_destroy` | Boolean  | Set to `true` to destroy the stack - Will delete the `elb logs bucket` after the destroy action runs. |
 | `aws_access_key_id` | String | AWS access key ID |
 | `aws_secret_access_key` | String | AWS secret access key |

@@ -22,6 +22,9 @@ inputs:
   ansible_ssh_to_private_ip:
     description: 'Make Ansible connect to the private IP of the instance. Only usefull if using a hosted runner in the same network.'
     required: false
+  ansible_start_docker_timeout:
+    description: 'Ammount of time in seconds it takes Ansible to mark as failed the startup of docker. Defaults to `300`'
+    required: false
 
   # GitHub Deployment repo inputs
   gh_deployment_input_terraform:
@@ -359,6 +362,7 @@ runs:
 
         ansible_skip: ${{ inputs.ansible_skip }}
         ansible_ssh_to_private_ip: ${{ inputs.ansible_ssh_to_private_ip }}
+        ansible_start_docker_timeout: ${{ inputs.ansible_start_docker_timeout }}
 
         # Deployment repo
         gh_deployment_input_terraform: ${{ inputs.gh_deployment_input_terraform }}
