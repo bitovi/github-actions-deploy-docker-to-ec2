@@ -8,10 +8,7 @@
   register: folder_stat
 
 - name: Stop Docker
-  docker_compose:
-    project_src: "{{ app_install_root }}/{{ app_repo_name }}"
-    state: present
-    stopped: true
+  ansible.builtin.command: "docker compose --project-directory {{ app_install_root }}/{{ app_repo_name }} stop"
   when: folder_stat.stat.exists
 
 - name: Find the NFS volume in fstab

@@ -27,5 +27,3 @@
   pip:
     name:
       - docker
-      - docker-compose
-

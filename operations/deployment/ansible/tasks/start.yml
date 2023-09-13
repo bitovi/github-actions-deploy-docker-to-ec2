@@ -1,12 +1,5 @@
 - name: Start docker-compose
-  docker_compose:
-    project_src: "{{ app_install_root }}/{{ app_repo_name }}"
-    restarted: true
-    build: yes
-    recreate: always
-    nocache: yes
-    remove_orphans: "{{ docker_remove_orphans }}"
-
+  ansible.builtin.command: "docker compose --project-directory {{ app_install_root }}/{{ app_repo_name }} up --detach --build --force-recreate --remove-orphans={{ docker_remove_orphans }}"
   register: output
 
 - ansible.builtin.debug:
