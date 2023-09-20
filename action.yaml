@@ -264,7 +264,45 @@ inputs:
     description: "Generates and manages a secret manager entry that contains the public and private keys created for the ec2 instance."
     required: false
 
-  # AWS RDS
+# AWS RDS
+  aws_rds_db_enable:
+    description: 'Set to true to enable an RDS DB.'
+    required: false
+  aws_rds_db_name:
+    description: 'The name of the database to create when the DB instance is created.'
+    required: false
+  aws_rds_db_engine:
+    description: 'Which Database engine to use. Default is postgres'
+    required: false
+  aws_rds_db_engine_version:
+    description: 'Which Database engine version to use.'
+    required: false
+  aws_rds_db_security_group_name:
+    description: 'The name of the database security group. Defaults to SG for aws_resource_identifier - RDS.'
+    required: false
+  aws_rds_db_port:
+    description: ' Port where the DB listens to.'
+    required: false
+  aws_rds_db_subnets:
+    description: 'Specify which subnets to use as a list of strings. '
+    required: false
+  aws_rds_db_allocated_storage:
+    description: 'Storage size. Defaults to 10.'
+    required: false
+  aws_rds_db_max_allocated_storage:
+    description: 'Max storage size. Defaults to 0 to disable auto-scaling.'
+    required: false
+  aws_rds_db_instance_class:
+    description: 'DB instance server type. Defaults to db.t3.micro.'
+    required: false
+  aws_rds_db_user:
+    description: 'Username for the db. Defaults to dbuser.'
+    required: false
+  aws_rds_cloudwatch_logs_exports:
+    description: 'Set of log types to enable for exporting to CloudWatch logs.'
+    required: false
+
+  # AWS Aurora
   aws_aurora_enable:
     description: 'Set to "true" to enable a postgres database'
     required: false
@@ -352,7 +390,7 @@ runs:
       
     - name: Deploy with BitOps
       id: deploy
-      uses: bitovi/github-actions-commons@v0.0.4
+      uses: bitovi/github-actions-commons@main
       with:
         # Current repo vars
         gh_action_repo: ${{ github.action_path }}
@@ -456,6 +494,20 @@ runs:
         aws_efs_mount_target: ${{ inputs.aws_efs_mount_target }}
         aws_efs_ec2_mount_point: ${{ inputs.aws_efs_ec2_mount_point }}
         aws_efs_additional_tags: ${{ inputs.aws_efs_additional_tags }}
+
+        # AWS RDS
+        aws_rds_db_enable: ${{ inputs.aws_rds_db_enable }}
+        aws_rds_db_name: ${{ inputs.aws_rds_db_name }}
+        aws_rds_db_engine: ${{ inputs.aws_rds_db_engine }}
+        aws_rds_db_engine_version: ${{ inputs.aws_rds_db_engine_version }}
+        aws_rds_db_security_group_name: ${{ inputs.aws_rds_db_security_group_name }}
+        aws_rds_db_port: ${{ inputs.aws_rds_db_port }}
+        aws_rds_db_subnets: ${{ inputs.aws_rds_db_subnets }}
+        aws_rds_db_allocated_storage: ${{ inputs.aws_rds_db_allocated_storage }}
+        aws_rds_db_max_allocated_storage: ${{ inputs.aws_rds_db_max_allocated_storage }}
+        aws_rds_db_instance_class: ${{ inputs.aws_rds_db_instance_class }}
+        aws_rds_db_user: ${{ inputs.aws_rds_db_user }}
+        aws_rds_cloudwatch_logs_exports: ${{ inputs.aws_rds_cloudwatch_logs_exports }}
 
         # AWS AURORA
         aws_aurora_enable: ${{ inputs.aws_aurora_enable }}

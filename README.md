@@ -132,7 +132,8 @@ jobs:
 1. [EC2](#ec2-inputs)
 1. [VPC](#vpc-inputs)
 1. [EFS](#efs-inputs)
-1. [Aurora Inputs (RDS)](#aurora-inputs)
+1. [RDS Inputs](#rds-inputs)
+1. [Aurora Inputs](#aurora-inputs)
 1. [Certificates](#certificate-inputs)
 1. [Load Balancer](#load-balancer-inputs)
 1. [Application](#application-inputs)
@@ -218,6 +219,25 @@ The following inputs can be used as `step.with` keys
 | `aws_efs_transition_to_inactive` | String | Indicates how long it takes to transition files to the IA storage class. |
 | `aws_efs_mount_target` | String | Directory path in efs to mount directory to. Default is `/`. |
 | `aws_efs_ec2_mount_point` | String | The aws_efs_ec2_mount_point input represents the folder path within the EC2 instance to the data directory. Default is `/user/ubuntu/<application_repo>/data`. Additionally this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
+<hr/>
+<br/>
+
+#### **RDS Inputs**
+| Name             | Type    | Description                        |
+|------------------|---------|------------------------------------|
+| `aws_rds_db_enable`| Boolean | Set to `true` to enable an RDS DB. |
+| `aws_rds_db_name`| String | The name of the database to create when the DB instance is created. If this parameter is not specified, no database is created in the DB instance. |
+| `aws_rds_db_engine`| String | Which Database engine to use. Defaults to `postgres`. |
+| `aws_rds_db_engine_version`| String | Which Database engine version to use. |
+| `aws_rds_db_security_group_name`| String | The name of the database security group. Defaults to `SG for ${aws_resource_identifier} - RDS`. |
+| `aws_rds_db_port`| String | Port where the DB listens to. |
+| `aws_rds_db_subnets`| String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. |
+| `aws_rds_db_allocated_storage`| String | Storage size. Defaults to `10`. |
+| `aws_rds_db_max_allocated_storage`| String | Max storage size. Defaults to `0` to disable auto-scaling. |
+| `aws_rds_db_instance_class`| String | DB instance server type. Defaults to `db.t3.micro`. |
+| `aws_rds_db_user`| String | Username for the db. Defaults to `dbuser`. |
+| `aws_rds_cloudwatch_logs_exports`| String | Set of log types to enable for exporting to CloudWatch logs. Defaults to `postgresql`. MySQL and MariaDB: `audit, error, general, slowquery`. PostgreSQL: `postgresql, upgrade`. MSSQL: `agent , error`. Oracle: `alert, audit, listener, trace`. |
+| `aws_rds_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to efs provisioned resources.|
 <hr/>
 <br/>
 
