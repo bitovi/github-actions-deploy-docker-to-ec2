@@ -55,7 +55,7 @@ These environment variables are merged to the .env file quoted in the following 
 
 ## Example usage
 
-Create `.github/workflow/deploy.yaml` with the following to build on push.
+Create `.github/workflows/deploy.yaml` with the following to build on push.
 
 ### Basic example
 ```yaml
