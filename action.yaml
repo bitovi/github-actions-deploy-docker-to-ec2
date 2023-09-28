@@ -90,6 +90,18 @@ inputs:
   docker_full_cleanup:
     description: 'Set to true to run docker-compose down and docker system prune --all --force --volumes after.'
     required: false
+  docker_cloudwatch_enable:
+    description: 'Toggle cloudwatch creation for Docker containers.'
+    required: false
+  docker_cloudwatch_lg_name:
+    description: 'Log group name. Will default to aws_identifier if none.'
+    required: false
+  docker_cloudwatch_skip_destroy:
+    description: 'Toggle deletion or not when destroying the stack.'
+    required: false
+  docker_cloudwatch_retention_days:
+    description: 'Number of days to retain logs. 0 to never expire.'
+    required: false
   app_directory:
     description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo. Add a .gha-ignore file with a list of files to be exluded.'
     required: false
@@ -534,3 +546,7 @@ runs:
         docker_repo_app_directory: ${{ inputs.app_directory }}
         docker_repo_app_directory_cleanup: ${{ inputs.app_directory_cleanup }}
         docker_efs_mount_target: ${{ inputs.data_mount_target }}
+        docker_cloudwatch_enable: ${{ inputs.docker_cloudwatch_enable }}
+        docker_cloudwatch_lg_name: ${{ inputs.docker_cloudwatch_lg_name }}
+        docker_cloudwatch_skip_destroy: ${{ inputs.docker_cloudwatch_skip_destroy }}
+        docker_cloudwatch_retention_days: ${{ inputs.docker_cloudwatch_retention_days }}
