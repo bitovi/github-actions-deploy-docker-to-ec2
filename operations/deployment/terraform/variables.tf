@@ -262,6 +262,12 @@ variable "docker_remove_orphans" {
   default     = false
 }
 
+variable "ansible_start_docker_timeout" {
+  type        = string
+  description = "Ammount of time in seconds it takes Ansible to mark as failed the startup of docker."
+  default     = "300"
+}
+
 ## -- --- -- ##
 variable "availability_zone" {
   type        = string
