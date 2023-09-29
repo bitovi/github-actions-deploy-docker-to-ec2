@@ -88,6 +88,3 @@ IFS=',' read -r -a options <<< "$order"
 for option in "${options[@]}"; do
   process "$option"
 done
-
-echo "Printing inventory.yaml"
-cat "${BITOPS_ENVROOT}/terraform/inventory.yaml"
