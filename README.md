@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: deploy
-        uses: bitovi/github-actions-deploy-docker-to-ec2@v0.5.0
+        uses: bitovi/github-actions-deploy-docker-to-ec2@v0.5.8
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -97,7 +97,7 @@ jobs:
     steps:
     - id: deploy
       name: Deploy
-      uses: bitovi/github-actions-deploy-docker-to-ec2@v0.5.0
+      uses: bitovi/github-actions-deploy-docker-to-ec2@v0.5.8
       with:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -124,7 +124,7 @@ jobs:
 1. [Certificates](#certificate-inputs)
 1. [Load Balancer](#load-balancer-inputs)
 1. [Application](#application-inputs)
-1. [Terraform](#terraform-inputs)
+1. [Deployment](#deployment-inputs)
 
 The following inputs can be used as `step.with` keys
 <br/>
@@ -230,12 +230,13 @@ The following inputs can be used as `step.with` keys
 <hr/>
 <br/>
 
-#### **Terraform Inputs**
+#### **Deployment Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `tf_state_bucket` | String | AWS S3 bucket name to use for Terraform state. See [note](#s3-buckets-naming) | 
 | `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. `stack_destroy` must also be `true`. Default is `false`. |
 | `additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to all provisioned resources.|
+| `ansible_start_docker_timeout` | String | Ammount of time in seconds it takes Ansible to mark as failed the startup of docker. Defaults to `300`.|
 <hr/>
 <br/>
 <br/>

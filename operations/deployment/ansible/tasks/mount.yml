@@ -22,6 +22,7 @@
     dest: /home/ubuntu/efs-utils
     update: false
   become: yes
+  when: not check_efs_utils.stat.exists
 
 - name: Build amazon-efs-utils
   ansible.builtin.shell: 

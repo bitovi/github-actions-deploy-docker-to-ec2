@@ -86,7 +86,6 @@ inputs:
     required: false
     default: "8"
 
-  
   # EFS
   aws_create_efs:
     description: "Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack"
@@ -110,6 +109,9 @@ inputs:
   # Stack management
   stack_destroy:
     description: 'Set to "true" to Destroy the stack. Will delete the elb_logs bucket after the destroy action runs.'
+  ansible_start_docker_timeout:
+    description: 'Ammount of time in seconds it takes Ansible to mark as failed the startup of docker. Defaults to `300`'
+    required: false
   
   # Domains
   domain_name:
@@ -225,6 +227,7 @@ runs:
         EC2_INSTANCE_TYPE: ${{ inputs.ec2_instance_type }}
         EC2_VOLUME_SIZE: ${{ inputs.ec2_volume_size }}
         STACK_DESTROY: ${{ inputs.stack_destroy }}
+        ANSIBLE_START_DOCKER_TIMEOUT: ${{ inputs.ansible_start_docker_timeout }}
         AWS_RESOURCE_IDENTIFIER: ${{ inputs.aws_resource_identifier }}
         DOMAIN_NAME: ${{ inputs.domain_name }}
         SUB_DOMAIN: ${{ inputs.sub_domain }}
