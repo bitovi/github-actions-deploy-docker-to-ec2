@@ -37,9 +37,15 @@ resource "random_string" "random" {
   numeric   = false
 }
 
+data "aws_iam_instance_profile" "ec2_profile_provided" {
+  count = var.ec2_iam_instance_profile != "" ? 1 : 0
+  name = var.ec2_iam_instance_profile
+}
+
 resource "aws_iam_instance_profile" "ec2_profile" {
+  count = var.ec2_iam_instance_profile != "" ? 0 : 1
   name = var.aws_resource_identifier
-  role = aws_iam_role.ec2_role.name
+  role = aws_iam_role.ec2_role[0].name
 }
 
 data "aws_ami" "ubuntu" {
@@ -65,7 +71,7 @@ resource "aws_instance" "server" {
   vpc_security_group_ids      = [aws_security_group.ec2_security_group.id]
   key_name                    = aws_key_pair.aws_key.key_name
   monitoring                  = true
-  iam_instance_profile        = aws_iam_instance_profile.ec2_profile.name
+  iam_instance_profile        = var.ec2_iam_instance_profile != "" ? data.aws_iam_instance_profile.ec2_profile_provided[0].name : aws_iam_instance_profile.ec2_profile[0].name
   root_block_device {
     volume_size = tonumber(var.ec2_volume_size)
   }

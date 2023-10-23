@@ -69,6 +69,7 @@ variable "aws_security_group_name_pg" {
   default     = ""
   description = "Name of the security group to use for postgres"
 }
+
 variable "ec2_iam_instance_profile" {
   type        = string
   description = "IAM role for the ec2 instance"
