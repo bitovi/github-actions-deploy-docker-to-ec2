@@ -74,13 +74,6 @@ aws_security_group_name_pg="aws_security_group_name_pg = \"${GITHUB_IDENTIFIER}-
 
 # Special cases
 
-ec2_iam_instance_profile=
-if [ -n "${EC2_INSTANCE_PROFILE}" ]; then
-  ec2_iam_instance_profile="ec2_iam_instance_profile =\"${EC2_INSTANCE_PROFILE}\""
-else
-  ec2_iam_instance_profile="ec2_iam_instance_profile =\"${GITHUB_IDENTIFIER}\""
-fi
-
 sub_domain_name=
 if [ -n "$SUB_DOMAIN" ]; then
   sub_domain_name="sub_domain_name = \"$SUB_DOMAIN\""
@@ -109,7 +102,7 @@ lb_access_bucket_name=$(generate_var lb_access_bucket_name $LB_LOGS_BUCKET)
 #security_group_name=$(generate_var security_group_name $SECURITY_GROUP_NAME) - Fixed
 #-- EC2 --#
 ec2_instance_type=$(generate_var ec2_instance_type $EC2_INSTANCE_TYPE)
-# ec2_iam_instance_profile=$(generate_var ec2_iam_instance_profile EC2_INSTANCE_PROFILE - Special case
+ec2_iam_instance_profile=$(generate_var ec2_iam_instance_profile $EC2_INSTANCE_PROFILE)
 #-- AWS --#
 # aws_resource_identifier=$(generate_var aws_resource_identifier AWS_RESOURCE_IDENTIFIER - Fixed
 # aws_resource_identifier_supershort=$(generate_var aws_resource_identifier_supershort AWS_RESOURCE_IDENTIFIER_SUPERSHORT - Fixed
