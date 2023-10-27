@@ -19,9 +19,9 @@ Or, you can hire us for training, consulting, or development. [Set up a free con
 
 A lot! The whole code supporting this action migrated into a bigger repo, with more modules and functions. We concentrated our work there, hence any improvement done there benefits all of our actions.
 
-Actions you said? Yes… go check our list of actions in the GitHub marketplace. https://github.com/marketplace?category=&type=actions&verification=&query=bitovi
+Actions you said? Yes… go check our [list of actions in the GitHub marketplace](https://github.com/marketplace?category=&type=actions&verification=&query=bitovi)
 
-New stuff! To name a few, cloudwatch for docker, VPC handling, EC2/ELB/APP port list, user_data for pre-ansible run, RDS and Aurora DBs between others. Check the [v1-changes](https://github.dev/bitovi/github-actions-deploy-docker-to-ec2/v1-changes.md) doc.
+New stuff! To name a few, cloudwatch for docker, VPC handling, EC2/ELB/APP port list, user_data for pre-ansible run, RDS and Aurora DBs between others. Check the [v1-changes](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/blob/commons/v1-changes.md) doc.
 
 ## Requirements
 
