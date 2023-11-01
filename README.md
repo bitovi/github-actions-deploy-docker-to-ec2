@@ -178,7 +178,7 @@ The following inputs can be used as `step.with` keys
 <hr/>
 <br/>
 
-#### **Stack managemnet**
+#### **Stack management**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `stack_destroy` | Boolean  | Set to `true` to destroy the stack - Will delete the `elb logs bucket` after the destroy action runs. |
@@ -209,7 +209,6 @@ The following inputs can be used as `step.with` keys
 | `ec2_volume_size` | Integer | The size of the volume (in GB) on the AWS Instance. | 
 | `ec2_root_preserve` | Boolean | Set this to true to avoid deletion of root volume on termination. Defaults to `false`. | 
 | `ec2_security_group_name` | String | The name of the EC2 security group. Defaults to `SG for ${aws_resource_identifier} - EC2`. |
-
 | `ec2_instance_profile` | String | The AWS IAM instance profile to use for the EC2 instance. Default is `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`|
 | `ec2_instance_public_ip` | Boolean | Set to enable or not a public facing IP. Needed for Ansible to run after Terraform. Defaults to `true`. |
 | `ec2_port_list` | String | Comma separated list of ports to be enabled in the EC2 instance security group. (NOT THE ELB) In a `xx,yy` format. |
