@@ -1,12 +1,24 @@
-# Docker to AWS VM
+# Deploy Docker to AWS VM (EC2)
 
-GitHub action to deploy any [Docker](https://www.bitovi.com/academy/learn-docker.html)-based app to an AWS VM (EC2) using Docker and Docker Compose.
+`bitovi/github-actions-deploy-docker-to-ec2` deploys any [Docker](https://www.bitovi.com/academy/learn-docker.html)-based app to an AWS VM (EC2) using Docker and Docker Compose.
 
-The action will copy this repo to the VM and then run `docker-compose up`.
+The action will copy this repo to the VM and then run `docker compose up`.
+
+## Action Summary
+This action will copy this repo to the VM, install docker (and other options if enabled) and then run `docker compose up`.
+
+If you would like to deploy a backend app/service, check out our other actions:
+| Action | Purpose |
+| ------ | ------- |
+| [Deploy an AWS ECS Cluster](https://github.com/marketplace/actions/deploy-an-aws-ecs-cluster) | Deploys an ECS (Fargate or EC2) cluster, with tasks and service definitions (and more!)|
+| [Deploy Storybook to GitHub Pages](https://github.com/marketplace/actions/deploy-storybook-to-github-pages) | Builds and deploys a Storybook application to GitHub Pages. |
+| [Deploy static site to AWS (S3/CDN/R53)](https://github.com/marketplace/actions/deploy-static-site-to-aws-s3-cdn-r53) | Hosts a static site in AWS S3 with CloudFront |
+<br/>
+
+**And more!**, check our [list of actions in the GitHub marketplace](https://github.com/marketplace?category=&type=actions&verification=&query=bitovi)
 
 ## Getting Started Intro Video
 [![Getting Started - Youtube](https://img.youtube.com/vi/oya5LuHUCXc/0.jpg)](https://www.youtube.com/watch?v=oya5LuHUCXc)
-
 
 ## Need help or have questions?
 This project is supported by [Bitovi, a DevOps Consultancy](https://www.bitovi.com/devops-consulting) and a proud supporter of Open Source software.
