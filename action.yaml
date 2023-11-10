@@ -442,8 +442,6 @@ inputs:
   ## Stack Management
   stack_destroy:
     required: false
-  ansible_start_docker_timeout:
-    required: false
   ## Domains
   domain_name:
     required: false
@@ -604,7 +602,7 @@ runs:
         # AWS EFS
         aws_efs_create: ${{ inputs.aws_efs_create || inputs.aws_create_efs }}
         aws_efs_create_ha: ${{ inputs.aws_efs_create_ha || inputs.aws_create_ha_efs }}
-        aws_efs_fs_id: ${{ inputs.aws_efs_fs_id || inputs. }}
+        aws_efs_fs_id: ${{ inputs.aws_efs_fs_id || inputs.aws_mount_efs_id }}
         aws_efs_vpc_id: ${{ inputs.aws_efs_vpc_id }}
         aws_efs_subnet_ids: ${{ inputs.aws_efs_subnet_ids }}
         aws_efs_security_group_name: ${{ inputs.aws_efs_security_group_name }}
