@@ -515,7 +515,7 @@ runs:
 
     - name: Deploy with BitOps
       id: deploy
-      uses: bitovi/github-actions-commons@main
+      uses: bitovi/github-actions-commons@v0.0.10
       with:
         # AWS Specific
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
