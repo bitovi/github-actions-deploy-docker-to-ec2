@@ -219,6 +219,7 @@ inputs:
   docker_install: 
     description: 'Define if docker should be installed. After this, docker-compose up will be excecuted.'
     required: false
+    default: true
   docker_remove_orphans:
     description: 'Toggle --remove-orphans flag. Defaults to false.'
     required: false
