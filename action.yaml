@@ -116,6 +116,7 @@ inputs:
   aws_ec2_instance_public_ip:
     description: 'Add a public IP to the instance or not. (Not an Elastic IP)'
     required: false
+    default: true
   aws_ec2_port_list:
     description: 'List of ports to be enabled as an ingress rule in the EC2 SG, in a [xx,yy] format - Not the ELB'
     required: false
@@ -415,6 +416,12 @@ inputs:
   app_directory:
     required: false
   app_directory_cleanup:
+    required: false
+  app_port:
+    required: false
+  lb_port:
+    required: false
+  lb_healthcheck:
     required: false
   ## EC2
   ec2_instance_profile:
