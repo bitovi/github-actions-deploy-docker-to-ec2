@@ -33,7 +33,7 @@ A lot! The whole code supporting this action migrated into a bigger repo, with m
 
 Actions you said? Yes… go check our [list of actions in the GitHub marketplace](https://github.com/marketplace?category=&type=actions&verification=&query=bitovi)
 
-New stuff! To name a few, cloudwatch for docker, VPC handling, EC2/ELB/APP port list, user_data for pre-ansible run, RDS (as Aurora replacement) between others. Check the [v1-changes](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/blob/commons/v1-changes.md) doc.
+New stuff! To name a few, cloudwatch for docker, VPC handling, EC2/ELB/APP port list, user_data for pre-ansible run, RDS (as Aurora replacement) among others. Check the [v1-changes](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/blob/commons/v1-changes.md) doc.
 
 ## Requirements
 
@@ -293,7 +293,7 @@ The following inputs can be used as `step.with` keys
 #### **EFS Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `aws_efs_create` | Boolean | Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack |
+| `aws_efs_create` | Boolean | Toggle to indicate whether to create an EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack |
 | `aws_efs_create_ha` | Boolean | Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region) |
 | `aws_efs_fs_id` | String | ID of existing EFS. |
 | `aws_efs_vpc_id` | String | ID of the VPC for the EFS mount target. If aws_efs_create_ha is set to true, will create one mount target per subnet available in the VPC. If not, will create one in an automated selected region. |

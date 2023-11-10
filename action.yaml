@@ -401,58 +401,98 @@ inputs:
 
 #### Legacy inputs
   aws_ami_id:
+    required: false
   ## ENV
   repo_env:
+    required: false
   dot_env:
+    required: false
   ghv_env:
+    required: false
   aws_secret_env:
+    required: false
   ## Application
   app_directory:
+    required: false
   app_directory_cleanup:
+    required: false
   ## EC2
   ec2_instance_profile:
+    required: false
   ec2_instance_type:
+    required: false
   ec2_volume_size:
+    required: false
   ## EFS
   aws_create_efs:
+    required: false
   aws_create_ha_efs:
+    required: false
   aws_create_efs_replica:
+    required: false
   aws_enable_efs_backup_policy:
+    required: false
   # aws_efs_zone_mapping - GONE
   aws_replication_configuration_destination:
+    required: false
   aws_mount_efs_id:
+    required: false
   aws_mount_efs_security_group_id:
+    required: false
   ## Stack Management
   stack_destroy:
+    required: false
   ansible_start_docker_timeout:
+    required: false
   ## Domains
   domain_name:
+    required: false
   sub_domain:
+    required: false
   root_domain:
+    required: false
   cert_arn:
+    required: false
   create_root_cert:
+    required: false
   create_sub_cert:
+    required: false
   no_cert:
+    required: false
   ## Terraform
   targets:
+    required: false
   additional_tags:
+    required: false
   ## Secret Manager
   create_keypair_sm_entry:
+    required: false
   ## RDS
   aws_enable_postgres:
+    required: false
   aws_postgres_engine:
+    required: false
   aws_postgres_engine_version:
+    required: false
   aws_postgres_instance_class:
+    required: false
   aws_postgres_subnets:
+    required: false
   aws_postgres_database_name:
+    required: false
   aws_postgres_database_port:
+    required: false
   #aws_postgres_database_group_family - GONE
   # aws_postgres_database_protection - GONE
   aws_postgres_database_final_snapshot:
+    required: false
   ## Ansible
   application_mount_target:
+    required: false
   data_mount_target:
+    required: false
   efs_mount_target:
+    required: false
 ####
 
 outputs:

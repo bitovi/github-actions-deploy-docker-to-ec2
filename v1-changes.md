@@ -1,8 +1,8 @@
 
-## Introducing 
+## What's new? 
 
 ### Get the code! (Using bitops_code_only and bitops_code_store)
-This allow the code to be generated (not executed) and stored as an artifact as a result in your action, allowing you to download and check anything. Keep in mind this code runs in a Bitops container. (More [here](http://bitops.sh))
+This allows the code to be generated (not executed) and stored as an artifact as a result in your action, allowing you to download and check anything. Keep in mind this code runs in a Bitops container. (More [here](http://bitops.sh))
 
 ### Code welcome! 
 Add your own Terraform and Ansible oode (using `gh_deployment_*` variables). - We open the possibility to add some Terraform and Ansible code in. Useful only for super-advanced users. 
@@ -17,7 +17,7 @@ No more need to go into the instance. You'll see 4 variables for this in the doc
 Whole section below!
 
 ### ELB, EC2 and APP Ports - Need more than one? worry not. 
-Add as many as you want, separating them with a coma. For the ELB, will be mapping one to one (`aws_elb_listen_port` <-> `aws_elb_app_port`) based on the minimum length of those.
+Add as many as you want, separating them with a comma. For the ELB, ports will be mapped one-to-one (`aws_elb_listen_port` <-> `aws_elb_app_port`) based on the minimum length of those.
 
 ### Domain and certs 
 Domain handling and certificate handlings defaults changed. You should enable `aws_r53_enable` and `aws_r53_enable_cert`.
