@@ -96,6 +96,8 @@ jobs:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_default_region: us-east-1
+
+          aws_elb_app_port: 8080 # This should match the docker exposed port. 
 ```
 
 ### Advanced example
