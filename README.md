@@ -153,7 +153,7 @@ jobs:
 
 > :sparkle: We use `aws_resource_identifier` as a unique ID throughout the code to name resources. </br>
 > Keep this in mind if **using any of our actions** in different steps of the same job!</br>
-> This ID is defined with the following default values: `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`
+> This ID is defined with the following default value: `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`
 
 ### Inputs
 1. [AWS Specific](#aws-specific)
