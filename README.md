@@ -50,7 +50,7 @@ Your app needs a `Dockerfile` and a `docker-compose.yaml` file.
 You'll need [Access Keys](https://docs.aws.amazon.com/powershell/latest/userguide/pstools-appendix-sign-up.html) from an [AWS account](https://aws.amazon.com/premiumsupport/knowledge-center/create-and-activate-aws-account/)
 
 ## Environment variables
-We accept multiple ways to add environment variables. All of them will be merged into a .env file in the EC2 instance in a `KEY=VALUE` format. 
+We accept multiple ways to add environment variables. All of them will be merged into a `.env` file in the EC2 instance in a `KEY=VALUE` format. 
 For secrects stored in AWS Secrets Manager we expect them to be in a JSON format, like `'{"key":"value"}'`.
 The rest could be in a `KEY=VALUE` format. 
 
@@ -126,14 +126,13 @@ jobs:
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws_session_token: ${{ secrets.AWS_SESSION_TOKEN }}
         aws_default_region: us-east-1
-        aws_additional_tags: '{\"key\":\"value\",\"key2\":\"value2\"}'
+        #aws_additional_tags: '{\"key\":\"value\",\"key2\":\"value2\"}'
 
         aws_r53_enable: true
         aws_r53_domain_name: bitovi.com
         aws_r53_sub_domain_name: app
         aws_r53_create_sub_cert: true
 
-        tf_state_bucket: my-terraform-state-bucket
         ansible_start_docker_timeout: 600
 
         env_ghs: ${{ secrets.DOT_ENV }}
@@ -195,7 +194,7 @@ The following inputs can be used as `step.with` keys
 | `tf_state_file_name` | String | Change this to be anything you want to. Carefull to be consistent here. A missing file could trigger recreation, or stepping over destruction of non-defined objects. Defaults to `tf-state-aws`. |
 | `tf_state_file_name_append` | String | Appends a string to the tf-state-file. Setting this to `unique` will generate `tf-state-aws-unique`. (Can co-exist with `tf_state_file_name`) |
 | `tf_state_bucket` | String | AWS S3 bucket name to use for Terraform state. See [note](#s3-buckets-naming) | 
-| `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. `tf_stack_destroy` must also be `true`. Default is `false`. |
+| `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Only evaluated when `tf_stack_destroy` is also `true`, so it is safe to leave this enabled when standing up your stack. Defaults to `false`. |
 | `tf_targets` | List | A list of targets to create before the full stack creation. | 
 | `ansible_skip` | Boolean | Skip Ansible execution after Terraform excecution. Default is `false`.|
 | `ansible_ssh_to_private_ip` | Boolean | Make Ansible connect to the private IP of the instance. Only usefull if using a hosted runner in the same network. Default is `false`. | 
@@ -208,8 +207,8 @@ The following inputs can be used as `step.with` keys
 |------------------|---------|------------------------------------|
 | `env_aws_secret` | String | Secret name to pull environment variables from AWS Secret Manager. Accepts comma separated list of secrets. |
 | `env_repo` | String | `.env` file containing environment variables to be used with the app. We'll try to read `repo_env` (default), but you can change that to any other filename. (Including path) |
-| `env_ghs` | String | `.env` file to be used with the app. This is the name of the [Github secret](https://docs.github.com/es/actions/security-guides/encrypted-secrets). |
-| `env_ghv` | String | `.env` file to be used with the app. This is the name of the [Github variables](https://docs.github.com/en/actions/learn-github-actions/variables). |
+| `env_ghs` | String | GitHub Secret Name containing `.env` file style to be used with the app. See [Github secret](https://docs.github.com/es/actions/security-guides/encrypted-secrets). |
+| `env_ghv` | String | GitHub Variable Name containing `.env` file style to be used with the app. See [Github variables](https://docs.github.com/en/actions/learn-github-actions/variables). |
 <hr/>
 <br/>
 

@@ -49,7 +49,7 @@ inputs:
     description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-{branch}-tf-state`'
     required: false
   tf_state_bucket_destroy:
-    description: 'Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. `tf_stack_destroy` must also be `true`'
+    description: 'Force purge and deletion of S3 bucket defined. Only evaluated when `tf_stack_destroy` is also true, so it is safe to leave this enabled when standing up your stack.'
     required: false
   tf_targets: # targets
     description: 'A list of targets to create before the full stack creation.'
@@ -72,10 +72,10 @@ inputs:
     description: 'File containing environment variables to be used with the app'
     required: false
   env_ghs: # ghv_env
-    description: '`.env` file to be used with the app from Github secrets'
+    description: 'GitHub Secret Name containing `.env` file style to be used with the app.'
     required: false
   env_ghv: # dot_env
-    description: '`.env` file to be used with the app from Github variables'
+    description: 'GitHub Variable Name containing `.env` file style to be used with the app.'
     required: false
 
 # EC2 Instance
