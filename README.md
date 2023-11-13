@@ -56,7 +56,7 @@ The rest could be in a `KEY=VALUE` format.
 
 ### You can provide:
  - `env_aws_secret` - Comma separated list of secret name(s) stored in AWS Secrets Manager
- - `env_repo` - A file in your repo that contains env vars. Defaults to `repo_env`.`
+ - `env_repo` - A file in your repo that contains env vars. As a default, we'll try to read `repo_env`, but you can change that to any other filename. (Including path)`
  - `env_ghv` - An entry in [Github actions variables](https://docs.github.com/en/actions/learn-github-actions/variables)
  - `env_ghs` - An entry in [Github secrets](https://docs.github.com/es/actions/security-guides/encrypted-secrets)
  
@@ -207,7 +207,7 @@ The following inputs can be used as `step.with` keys
 | Name             | Type    | Description - Check note about [**environment variables**](#environment-variables). |
 |------------------|---------|------------------------------------|
 | `env_aws_secret` | String | Secret name to pull environment variables from AWS Secret Manager. Accepts comma separated list of secrets. |
-| `env_repo` | String | `.env` file containing environment variables to be used with the app. Name defaults to `repo_env`. |
+| `env_repo` | String | `.env` file containing environment variables to be used with the app. We'll try to read `repo_env` (default), but you can change that to any other filename. (Including path) |
 | `env_ghs` | String | `.env` file to be used with the app. This is the name of the [Github secret](https://docs.github.com/es/actions/security-guides/encrypted-secrets). |
 | `env_ghv` | String | `.env` file to be used with the app. This is the name of the [Github variables](https://docs.github.com/en/actions/learn-github-actions/variables). |
 <hr/>
