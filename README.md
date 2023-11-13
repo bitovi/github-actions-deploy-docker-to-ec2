@@ -77,7 +77,7 @@ These environment variables are merged to the .env file quoted in the following 
 
 ## Example usage
 
-Create `.github/workflow/deploy.yaml` with the following to build on push.
+Create `.github/workflows/deploy.yaml` with the following to build on push.
 
 ### Basic example
 ```yaml
@@ -279,7 +279,7 @@ The following inputs can be used as `step.with` keys
 #### **Docker Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `docker_install` | Boolean | Set to `true` to enable docker installation through Ansible. `docker-compose up` will be excecuted after. |
+| `docker_install` | Boolean | Toggle docker installation through Ansible. `docker-compose up` will be excecuted after. Defaults to `true`. |
 | `docker_remove_orphans` | Boolean | Set to `true` to turn the `--remove-orphans` flag. Defaults to `false`. |
 | `docker_full_cleanup` | Boolean | Set to `true` to run `docker-compose down` and `docker system prune --all --force --volumes` after. Runs before `docker_install`. WARNING: docker volumes will be destroyed. |
 | `docker_repo_app_directory` | String | Relative path for the directory of the app. (i.e. where the `docker-compose.yaml` file is located). This is the directory that is copied into the EC2 instance. Default is `/`, the root of the repository. Add a `.gha-ignore` file with a list of files to be exluded. (Using glob patterns). |
