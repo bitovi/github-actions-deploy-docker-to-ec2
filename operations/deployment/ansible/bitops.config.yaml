@@ -1,6 +1,0 @@
-ansible:
-    cli:
-      main-playbook: playbook.yml
-      extra-vars: "@extra-vars.json"
-    options:
-      dryrun: false

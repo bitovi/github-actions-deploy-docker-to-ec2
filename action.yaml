@@ -4,19 +4,13 @@ branding:
   icon: upload-cloud
   color: red
 inputs:
-  # Checkout
-  checkout:
-    description: 'Specifies if this action should checkout the code'
-    required: false
-    default: 'true'
-  
-  # AWS
+  # AWS Specific
   aws_access_key_id:
     description: 'AWS access key ID'
-    required: true
+    required: false
   aws_secret_access_key:
     description: 'AWS secret access key'
-    required: true
+    required: false
   aws_session_token:
     description: 'AWS session token'
     required: false
@@ -24,171 +18,492 @@ inputs:
     description: 'AWS default region'
     default: us-east-1
     required: false
-  aws_ami_id:
-    description: 'AWS AMI ID. Will default to the latest Ubuntu 22.04 server image (HVM) '
+  aws_resource_identifier:
+    description: 'Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources.'
+    required: false
+  aws_additional_tags: # additional_tags
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+
+  # GitHub Commons main inputs
+  checkout:
+    description: 'Specifies if this action should checkout the code'
+    required: false
+    default: 'true'
+  bitops_code_only:
+    description: 'Will run only the generation phase of BitOps, where the Terraform and Ansible code is built.'
+    required: false
+  bitops_code_store:
+    description: 'Store BitOps code as a GitHub artifact'
+    required: false
+  tf_stack_destroy: # stack_destroy
+    description: 'Set to "true" to Destroy the stack through Terraform.'
+    required: false
+  tf_state_file_name:
+    description: 'Change this to be anything you want to. Carefull to be consistent here. A missing file could trigger recreation, or stepping over destruction of non-defined objects.'
+    required: false
+  tf_state_file_name_append:
+    description: 'Append a string to the tf-state-file. Setting this to `unique` will generate `tf-state-aws-unique`. Can co-exist with the tf_state_file_name variable. '
     required: false
   tf_state_bucket:
     description: 'AWS S3 bucket to use for Terraform state. Defaults to `${org}-${repo}-{branch}-tf-state`'
     required: false
   tf_state_bucket_destroy:
-    description: 'Force purge and deletion of S3 bucket defined. Any file contained there will be destroyed. `stack_destroy` must also be `true`'
+    description: 'Force purge and deletion of S3 bucket defined. Only evaluated when `tf_stack_destroy` is also true, so it is safe to leave this enabled when standing up your stack.'
     required: false
-    default: 'false'
-  aws_resource_identifier:
-    description: 'Set to override the AWS resource identifier for the deployment.  Defaults to `${org}-{repo}-{branch}`.  Use with destroy to destroy specific resources.'
-  
-  # ENV files
-  repo_env:
-    description: 'File containing environment variables to be used with the app'
+  tf_targets: # targets
+    description: 'A list of targets to create before the full stack creation.'
     required: false
-    default: 'repo_env'
-  dot_env:
-    description: '`.env` file to be used with the app from Github secrets'
+  ansible_skip:
+    description: 'Skip Ansible execution after Terraform excecution.'
     required: false
-  ghv_env:
-    description: '`.env` file to be used with the app from Github variables'
+  ansible_ssh_to_private_ip:
+    description: 'Make Ansible connect to the private IP of the instance. Only usefull if using a hosted runner in the same network.'
     required: false
-  aws_secret_env:
-    description: 'Secret name to pull env variables from AWS Secret Manager'
-    required: false
-    default: ''
-  
-  # Application
-  docker_remove_orphans:
-    description: 'Toggle --remove-orphans flag. Defaults to false.'
-    required: false
-  docker_full_cleanup:
-    description: 'Set to true to run docker-compose down and docker system prune --all --force --volumes after.'
-    required: false
-  app_directory:
-    description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the EC2 instance.  Default is the root of the repo. Add a .gha-ignore file with a list of files to be exluded.'
-  app_directory_cleanup:
-    description: 'Will generate a timestamped compressed file and delete the app repo directory.'
-    required: false
-  app_port:
-    description: 'Port to expose for the app'
-    required: false
-  lb_port:
-    description: 'Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided'
-    required: false
-  lb_healthcheck: 
-    description: 'Load balancer health check string. Defaults to HTTP:app_port'
-    required: false
-  
-  # EC2 Instance
-  ec2_instance_profile:
-    description: 'The AWS IAM instance profile to use for the EC2 instance'
-  ec2_instance_type: 
-    description: 'The AWS Instance type'
-    required: false
-  ec2_volume_size: 
-    description: 'The size of the volume (in GB) on the AWS Instance'
-    required: false
-    default: "8"
-
-  # EFS
-  aws_create_efs:
-    description: "Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack"
-  aws_create_ha_efs:
-    description: Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)
-  aws_create_efs_replica:
-    description: Toggle to indiciate whether a read-only replica should be created for the EFS primary file system
-  aws_enable_efs_backup_policy:
-    description: Toggle to indiciate whether the EFS should have a backup policy, default is `false`
-  aws_efs_zone_mapping:
-    description: Information on Zone Mapping can be found in the [README.md](README.md#efs-zone-mapping)
-  aws_efs_transition_to_inactive:
-    description: Indicates how long it takes to transition files to the IA storage class
-  aws_replication_configuration_destination:
-    description: "AWS Region to target for replication"
-  aws_mount_efs_id:
-    description: ID of existing EFS
-  aws_mount_efs_security_group_id:
-    description: ID of the primary security group used by the existing EFS
-  
-  # Stack management
-  stack_destroy:
-    description: 'Set to "true" to Destroy the stack. Will delete the elb_logs bucket after the destroy action runs.'
   ansible_start_docker_timeout:
     description: 'Ammount of time in seconds it takes Ansible to mark as failed the startup of docker. Defaults to `300`'
     required: false
-  
-  # Domains
-  domain_name:
-    description: 'Define the root domain name for the application. e.g. app.com'
+
+  # ENV files
+  env_aws_secret: # aws_secret_env
+    description: 'Secret name to pull env variables from AWS Secret Manager, could be a comma separated list, read in order. Expected JSON content.'
     required: false
-  sub_domain:
-    description: 'Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}`'
-  root_domain:
-    description: 'Deploy to root domain. Will generate two DNS recrods, one for root, another for www'
+  env_repo: # repo_env
+    description: 'File containing environment variables to be used with the app'
     required: false
-  cert_arn:
-    description: 'Define the certificate ARN to use for the application'
+  env_ghs: # ghv_env
+    description: 'GitHub Secret Name containing `.env` file style to be used with the app.'
     required: false
-  create_root_cert:
-    description: 'Generates and manage the root cert for the application'
-    required: false
-  create_sub_cert: 
-    description: 'Generates and manage the sub-domain certificate for the application'
-    required: false
-  no_cert:
-    description: 'Makes the application not to use a certificate by disabling certificate lookup.'
-    required: false
-    
-  # Terraform
-  targets:
-    description: 'A list of targets to create before the full stack creation. Example: `'
-  additional_tags:
-    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
-    required: false
-   
-  # Secret Manager
-  create_keypair_sm_entry:
-    required: false
-    description: "Generates and manages a secret manager entry that contains the public and private keys created for the ec2 instance."
-    default: false
-    
-  # RDS
-  aws_enable_postgres:
-    description: Set to "true" to enable a postgres database
-    required: false
-  aws_postgres_engine: 
-    description: Which Database engine to use
-    required: false
-  aws_postgres_engine_version:
-    description: Specify Postgres version 
-    required: false
-  aws_postgres_instance_class:
-    description: Define the size of the instances in the DB cluster
-    required: false
-  aws_postgres_subnets:
-    description: 'Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`'
-    required: false
-  aws_postgres_database_name:
-    description: 'Specify a database name. Will be created if it does not exist'
-    required: false
-    # TODO: create another user and point to that instead
-  aws_postgres_database_port:
-    description: 'Postgres database port'
-    required: false
-  aws_postgres_database_group_family:
-    description: 'Postgres database group family'
-    required: false 
-  aws_postgres_database_protection:
-    description: 'Protects the database from deletion.'
-    required: false
-  aws_postgres_database_final_snapshot:
-    description: 'Generates a snapshot of the database before deletion.'
+  env_ghv: # dot_env
+    description: 'GitHub Variable Name containing `.env` file style to be used with the app.'
     required: false
 
-  # Ansible
+# EC2 Instance
+  aws_ec2_instance_create:
+    description: 'Define if an EC2 instance should be created'
+    required: false
+    default: true
+  aws_ec2_ami_filter:
+    description: 'AWS AMI Filter string. Will be used to lookup for lates image based on the string. Defaults to `ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*`.'
+    required: false
+  aws_ec2_ami_owner:
+    description: 'Owner of AWS AMI image. This ensures the provider is the one we are looking for. Defaults to `099720109477`, Canonical (Ubuntu).'
+    required: false
+  aws_ec2_ami_id: # aws_ami_id
+    description: 'AWS AMI ID. Will default to lookup for latest image of the `aws_ec2_ami_filter` string. This will override `aws_ec2_ami_filter` lookup.'
+    required: false
+  aws_ec2_ami_update:
+    description: 'Set this to true if you want to recreate the EC2 instance if there is a newer version of the AMI.'
+    required: false
+  aws_ec2_iam_instance_profile: # ec2_instance_profile
+    description: 'The AWS IAM instance profile to use for the EC2 instance'
+    required: false
+  aws_ec2_instance_type: # ec2_instance_type
+    description: 'The AWS Instance type'
+    required: false
+  aws_ec2_instance_root_vol_size: # ec2_volume_size
+    description: 'Define the volume size (in GiB) for the root volume on the AWS Instance.'
+    required: false
+  aws_ec2_instance_root_vol_preserve:
+    description: 'Set this to true to avoid deletion of root volume on termination. Defaults to false.'
+    required: false
+  aws_ec2_security_group_name:
+    description: 'The name of the EC2 security group'
+    required: false
+  aws_ec2_create_keypair_sm: # create_keypair_sm_entry
+    required: false
+    description: 'Generates and manages a secret manager entry that contains the public and private keys created for the ec2 instance.'
+  aws_ec2_instance_public_ip:
+    description: 'Add a public IP to the instance or not. (Not an Elastic IP)'
+    required: false
+    default: true
+  aws_ec2_port_list:
+    description: 'List of ports to be enabled as an ingress rule in the EC2 SG, in a [xx,yy] format - Not the ELB'
+    required: false
+  aws_ec2_user_data_file:
+    description: 'Relative path in the repo for a user provided script to be executed with Terraform EC2 Instance creation.'
+    required: false
+  aws_ec2_user_data_replace_on_change:
+    description: 'If user_data file changes, instance will stop and start. Hence public IP will change. Defaults to true.'
+    required: false
+  aws_ec2_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+
+  # AWS VPC Inputs
+  aws_vpc_create:
+    description: 'Define if a VPC should be created'
+    required: false
+  aws_vpc_name:
+    description: 'Set a specific name for the VPC'
+    required: false
+  aws_vpc_cidr_block:
+    description: 'Define Base CIDR block which is divided into subnet CIDR blocks. Defaults to 10.0.0.0/16.'
+    required: false
+  aws_vpc_public_subnets:
+    description: 'Comma separated list of public subnets. Defaults to 10.10.110.0/24'
+    required: false
+  aws_vpc_private_subnets:
+    description: 'Comma separated list of private subnets. If none, none will be created.'
+    required: false
+  aws_vpc_availability_zones:
+    description: 'Comma separated list of availability zones. Defaults to `aws_default_region.'
+    required: false
+  aws_vpc_id:
+    description: 'AWS VPC ID. Accepts `vpc-###` values.'
+    required: false
+  aws_vpc_subnet_id:
+    description: 'Specify a Subnet to be used with the instance. If none provided, will pick one.'
+    required: false
+  aws_vpc_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+
+  # AWS Route53 Domains abd Certificates
+  aws_r53_enable:
+    description: 'Enables the usage of Route53 to manage DNS records.'
+    required: false
+  aws_r53_domain_name: # domain_name
+    description: 'Define the root domain name for the application. e.g. app.com'
+    required: false
+  aws_r53_sub_domain_name: # sub_domain
+    description: 'Define the sub-domain part of the URL. Defaults to `${org}-${repo}-{branch}`'
+  aws_r53_root_domain_deploy: # root_domain
+    description: 'Deploy to root domain. Will generate two DNS recrods, one for root, another for www'
+    required: false
+  aws_r53_enable_cert: # no_cert
+    description: 'Makes the application use a certificate by enabling a certificate lookup.'
+    required: false
+    default: true # Legacy enable
+  aws_r53_cert_arn: # cert_arn
+    description: 'Define the certificate ARN to use for the application'
+    required: false
+  aws_r53_create_root_cert: # create_root_cert
+    description: 'Generates and manage the root cert for the application'
+    required: false
+  aws_r53_create_sub_cert: # create_sub_cert
+    description: 'Generates and manage the sub-domain certificate for the application'
+    required: false
+  aws_r53_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+
+  # AWS ELB
+  aws_elb_create:
+    description: 'Create a load balancer and map ports to the EC2 instance.'
+    required: false
+    default: true
+  aws_elb_security_group_name:
+    description:  'The name of the ELB security group'
+    required: false
+  aws_elb_app_port: # app_port
+    description: 'Port to expose for the app'
+    required: false
+    default: 3000
+  aws_elb_app_protocol:
+    description: 'Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to TCP.'
+    required: false
+  aws_elb_listen_port: # lb_port
+    description: 'Load balancer listening port. Defaults to 80 if NO FQDN provided, 443 if FQDN provided'
+    required: false
+  aws_elb_listen_protocol:
+    description: 'Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to TCP if NO FQDN provided, SSL if FQDN provided'
+    required: false
+  aws_elb_healthcheck:  # lb_healthcheck
+    description: 'Load balancer health check string. Defaults to TCP:22'
+    required: false
+  aws_elb_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+  
+  # Docker 
+  docker_install: 
+    description: 'Define if docker should be installed. After this, docker-compose up will be excecuted.'
+    required: false
+    default: true
+  docker_remove_orphans:
+    description: 'Toggle --remove-orphans flag. Defaults to false.'
+    required: false
+  docker_full_cleanup: 
+    description: 'Set to true to run docker-compose down and docker system prune --all --force --volumes after.'
+    required: false
+  docker_repo_app_directory: # app_directory
+    description: 'Relative path for the directory of the app (i.e. where `Dockerfile` and `docker-compose.yaml` files are located). This is the directory that is copied to the compute instance (EC2).  Default is the root of the repo. Add a .gha-ignore file with a list of files to be exluded. '
+    required: false
+  docker_repo_app_directory_cleanup: # app_directory_cleanup
+    description: 'Will generate a timestamped compressed file and delete the app repo directory.'
+    required: false
+  docker_efs_mount_target: # data_mount_target
+    description: 'Directory path within docker env to mount directory to, default is `/data`'
+    required: false
+  docker_cloudwatch_enable:
+    description: 'Toggle cloudwatch creation for Docker containers.'
+    required: false
+  docker_cloudwatch_lg_name:
+    description: 'Log group name. Will default to aws_identifier if none.'
+    required: false
+  docker_cloudwatch_skip_destroy:
+    description: 'Toggle deletion or not when destroying the stack.'
+    required: false
+  docker_cloudwatch_retention_days:
+    description: 'Number of days to retain logs. 0 to never expire.'
+    required: false
+
+  # AWS EFS
+  aws_efs_create: # aws_create_efs
+    description: 'Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack'
+    required: false
+  aws_efs_create_ha: # aws_create_ha_efs
+    description: 'Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)'
+    required: false
+  aws_efs_fs_id: # aws_mount_efs_id
+    description: 'ID of existing EFS'
+    required: false
+  aws_efs_vpc_id:
+    description: 'ID of the VPC for the EFS mount target. If aws_efs_create_ha is set to true, will create one mount target per subnet available in the VPC. If not, will pick one.'
+    required: false
+  aws_efs_subnet_ids:
+    description: 'ID or IDs of the subnet for the EFS mount target.'
+    required: false
+  aws_efs_security_group_name:
+    description:  'The name of the EFS security group'
+    required: false
+  aws_efs_create_replica: # aws_create_efs_replica
+    description: 'Toggle to indiciate whether a read-only replica should be created for the EFS primary file system'
+    required: false
+  aws_efs_replication_destination: # aws_replication_configuration_destination
+    description: 'AWS Region to target for replication'
+    required: false
+  aws_efs_enable_backup_policy: # aws_enable_efs_backup_policy
+    description: 'Toggle to indiciate whether the EFS should have a backup policy, default is false'
+    required: false
+  aws_efs_transition_to_inactive:
+    description: 'Indicates how long it takes to transition files to the IA storage class.'
+    required: false
+  aws_efs_mount_target: # efs_mount_target
+    description: 'Directory path in the EFS volume to mount directory to. Default is /.'
+    required: false
+  aws_efs_ec2_mount_point: # application_mount_target
+    description: 'Directory path in EC2 Instance to mount the EFS volume. Default is `data`. Exported as `HOST_DIR` in `.env`'
+    required: false
+  aws_efs_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+
+ # AWS RDS
+  aws_rds_db_enable: # aws_enable_postgres
+    description: 'Set to true to enable an RDS DB.'
+    required: false
+  aws_rds_db_proxy:
+    description: 'Set to true to add a RDS DB Proxy'
+    required: false
+  aws_rds_db_identifier:
+    description: 'Database identifier that will appear in the AWS Console. Defaults to aws_resource_identifier if none set.'
+    required: false
+  aws_rds_db_name: # aws_postgres_database_name
+    description: 'The name of the database to create when the DB instance is created.'
+    required: false
+  aws_rds_db_user:
+    description: 'Username for the db. Defaults to dbuser.'
+    required: false
+  aws_rds_db_engine: # aws_postgres_engine
+    description: 'Which Database engine to use. Default is postgres'
+    required: false
+  aws_rds_db_engine_version: # aws_postgres_engine_version
+    description: 'Which Database engine version to use.'
+    required: false
+  aws_rds_db_ca_cert_identifier:
+    description: 'Certificate to use with the database. Defaults to rds-ca-ecc384-g1'
+    required: false
+  aws_rds_db_security_group_name:
+    description: 'The name of the database security group. Defaults to SG for aws_resource_identifier - RDS.'
+    required: false
+  aws_rds_db_allowed_security_groups:
+    description: 'Comma separated list of security groups to add to the DB SG'
+    required: false
+  aws_rds_db_ingress_allow_all:
+    description: 'Allow incoming traffic from 0.0.0.0/0.'
+    required: false
+  aws_rds_db_publicly_accessible:
+    description: 'Allow the database to be publicly accessible.'
+    required: false
+  aws_rds_db_port: # aws_postgres_database_port
+    description: ' Port where the DB listens to.'
+    required: false
+  aws_rds_db_subnets: # aws_postgres_subnets
+    description: 'Specify which subnets to use as a list of strings. '
+    required: false
+  aws_rds_db_allocated_storage:
+    description: 'Storage size. Defaults to 10.'
+    required: false
+  aws_rds_db_max_allocated_storage:
+    description: 'Max storage size. Defaults to 0 to disable auto-scaling.'
+    required: false
+  aws_rds_db_instance_class: # aws_postgres_instance_class
+    description: 'DB instance server type. Defaults to db.t3.micro.'
+    required: false
+  aws_rds_db_final_snapshot: # aws_postgres_database_final_snapshot
+    description: 'Generates a snapshot of the database before deletion.'
+    required: false
+  aws_rds_db_restore_snapshot_identifier:
+    description: 'Name of the snapshot to restore the database from.'
+    required: false
+  aws_rds_db_cloudwatch_logs_exports:
+    description: 'Set of log types to enable for exporting to CloudWatch logs.'
+    required: false
+  aws_rds_db_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+    required: false
+
+ # RDS Proxy
+  aws_db_proxy_name:
+    description: 'DB Proxy name'
+    required: false
+  aws_db_proxy_client_password_auth_type:
+    description: 'Auth type to use, will use the following, depending on DB the family. MYSQL_NATIVE_PASSWORD, POSTGRES_SCRAM_SHA_256, and SQL_SERVER_AUTHENTICATION'
+    required: false
+  aws_db_proxy_tls:
+    description: 'Toogle TLS enforcement for connection'
+    required: false
+  aws_db_proxy_security_group_name:
+    description: 'Name for the proxy security group. Default to aws_resource_identifier if none.'
+    required: false
+  aws_db_proxy_database_security_group_allow:
+    description: 'Will add an incoming rule from every security group associated with the DB'
+    required: false
+  aws_db_proxy_allowed_security_group:
+    description: 'Comma separated list of SG Ids to add.'
+    required: false
+  aws_db_proxy_allow_all_incoming:
+    description: 'Allow all incoming traffic to the DB Proxy. Mind that the proxy is only available from the internal network except manually exposed.'
+    required: false
+  aws_db_proxy_cloudwatch_enable:
+    description: 'Toggle Cloudwatch logs. Will be stored in /aws/rds/proxy/rds_proxy.name'
+    required: false
+  aws_db_proxy_cloudwatch_retention_days:
+    description: 'Number of days to retain logs'
+    required: false
+  aws_db_proxy_additional_tags:
+    description: 'A list of strings that will be added to created resources'
+    required: false
+
+  # GitHub Deployment repo inputs
+  gh_deployment_input_terraform:
+    description: 'Folder to store Terraform files to be included during Terraform execution.'
+    required: false
+  gh_deployment_input_ansible:
+    description: 'Folder where a whole Ansible structure is expected. If missing bitops.config.yaml a default will be generated.'
+    required: false
+  gh_deployment_input_ansible_playbook:
+    description: 'Main playbook to be looked for.'
+    required: false
+    default: playbook.yml
+  gh_deployment_input_ansible_extra_vars_file:
+    description: "Relative path to file from project root to Ansible vars file to be applied. "
+    required: false
+  gh_deployment_action_input_ansible_extra_vars_file:
+    description: "Relative path to file from project root to Ansible vars file to be applied into the Action Ansible execution. "
+    required: false
+
+#### Legacy inputs
+  aws_ami_id:
+    required: false
+  ## ENV
+  repo_env:
+    required: false
+  dot_env:
+    required: false
+  ghv_env:
+    required: false
+  aws_secret_env:
+    required: false
+  ## Application
+  app_directory:
+    required: false
+  app_directory_cleanup:
+    required: false
+  app_port:
+    required: false
+  lb_port:
+    required: false
+  lb_healthcheck:
+    required: false
+  ## EC2
+  ec2_instance_profile:
+    required: false
+  ec2_instance_type:
+    required: false
+  ec2_volume_size:
+    required: false
+  ## EFS
+  aws_create_efs:
+    required: false
+  aws_create_ha_efs:
+    required: false
+  aws_create_efs_replica:
+    required: false
+  aws_enable_efs_backup_policy:
+    required: false
+  # aws_efs_zone_mapping - GONE
+  aws_replication_configuration_destination:
+    required: false
+  aws_mount_efs_id:
+    required: false
+  aws_mount_efs_security_group_id:
+    required: false
+  ## Stack Management
+  stack_destroy:
+    required: false
+  ## Domains
+  domain_name:
+    required: false
+  sub_domain:
+    required: false
+  root_domain:
+    required: false
+  cert_arn:
+    required: false
+  create_root_cert:
+    required: false
+  create_sub_cert:
+    required: false
+  no_cert:
+    required: false
+  ## Terraform
+  targets:
+    required: false
+  additional_tags:
+    required: false
+  ## Secret Manager
+  create_keypair_sm_entry:
+    required: false
+  ## RDS
+  aws_enable_postgres:
+    required: false
+  aws_postgres_engine:
+    required: false
+  aws_postgres_engine_version:
+    required: false
+  aws_postgres_instance_class:
+    required: false
+  aws_postgres_subnets:
+    required: false
+  aws_postgres_database_name:
+    required: false
+  aws_postgres_database_port:
+    required: false
+  #aws_postgres_database_group_family - GONE
+  # aws_postgres_database_protection - GONE
+  aws_postgres_database_final_snapshot:
+    required: false
+  ## Ansible
   application_mount_target:
-    description: "Directory path in application env to mount directory, default is `data`"
-    default: data
+    required: false
   data_mount_target:
-    description: "Directory path within docker env to mount directory to, default is `/data`"
+    required: false
   efs_mount_target:
-    description: "Directory path in efs to mount directory to, default is `/`"
+    required: false
+####
 
 outputs:
   vm_url:
@@ -204,104 +519,151 @@ runs:
 
     - name: Deploy with BitOps
       id: deploy
-      shell: bash
-      env:
-        GITHUB_ACTION_PATH: ${{ github.action_path }}
-        BITOPS_ENVIRONMENT: deployment
-        TERRAFORM_TARGETS: ${{ inputs.targets }}
-        AWS_ACCESS_KEY_ID: ${{ inputs.aws_access_key_id }}
-        AWS_SECRET_ACCESS_KEY: ${{ inputs.aws_secret_access_key }}
-        AWS_SESSION_TOKEN: ${{ inputs.aws_session_token }}
-        AWS_DEFAULT_REGION: ${{ inputs.aws_default_region }}
-        AWS_AMI_ID: ${{ inputs.aws_ami_id }}
-        TF_STATE_BUCKET: ${{ inputs.tf_state_bucket }}
-        TF_STATE_BUCKET_DESTROY: ${{ inputs.tf_state_bucket_destroy }}
-        REPO_ENV: ${{ inputs.repo_env }}
-        GHS_ENV: ${{ inputs.dot_env }}
-        GHV_ENV: ${{ inputs.ghv_env }}
-        AWS_SECRET_ENV: ${{ inputs.aws_secret_env }}
-        APP_PORT: ${{ inputs.app_port }}
-        LB_PORT: ${{ inputs.lb_port }}
-        LB_HEALTHCHECK: ${{ inputs.lb_healthcheck }}
-        EC2_INSTANCE_PROFILE: ${{ inputs.ec2_instance_profile }}
-        EC2_INSTANCE_TYPE: ${{ inputs.ec2_instance_type }}
-        EC2_VOLUME_SIZE: ${{ inputs.ec2_volume_size }}
-        STACK_DESTROY: ${{ inputs.stack_destroy }}
-        ANSIBLE_START_DOCKER_TIMEOUT: ${{ inputs.ansible_start_docker_timeout }}
-        AWS_RESOURCE_IDENTIFIER: ${{ inputs.aws_resource_identifier }}
-        DOMAIN_NAME: ${{ inputs.domain_name }}
-        SUB_DOMAIN: ${{ inputs.sub_domain }}
-        ROOT_DOMAIN: ${{ inputs.root_domain }}
-        CERT_ARN: ${{ inputs.cert_arn }}
-        CREATE_ROOT_CERT: ${{ inputs.create_root_cert }}
-        CREATE_SUB_CERT: ${{ inputs.create_sub_cert }}
-        NO_CERT: ${{ inputs.no_cert }}
-        BITOPS_FAST_FAIL: true
-        DOCKER_REMOVE_ORPHANS: ${{ inputs.docker_remove_orphans }}
-        DOCKER_FULL_CLEANUP: ${{ inputs.docker_full_cleanup }}
-        APP_DIRECTORY: ${{ inputs.app_directory }}
-        APP_DIRECTORY_CLEANUP: ${{ inputs.app_directory_cleanup }}
-        CREATE_KEYPAIR_SM_ENTRY: ${{ inputs.create_keypair_sm_entry }}
-        ADDITIONAL_TAGS: ${{ inputs.additional_tags }}
-        AWS_ENABLE_POSTGRES: ${{ inputs.aws_enable_postgres }}
-        AWS_POSTGRES_ENGINE:  ${{ inputs.aws_postgres_engine }}
-        AWS_POSTGRES_ENGINE_VERSION:  ${{ inputs.aws_postgres_engine_version }}
-        AWS_POSTGRES_DATABASE_GROUP_FAMILY: ${{ inputs.aws_postgres_database_group_family }}
-        AWS_POSTGRES_INSTANCE_CLASS: ${{ inputs.aws_postgres_instance_class }}
-        AWS_POSTGRES_SUBNETS: ${{ inputs.aws_postgres_subnets }}
-        AWS_POSTGRES_DATABASE_NAME: ${{ inputs.aws_postgres_database_name }}
-        AWS_POSTGRES_DATABASE_PORT: ${{ inputs.aws_postgres_database_port}}
-        AWS_POSTGRES_DATABASE_PROTECTION: ${{ inputs.aws_postgres_database_protection }}
-        AWS_POSTGRES_DATABASE_FINAL_SNAPSHOT: ${{ inputs.aws_postgres_database_final_snapshot }}
-        AWS_CREATE_EFS: ${{ inputs.aws_create_efs }}
-        AWS_CREATE_HA_EFS: ${{ inputs.aws_create_ha_efs }}
-        AWS_CREATE_EFS_REPLICA: ${{ inputs.aws_create_efs_replica }}
-        AWS_ENABLE_EFS_BACKUP_POLICY: ${{ inputs.aws_enable_efs_backup_policy }}
-        AWS_EFS_ZONE_MAPPING: ${{ inputs.aws_efs_zone_mapping }}
-        AWS_EFS_TRANSITION_TO_INACTIVE: ${{ inputs.aws_efs_transition_to_inactive }}
-        AWS_EFS_REPLICA_DESTINATION: ${{ inputs.aws_replication_configuration_destination }}
-        AWS_MOUNT_EFS_ID: ${{ inputs.aws_mount_efs_id }}
-        AWS_MOUNT_EFS_SECURITY_GROUP_ID: ${{ inputs.aws_mount_efs_security_group_id }}
-        APPLICATION_MOUNT_TARGET: ${{ inputs.application_mount_target }}
-        EFS_MOUNT_TARGET: ${{ inputs.efs_mount_target }}
-        DATA_MOUNT_TARGET: ${{ inputs.data_mount_target }}
+      uses: bitovi/github-actions-commons@v0.0.10
+      with:
+        # AWS Specific
+        aws_access_key_id: ${{ inputs.aws_access_key_id }}
+        aws_secret_access_key: ${{ inputs.aws_secret_access_key }}
+        aws_session_token: ${{ inputs.aws_session_token }}
+        aws_default_region: ${{ inputs.aws_default_region }}
+        aws_resource_identifier: ${{ inputs.aws_resource_identifier }}
+        aws_additional_tags: ${{ inputs.aws_additional_tags || inputs.additional_tags}}
 
-      run: |
-        echo "running operations/_scripts/deploy/deploy.sh"
-        $GITHUB_ACTION_PATH/operations/_scripts/deploy/deploy.sh
-        echo "running operations/_scripts/deploy/export_vars.sh"
-        $GITHUB_ACTION_PATH/operations/_scripts/deploy/export_vars.sh
+        # Action main inputs
+        gh_action_repo: ${{ github.action_path }}
+        checkout: ${{ inputs.checkout }}
+        bitops_code_only: ${{ inputs.bitops_code_only }}
+        tf_stack_destroy: ${{ inputs.tf_stack_destroy || inputs.stack_destroy }}
+        tf_state_file_name: ${{ inputs.tf_state_file_name }}
+        tf_state_file_name_append: ${{ inputs.tf_state_file_name_append }}
+        tf_state_bucket: ${{ inputs.tf_state_bucket }}
+        tf_state_bucket_destroy: ${{ inputs.tf_state_bucket_destroy }}
+        tf_targets: ${{ inputs.tf_targets  || inputs.targets }}
+        ansible_skip: ${{ inputs.ansible_skip }}
+        ansible_ssh_to_private_ip: ${{ inputs.ansible_ssh_to_private_ip }}
+        ansible_start_docker_timeout: ${{ inputs.ansible_start_docker_timeout }}
 
-    # output results to GitHub
-    - if: ${{ success() && steps.deploy.outputs.vm_url != '' }}
-      name: Print result created
-      shell: bash
-      run: |
-        echo "## VM Created! :rocket:" >> $GITHUB_STEP_SUMMARY
-        echo " ${{ steps.deploy.outputs.vm_url }}" >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.stack_destroy == 'true' && inputs.tf_state_bucket_destroy == 'false' }}
-      name: Print result destroyed
-      shell: bash
-      run: |
-        echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
-        echo "Infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.stack_destroy == 'true' && inputs.tf_state_bucket_destroy == 'true' }}
-      name: Print result destroyed
-      shell: bash
-      run: |
-        echo "## VM Destroyed! :boom:" >> $GITHUB_STEP_SUMMARY
-        echo "Buckets and infrastructure should be gone now!" >> $GITHUB_STEP_SUMMARY
-    - if: ${{ success() && steps.deploy.outputs.vm_url == '' && inputs.stack_destroy == 'false' }}
-      name: Print result destroyed
-      shell: bash
-      run: |
-        echo "## Deploy finished! But no URL found. :thinking: " >> $GITHUB_STEP_SUMMARY
-        echo "If expecting an URL, please check the logs for possible  errors." >> $GITHUB_STEP_SUMMARY
-        echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
-    - if: ${{ failure() }} 
-      name: Print error result
-      shell: bash
-      run: |
-        echo "## Workflow failed to run :fire:" >> $GITHUB_STEP_SUMMARY
-        echo "Please check the logs for possible errors." >> $GITHUB_STEP_SUMMARY
-        echo "If you consider this is a bug in the Github Action, please submit an issue to our repo." >> $GITHUB_STEP_SUMMARY
+        # ENV Files
+        env_aws_secret: ${{ inputs.env_aws_secret || inputs.aws_secret_env }}
+        env_repo: ${{ inputs.env_repo || inputs.repo_env }}
+        env_ghs: ${{ inputs.env_ghs || inputs.dot_env }}
+        env_ghv: ${{ inputs.env_ghv || inputs.ghv_env }}
+
+        # EC2 Instance
+        aws_ec2_instance_create: ${{ inputs.aws_ec2_instance_create }}
+        aws_ec2_ami_filter: ${{ inputs.aws_ec2_ami_filter }}
+        aws_ec2_ami_owner: ${{ inputs.aws_ec2_ami_owner }}
+        aws_ec2_ami_id: ${{ inputs.aws_ec2_ami_id || inputs.aws_ami_id }}
+        aws_ec2_ami_update: ${{ inputs. aws_ec2_ami_update }}
+        aws_ec2_iam_instance_profile: ${{ inputs.aws_ec2_iam_instance_profile || inputs.ec2_instance_profile }}
+        aws_ec2_instance_type : ${{ inputs.aws_ec2_instance_type || inputs.ec2_instance_type }} 
+        aws_ec2_instance_root_vol_size: ${{ inputs.aws_ec2_instance_root_vol_size || inputs.ec2_volume_size }}
+        aws_ec2_instance_root_vol_preserve: ${{ inputs.aws_ec2_instance_root_vol_preserve }}
+        aws_ec2_security_group_name: ${{ inputs.aws_ec2_security_group_name }}
+        aws_ec2_create_keypair_sm: ${{ inputs.aws_ec2_create_keypair_sm || inputs.create_keypair_sm_entry }}
+        aws_ec2_instance_public_ip: ${{ inputs.aws_ec2_instance_public_ip }}
+        aws_ec2_port_list: ${{ inputs.aws_ec2_port_list }}
+        aws_ec2_user_data_file: ${{ inputs.aws_ec2_user_data_file }}
+        aws_ec2_user_data_replace_on_change: ${{ inputs.aws_ec2_user_data_replace_on_change }}
+        aws_ec2_additional_tags: ${{ inputs.aws_ec2_additional_tags }}
+
+        ## AWS VPC
+        aws_vpc_create: ${{ inputs.aws_vpc_create }}
+        aws_vpc_name: ${{ inputs.aws_vpc_name }}
+        aws_vpc_cidr_block: ${{ inputs.aws_vpc_cidr_block }}
+        aws_vpc_public_subnets: ${{ inputs.aws_vpc_public_subnets }}
+        aws_vpc_private_subnets: ${{ inputs.aws_vpc_private_subnets }}
+        aws_vpc_availability_zones: ${{ inputs.aws_vpc_availability_zones }}
+        aws_vpc_id: ${{ inputs.aws_vpc_id }}
+        aws_vpc_subnet_id: ${{ inputs.aws_vpc_subnet_id }}
+        aws_vpc_additional_tags: ${{ inputs.aws_vpc_additional_tags }}
+
+        # AWS Route53 Domains abd Certificates
+        aws_r53_enable: ${{ inputs.aws_r53_enable }}
+        aws_r53_domain_name: ${{ inputs.aws_r53_domain_name || inputs.domain_name }}
+        aws_r53_sub_domain_name: ${{ inputs.aws_r53_sub_domain_name || inputs.sub_domain }}
+        aws_r53_root_domain_deploy: ${{ inputs.aws_r53_root_domain_deploy || inputs.root_domain }}
+        aws_r53_enable_cert: ${{ inputs.aws_r53_enable_cert }}
+        aws_r53_cert_arn: ${{ inputs.aws_r53_cert_arn || inputs.cert_arn }}
+        aws_r53_create_root_cert: ${{ inputs.aws_r53_create_root_cert || inputs.create_root_cert }}
+        aws_r53_create_sub_cert: ${{ inputs.aws_r53_create_sub_cert || inputs.create_sub_cert }}
+        aws_r53_additional_tags: ${{ inputs.aws_r53_additional_tags }}
+
+        # AWS ELB
+        aws_elb_create: ${{ inputs.aws_elb_create }}
+        aws_elb_security_group_name: ${{ inputs.aws_elb_security_group_name }}
+        aws_elb_app_port: ${{ inputs.aws_elb_app_port || inputs.app_port }}
+        aws_elb_app_protocol: ${{ inputs.aws_elb_app_protocol }}
+        aws_elb_listen_port: ${{ inputs.aws_elb_listen_port || inputs.lb_port }}
+        aws_elb_listen_protocol: ${{ inputs.aws_elb_listen_protocol }}
+        aws_elb_healthcheck: ${{ inputs.aws_elb_healthcheck || inputs.lb_healthcheck }}
+        aws_elb_additional_tags: ${{ inputs.aws_elb_additional_tags }}
+        
+        # Docker
+        docker_install: ${{ inputs.docker_install }}
+        docker_remove_orphans: ${{ inputs.docker_remove_orphans }}
+        docker_full_cleanup: ${{ inputs.docker_full_cleanup }}
+        docker_repo_app_directory: ${{ inputs.docker_repo_app_directory || inputs.app_directory }}
+        docker_repo_app_directory_cleanup: ${{ inputs.docker_repo_app_directory_cleanup || inputs.app_directory_cleanup }}
+        docker_efs_mount_target: ${{ inputs.docker_efs_mount_target || inputs.data_mount_target }}
+        docker_cloudwatch_enable: ${{ inputs.docker_cloudwatch_enable }}
+        docker_cloudwatch_lg_name: ${{ inputs.docker_cloudwatch_lg_name }}
+        docker_cloudwatch_skip_destroy: ${{ inputs.docker_cloudwatch_skip_destroy }}
+        docker_cloudwatch_retention_days: ${{ inputs.docker_cloudwatch_retention_days }}
+
+        # AWS EFS
+        aws_efs_create: ${{ inputs.aws_efs_create || inputs.aws_create_efs }}
+        aws_efs_create_ha: ${{ inputs.aws_efs_create_ha || inputs.aws_create_ha_efs }}
+        aws_efs_fs_id: ${{ inputs.aws_efs_fs_id || inputs.aws_mount_efs_id }}
+        aws_efs_vpc_id: ${{ inputs.aws_efs_vpc_id }}
+        aws_efs_subnet_ids: ${{ inputs.aws_efs_subnet_ids }}
+        aws_efs_security_group_name: ${{ inputs.aws_efs_security_group_name }}
+        aws_efs_create_replica: ${{ inputs.aws_efs_create_replica || inputs.aws_create_efs_replica }}
+        aws_efs_replication_destination: ${{ inputs.aws_efs_replication_destination || inputs.aws_replication_configuration_destination }}
+        aws_efs_enable_backup_policy: ${{ inputs.aws_efs_enable_backup_policy || inputs.aws_enable_efs_backup_policy }}
+        aws_efs_transition_to_inactive: ${{ inputs.aws_efs_transition_to_inactive }}
+        aws_efs_mount_target: ${{ inputs.aws_efs_mount_target || inputs.efs_mount_target }}
+        aws_efs_ec2_mount_point: ${{ inputs.aws_efs_ec2_mount_point || inputs.application_mount_target }}
+        aws_efs_additional_tags: ${{ inputs.aws_efs_additional_tags }}
+
+        # AWS RDS
+        aws_rds_db_enable: ${{ inputs.aws_rds_db_enable || inputs.aws_enable_postgres }}
+        aws_rds_db_proxy: ${{ inputs.aws_rds_db_proxy }}
+        aws_rds_db_identifier: ${{ inputs.aws_rds_db_identifier }}
+        aws_rds_db_name: ${{ inputs.aws_rds_db_name || inputs.aws_postgres_database_name }}
+        aws_rds_db_user: ${{ inputs.aws_rds_db_user }}
+        aws_rds_db_engine: ${{ inputs.aws_rds_db_engine || inputs.aws_postgres_engine }}
+        aws_rds_db_engine_version: ${{ inputs.aws_rds_db_engine_version || inputs.aws_postgres_engine_version }}
+        aws_rds_db_ca_cert_identifier: ${{ inputs.aws_rds_db_ca_cert_identifier }}
+        aws_rds_db_security_group_name: ${{ inputs.aws_rds_db_security_group_name }}
+        aws_rds_db_allowed_security_groups: ${{ inputs.aws_rds_db_allowed_security_groups }}
+        aws_rds_db_ingress_allow_all: ${{ inputs.aws_rds_db_ingress_allow_all }}
+        aws_rds_db_publicly_accessible: ${{ inputs.aws_rds_db_publicly_accessible }}
+        aws_rds_db_port: ${{ inputs.aws_rds_db_port || inputs.aws_postgres_database_port }}
+        aws_rds_db_subnets: ${{ inputs.aws_rds_db_subnets || inputs.aws_postgres_subnets }}
+        aws_rds_db_allocated_storage: ${{ inputs.aws_rds_db_allocated_storage }}
+        aws_rds_db_max_allocated_storage: ${{ inputs.aws_rds_db_max_allocated_storage }}
+        aws_rds_db_instance_class: ${{ inputs.aws_rds_db_instance_class || inputs.aws_postgres_instance_class }}
+        aws_rds_db_final_snapshot: ${{ inputs.aws_rds_db_final_snapshot || inputs.aws_postgres_database_final_snapshot }}
+        aws_rds_db_restore_snapshot_identifier: ${{ inputs.aws_rds_db_restore_snapshot_identifier }}
+        aws_rds_db_cloudwatch_logs_exports: ${{ inputs.aws_rds_db_cloudwatch_logs_exports }}
+        aws_rds_db_additional_tags: ${{ inputs.aws_rds_db_additional_tags }}
+
+        # DB Proxy
+        aws_db_proxy_name : ${{ inputs.aws_db_proxy_name }}
+        aws_db_proxy_client_password_auth_type : ${{ inputs.aws_db_proxy_client_password_auth_type }}
+        aws_db_proxy_tls : ${{ inputs.aws_db_proxy_tls }}
+        aws_db_proxy_security_group_name : ${{ inputs.aws_db_proxy_security_group_name }}
+        aws_db_proxy_database_security_group_allow : ${{ inputs.aws_db_proxy_database_security_group_allow }}
+        aws_db_proxy_allowed_security_group : ${{ inputs.aws_db_proxy_allowed_security_group }}
+        aws_db_proxy_allow_all_incoming : ${{ inputs.aws_db_proxy_allow_all_incoming }}
+        aws_db_proxy_cloudwatch_enable : ${{ inputs.aws_db_proxy_cloudwatch_enable }}
+        aws_db_proxy_cloudwatch_retention_days : ${{ inputs.aws_db_proxy_cloudwatch_retention_days }}
+        aws_db_proxy_additional_tags: ${{ inputs.aws_db_proxy_additional_tags }}
+
+        # Deployment repo
+        gh_deployment_input_terraform: ${{ inputs.gh_deployment_input_terraform }}
+        gh_deployment_input_ansible: ${{ inputs.gh_deployment_input_ansible }}
+        gh_deployment_input_ansible_playbook: ${{ inputs.gh_deployment_input_ansible_playbook }}
+        gh_deployment_input_ansible_extra_vars_file: ${{ inputs.gh_deployment_input_ansible_extra_vars_file }}
+        gh_deployment_action_input_ansible_extra_vars_file: ${{ inputs.gh_deployment_action_input_ansible_extra_vars_file }}
