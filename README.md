@@ -151,7 +151,7 @@ jobs:
 
 ## Customizing
 
-> :info: We use `aws_resource_identifier` as a unique ID throughout the code to name resources. </br>
+> :sparkle: We use `aws_resource_identifier` as a unique ID throughout the code to name resources. </br>
 This ID is defined with this values as source `${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`
 
 ### Inputs
