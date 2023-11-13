@@ -272,7 +272,7 @@ The following inputs can be used as `step.with` keys
 | `aws_elb_security_group_name` | String | The name of the ELB security group. Defaults to `SG for ${aws_resource_identifier} - ELB`. |
 | `aws_elb_app_port` | String | Port in the EC2 instance to be redirected to. Default is `3000`. Accepts comma separated values like `3000,3001`. | 
 | `aws_elb_app_protocol` | String | Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to `TCP`. If length doesn't match, will use `TCP` for all.|
-| `aws_elb_listen_port` | String | Load balancer listening port. Default is `80` if NO FQDN provided, `443` if FQDN provided. |
+| `aws_elb_listen_port` | String | Load balancer listening port. Default is `80` if NO FQDN provided, `443` if FQDN provided. Accepts comma separated values. |
 | `aws_elb_listen_protocol` | String | Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to `TCP` if NO FQDN provided, `SSL` if FQDN provided. |
 | `aws_elb_healthcheck` | String | Load balancer health check string. Default is `TCP:22`. |
 | `aws_elb_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to elb provisioned resources.|
