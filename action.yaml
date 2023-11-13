@@ -199,6 +199,7 @@ inputs:
   aws_elb_app_port: # app_port
     description: 'Port to expose for the app'
     required: false
+    default: 3000
   aws_elb_app_protocol:
     description: 'Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to TCP.'
     required: false
@@ -310,6 +311,9 @@ inputs:
     required: false
   aws_rds_db_engine_version: # aws_postgres_engine_version
     description: 'Which Database engine version to use.'
+    required: false
+  aws_rds_db_ca_cert_identifier:
+    description: 'Certificate to use with the database. Defaults to rds-ca-ecc384-g1'
     required: false
   aws_rds_db_security_group_name:
     description: 'The name of the database security group. Defaults to SG for aws_resource_identifier - RDS.'
@@ -630,6 +634,7 @@ runs:
         aws_rds_db_user: ${{ inputs.aws_rds_db_user }}
         aws_rds_db_engine: ${{ inputs.aws_rds_db_engine || inputs.aws_postgres_engine }}
         aws_rds_db_engine_version: ${{ inputs.aws_rds_db_engine_version || inputs.aws_postgres_engine_version }}
+        aws_rds_db_ca_cert_identifier: ${{ inputs.aws_rds_db_ca_cert_identifier }}
         aws_rds_db_security_group_name: ${{ inputs.aws_rds_db_security_group_name }}
         aws_rds_db_allowed_security_groups: ${{ inputs.aws_rds_db_allowed_security_groups }}
         aws_rds_db_ingress_allow_all: ${{ inputs.aws_rds_db_ingress_allow_all }}
