@@ -4,6 +4,8 @@
 
 The action will copy this repo to the VM and then run `docker compose up`.
 
+> ⚠️ Migrating from v0.5.8 to v1.0.0 is not possible. Some resources keep the same ID and errors will appear.  
+
 ## Action Summary
 This action will create an EC2 instance and the resources defined, copy this repo to the VM, install docker (and other options if enabled) and then run `docker compose up`.
 
@@ -34,6 +36,13 @@ A lot! The whole code supporting this action migrated into a bigger repo, with m
 Actions you said? Yes… go check our [list of actions in the GitHub marketplace](https://github.com/marketplace?category=&type=actions&verification=&query=bitovi)
 
 New stuff! To name a few, cloudwatch for docker, VPC handling, EC2/ELB/APP port list, user_data for pre-ansible run, RDS (as Aurora replacement) among others. Check the [v1-changes](https://github.com/bitovi/github-actions-deploy-docker-to-ec2/blob/commons/v1-changes.md) doc.
+
+## ⚠️ Migrating from v0.5.8 to v1.0.0
+Adding new features and functionalities while keeping code consistent required a huge refactoring. Resources and objects got moved and renamed, making migration a really complicated path. </br>
+For that reason we recommend a clean start. 
+</br>
+Version **v0.5.8** will be the last of the v0 series, and new features will be added to v1 from now on.</br>
+</br>
 
 ## Requirements
 
