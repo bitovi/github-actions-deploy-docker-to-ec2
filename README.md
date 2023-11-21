@@ -28,7 +28,7 @@ This project is supported by [Bitovi, a DevOps Consultancy](https://www.bitovi.c
 You can **get help or ask questions** on our [Discord channel](https://discord.gg/J7ejFsZnJ4)! Come hang out with us!
 
 Or, you can hire us for training, consulting, or development. [Set up a free consultation](https://www.bitovi.com/devops-consulting).
-
+![alt](https://bitovi-gha-pixel-tracker-deployment-main.bitovi-sandbox.com/pixel/UGFZYKgLzZPPVMD9HHgEc)
 # WHAT'S NEW IN V1 - What changed? 
 
 A lot! The whole code supporting this action migrated into a bigger repo, with more modules and functions. We concentrated our work there, hence any improvement done there benefits all of our actions.
