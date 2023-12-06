@@ -307,16 +307,20 @@ The following inputs can be used as `step.with` keys
 #### **EFS Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `aws_efs_create` | Boolean | Toggle to indicate whether to create an EFS and mount it to the EC2 instance as a part of the provisioning. Note: The stack will manage the EFS and will be destroyed along with the stack. |
-| `aws_efs_create_ha` | Boolean | Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within a region). |
+| `aws_efs_create` | Boolean | Toggle to indicate whether to create an EFS volume and mount it to the EC2 instance as a part of the provisioning. Note: The stack will manage the EFS and will be destroyed along with the stack. |
 | `aws_efs_fs_id` | String | ID of existing EFS volume if you wish to use an existing one. |
-| `aws_efs_vpc_id` | String | ID of the VPC for the EFS mount target. If `aws_efs_create_ha` is set to `true`, will create one mount target per subnet available in the VPC. If not, will create one in an automated selected region. |
-| `aws_efs_subnet_ids` | String | ID (or ID's) of the subnet for the EFS mount target. (Comma separated string.) |
+| `aws_efs_create_mount_target` | String | Toggle to indicate whether we should create a mount target for the EFS volume or not. Defaults to `true`. |
+| `aws_efs_create_ha` | Boolean | Toggle to indicate whether the EFS resource should be highly available (mount points in all available zones within region). |
+| `aws_efs_vol_encrypted` | String | Toggle encryption of the EFS volume. Defaults to `true`.|
+| `aws_efs_kms_key_id` | String | The ARN for the KMS encryption key. Will use default if none defined. |
+| `aws_efs_performance_mode` | String | Toggle perfomance mode. Options are: `generalPurpose` or `maxIO`.|  
+| `aws_efs_throughput_mode` | String | Throughput mode for the file system. Defaults to `bursting`. Valid values: `bursting`, `provisioned`, or `elastic`. When using provisioned, also set `aws_efs_throughput_speed`. |
+| `aws_efs_throughput_speed` | String | The throughput, measured in MiB/s, that you want to provision for the file system. Only applicable with throughput_mode set to provisioned. |
 | `aws_efs_security_group_name` | String | The name of the EFS security group. Defaults to `SG for ${aws_resource_identifier} - EFS`. |
 | `aws_efs_create_replica` | Boolean | Toggle whether a read-only replica should be created for the EFS primary file system. |
 | `aws_efs_replication_destination` | String | AWS Region to target for replication. |
 | `aws_efs_enable_backup_policy` | Boolean | Toggle whether the EFS should have a backup policy. |
-| `aws_efs_transition_to_inactive` | String | Indicates how long it takes to transition files to the IA storage class. |
+| `aws_efs_transition_to_inactive` | String | Indicates how long it takes to transition files to the IA storage class. Defaults to `AFTER_30_DAYS`. |
 | `aws_efs_mount_target` | String | Directory path in efs to mount directory to. Default is `/`. |
 | `aws_efs_ec2_mount_point` | String | The `aws_efs_ec2_mount_point` input represents the folder path within the EC2 instance to the data directory. Default is `/user/ubuntu/<application_repo>/data`. Additionally, this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
 | `aws_efs_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to efs provisioned resources.|
@@ -416,7 +420,9 @@ Option 1, you have access to the `aws_efs_create` attribute which will create a 
 > :warning: Be very careful here! The **EFS is fully managed by Terraform**. Therefor **it will be destroyed upon stack destruction**.
 
 ### 2. Mount EFS
-Option 2, you have access to the `aws_efs_fs_id` attributes, which will mount an existing EFS Volume. 
+Option 2, you have access to the `aws_efs_fs_id` attributes, which will mount an existing EFS Volume. If the volume have mount targets already created, set `aws_efs_create_mount_target` to false. 
+
+If you set `aws_efs_create_mount_target` and `aws_efs_create_ha`, mount targets will be created for all of the availability zones of the region. 
 
 ## Adding external RDS Database
 
