@@ -250,7 +250,7 @@ inputs:
     required: false
 
   # AWS EFS
-  aws_efs_create:
+  aws_efs_create: 
     description: 'Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack.'
     required: false
   aws_efs_fs_id: 
@@ -537,7 +537,7 @@ runs:
 
     - name: Deploy with BitOps
       id: deploy
-      uses: bitovi/github-actions-commons@71-efs-existing-mount-points-error
+      uses: bitovi/github-actions-commons@main
       with:
         # AWS Specific
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
