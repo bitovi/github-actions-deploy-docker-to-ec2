@@ -254,6 +254,9 @@ The following inputs can be used as `step.with` keys
 | `aws_vpc_availability_zones` | String | Comma separated list of availability zones. Defaults to `aws_default_region+<random>` value. If a list is defined, the first zone will be the one used for the EC2 instance. |
 | `aws_vpc_id` | String | **Existing** AWS VPC ID to use. Accepts `vpc-###` values. |
 | `aws_vpc_subnet_id` | String | **Existing** AWS VPC Subnet ID. If none provided, will pick one. (Ideal when there's only one). |
+| `aws_vpc_enable_nat_gateway` | String | Adds a NAT gateway for each public subnet. Defaults to `false`.|
+| `aws_vpc_single_nat_gateway` | String | Toggles only one NAT gateway for all of the public subnets. Defaults to `false`.|
+| `aws_vpc_external_nat_ip_ids` | String | **Existing** comma separated list of IP IDs if reusing. (ElasticIPs). |
 | `aws_vpc_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to vpc provisioned resources.|
 <hr/>
 <br/>
@@ -310,7 +313,7 @@ The following inputs can be used as `step.with` keys
 | `aws_efs_create` | Boolean | Toggle to indicate whether to create an EFS volume and mount it to the EC2 instance as a part of the provisioning. Note: The stack will manage the EFS and will be destroyed along with the stack. |
 | `aws_efs_fs_id` | String | ID of existing EFS volume if you wish to use an existing one. |
 | `aws_efs_create_mount_target` | String | Toggle to indicate whether we should create a mount target for the EFS volume or not. Defaults to `true`.|
-| `aws_efs_create_ha` | Boolean | Toggle to indicate whether the EFS resource should be highly available (mount points in all available zones within region). Defaults to `false`. |
+| `aws_efs_create_ha` | Boolean | Toggle to indicate whether the EFS resource should be highly available (mount points in all available zones within region). |
 | `aws_efs_vol_encrypted` | String | Toggle encryption of the EFS volume. Defaults to `true`.|
 | `aws_efs_kms_key_id` | String | The ARN for the KMS encryption key. Will use default if none defined. |
 | `aws_efs_performance_mode` | String | Toggle perfomance mode. Options are: `generalPurpose` or `maxIO`.|  
@@ -324,7 +327,7 @@ The following inputs can be used as `step.with` keys
 | `aws_efs_enable_backup_policy` | Boolean | Toggle whether the EFS should have a backup policy. |
 | `aws_efs_transition_to_inactive` | String | Indicates how long it takes to transition files to the IA storage class. Defaults to `AFTER_30_DAYS`. |
 | `aws_efs_mount_target` | String | Directory path in efs to mount directory to. Default is `/`. |
-| `aws_efs_ec2_mount_point` | String | The `aws_efs_ec2_mount_point` input represents the folder path within the EC2 instance to the data directory. Default is `data`, which will make the mount point be done in `/home/ubuntu/<application_repo>/data`. Additionally, this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
+| `aws_efs_ec2_mount_point` | String | The `aws_efs_ec2_mount_point` input represents the folder path within the EC2 instance to the data directory. Default is `/user/ubuntu/<application_repo>/data`. Additionally, this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
 | `aws_efs_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to efs provisioned resources.|
 <hr/>
 <br/>

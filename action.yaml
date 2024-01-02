@@ -155,6 +155,15 @@ inputs:
   aws_vpc_subnet_id:
     description: 'Specify a Subnet to be used with the instance. If none provided, will pick one.'
     required: false
+  aws_vpc_enable_nat_gateway:
+    description: 'Enables NAT gateway'
+    required: false
+  aws_vpc_single_nat_gateway:
+    description: 'Creates only one NAT gateway'
+    required: false
+  aws_vpc_external_nat_ip_ids:
+    description: 'Comma separated list of IP IDS to reuse in the NAT gateways'
+    required: false
   aws_vpc_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
@@ -524,9 +533,49 @@ inputs:
 ####
 
 outputs:
+  # VPC
+  aws_vpc_id:
+    description: "The selected VPC ID used."
+    value: ${{ steps.deploy.ouutputs.aws_vpc_id }}
+  # EC2
   vm_url:
     description: "The URL of the generated app"
     value: ${{ steps.deploy.outputs.vm_url }}
+  instance_endpoint:
+    description: "The URL of the generated ec2 instance"
+    value: ${{ steps.deploy.outputs.instance_endpoint }}
+  ec2_sg_id:
+    description: "SG ID for the EC2 instance"
+    value: ${{ steps.deploy.outputs.ec2_sg_id }}
+  # EFS
+  aws_efs_fs_id:
+    description: "EFS FS ID"
+    value: ${{ steps.deploy.outputs.aws_efs_fs_id }}
+  aws_efs_replica_fs_id:
+    description: "EFS FS Replica ID"
+    value: ${{ steps.deploy.outputs.aws_efs_replica_fs_id }}
+  aws_efs_sg_id:
+    description: "EFS FS SG ID"
+    value: ${{ steps.deploy.outputs.aws_efs_sg_id }}
+  # RDS
+  db_endpoint:
+    description: "RDS Endpoint"
+    value: ${{ steps.deploy.outputs.db_endpoint }}
+  db_secret_details_name:
+    description: "AWS Secret name containing db credentials"
+    value: ${{ steps.deploy.outputs.db_secret_details_name }}
+  db_sg_id:
+    description: "SG ID for the RDS instance"
+    value: ${{ steps.deploy.outputs.db_sg_id }}
+  db_proxy_rds_endpoint:
+    description: "Database proxy endpoint"
+    value: ${{ steps.deploy.outputs.db_proxy_rds_endpoint }}
+  db_proxy_secret_name_rds:
+    description: "AWS Secret name containing proxy credentials"
+    value: ${{ steps.deploy.outputs.db_proxy_secret_name_rds }}
+  db_proxy_sg_id_rds:
+    description: "SG ID for the RDS Proxy instance"
+    value: ${{ steps.deploy.outputs.db_proxy_sg_id_rds }}
 
 runs:
   using: 'composite'
@@ -594,6 +643,9 @@ runs:
         aws_vpc_availability_zones: ${{ inputs.aws_vpc_availability_zones }}
         aws_vpc_id: ${{ inputs.aws_vpc_id }}
         aws_vpc_subnet_id: ${{ inputs.aws_vpc_subnet_id }}
+        aws_vpc_enable_nat_gateway: ${{ inputs.aws_vpc_enable_nat_gateway }}
+        aws_vpc_single_nat_gateway: ${{ inputs.aws_vpc_single_nat_gateway }}
+        aws_vpc_external_nat_ip_ids: ${{ inputs.aws_vpc_external_nat_ip_ids }}
         aws_vpc_additional_tags: ${{ inputs.aws_vpc_additional_tags }}
 
         # AWS Route53 Domains abd Certificates
@@ -646,8 +698,6 @@ runs:
         aws_efs_replication_destination: ${{ inputs.aws_efs_replication_destination || inputs.aws_replication_configuration_destination }}
         aws_efs_enable_backup_policy: ${{ inputs.aws_efs_enable_backup_policy || inputs.aws_enable_efs_backup_policy }}
         aws_efs_transition_to_inactive: ${{ inputs.aws_efs_transition_to_inactive }}
-        aws_efs_mount_target: ${{ inputs.aws_efs_mount_target || inputs.efs_mount_target }}
-        aws_efs_ec2_mount_point: ${{ inputs.aws_efs_ec2_mount_point || inputs.application_mount_target }}
         aws_efs_additional_tags: ${{ inputs.aws_efs_additional_tags }}
 
         # AWS RDS
