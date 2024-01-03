@@ -536,7 +536,7 @@ outputs:
   # VPC
   aws_vpc_id:
     description: "The selected VPC ID used."
-    value: ${{ steps.deploy.ouutputs.aws_vpc_id }}
+    value: ${{ steps.deploy.outputs.aws_vpc_id }}
   # EC2
   vm_url:
     description: "The URL of the generated app"
