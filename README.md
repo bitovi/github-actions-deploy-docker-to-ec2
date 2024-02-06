@@ -25,7 +25,7 @@ If you would like to deploy a backend app/service, check out our other actions:
 ## Need help or have questions?
 This project is supported by [Bitovi, a DevOps Consultancy](https://www.bitovi.com/devops-consulting) and a proud supporter of Open Source software.
 
-You can **get help or ask questions** on our [Discord channel](https://discord.gg/J7ejFsZnJ4)! Come hang out with us!
+You can **get help or ask questions** on our [Discord channel](https://discord.gg/zAHn4JBVcX)! Come hang out with us!
 
 Or, you can hire us for training, consulting, or development. [Set up a free consultation](https://www.bitovi.com/devops-consulting).
 ![alt](https://bitovi-gha-pixel-tracker-deployment-main.bitovi-sandbox.com/pixel/UGFZYKgLzZPPVMD9HHgEc)
