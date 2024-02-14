@@ -588,7 +588,7 @@ runs:
   steps:
     - name: Checkout if required
       if: ${{ inputs.checkout == 'true' }}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Deploy with BitOps
       id: deploy
