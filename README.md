@@ -254,8 +254,8 @@ The following inputs can be used as `step.with` keys
 | `aws_vpc_availability_zones` | String | Comma separated list of availability zones. Defaults to `aws_default_region+<random>` value. If a list is defined, the first zone will be the one used for the EC2 instance. |
 | `aws_vpc_id` | String | **Existing** AWS VPC ID to use. Accepts `vpc-###` values. |
 | `aws_vpc_subnet_id` | String | **Existing** AWS VPC Subnet ID. If none provided, will pick one. (Ideal when there's only one). |
-| `aws_vpc_enable_nat_gateway` | String | Adds a NAT gateway for each public subnet. Defaults to `false`.|
-| `aws_vpc_single_nat_gateway` | String | Toggles only one NAT gateway for all of the public subnets. Defaults to `false`.|
+| `aws_vpc_enable_nat_gateway` | Boolean | Adds a NAT gateway for each public subnet. Defaults to `false`. |
+| `aws_vpc_single_nat_gateway` | Boolean | Toggles only one NAT gateway for all of the public subnets. Defaults to `false`. |
 | `aws_vpc_external_nat_ip_ids` | String | **Existing** comma separated list of IP IDs if reusing. (ElasticIPs). |
 | `aws_vpc_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to vpc provisioned resources.|
 <hr/>
@@ -286,6 +286,8 @@ The following inputs can be used as `step.with` keys
 | `aws_elb_listen_port` | String | Load balancer listening port. Default is `80` if NO FQDN provided, `443` if FQDN provided. Accepts comma separated values. |
 | `aws_elb_listen_protocol` | String | Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to `TCP` if NO FQDN provided, `SSL` if FQDN provided. |
 | `aws_elb_healthcheck` | String | Load balancer health check string. Default is `TCP:22`. |
+| `aws_elb_access_log_bucket_name` | String | S3 bucket name to store the ELB access logs. Defaults to `${aws_resource_identifier}-logs` (or `-lg `depending of length). **Bucket will be deleted if stack is destroyed.** | 
+| `aws_elb_access_log_expire` | String | Delete the access logs after this amount of days. Defaults to `90`. Set to `0` in order to disable this policy. | 
 | `aws_elb_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to elb provisioned resources.|
 <hr/>
 <br/>

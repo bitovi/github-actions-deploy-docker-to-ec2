@@ -221,6 +221,12 @@ inputs:
   aws_elb_healthcheck:  # lb_healthcheck
     description: 'Load balancer health check string. Defaults to TCP:22'
     required: false
+  aws_elb_access_log_bucket_name:
+    description: 'S3 bucket name to store the ELB access logs.'
+    required: false
+  aws_elb_access_log_expire:
+    description: 'Delete the access logs after this amount of days. Defaults to 90.'
+    required: false
   aws_elb_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
@@ -586,7 +592,7 @@ runs:
 
     - name: Deploy with BitOps
       id: deploy
-      uses: bitovi/github-actions-commons@debugging-vpc-az-issue
+      uses: bitovi/github-actions-commons@print-footer
       with:
         # AWS Specific
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
@@ -667,6 +673,8 @@ runs:
         aws_elb_listen_port: ${{ inputs.aws_elb_listen_port || inputs.lb_port }}
         aws_elb_listen_protocol: ${{ inputs.aws_elb_listen_protocol }}
         aws_elb_healthcheck: ${{ inputs.aws_elb_healthcheck || inputs.lb_healthcheck }}
+        aws_elb_access_log_bucket_name: ${{ inputs.aws_elb_access_log_bucket_name }}
+        aws_elb_access_log_expire: ${{ inputs.aws_elb_access_log_expire }}
         aws_elb_additional_tags: ${{ inputs.aws_elb_additional_tags }}
         
         # Docker
