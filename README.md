@@ -178,7 +178,7 @@ jobs:
 1. [GitHub Deployment repo inputs](#github-deployment-repo-inputs)
 
 ### Outputs
-1. [Outputs](#outputs)
+1. [Action Outputs](#action-outputs)
 
 The following inputs can be used as `step.with` keys
 <br/>
@@ -391,20 +391,20 @@ The following inputs can be used as `step.with` keys
 <hr/>
 <br/>
 
-#### **Outputs**
+#### **Action Outputs**
 | Name             | Description                        |
 |------------------|------------------------------------|
-| VPC |
+| **VPC** |
 | `aws_vpc_id` | The selected VPC ID used. |
-| EC2 |
+| **EC2** |
 | `vm_url` | The URL of the generated app. |
 | `instance_endpoint` | The URL of the generated ec2 instance. |
 | `ec2_sg_id` | SG ID for the EC2 instance. |
-| EFS |
+| **EFS** |
 | `aws_efs_fs_id` | AWS EFS FS ID of the volume. |
 | `aws_efs_replica_fs_id` | AWS EFS FS ID of the replica volume. |
 | `aws_efs_sg_id` | SG ID for the EFS Volume. |
-| RDS |
+| **RDS** |
 | `db_endpoint` | RDS Endpoint. |
 | `db_secret_details_name` | AWS Secret name containing db credentials. |
 | `db_sg_id` | SG ID for the RDS instance. |
