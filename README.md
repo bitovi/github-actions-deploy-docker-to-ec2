@@ -356,10 +356,16 @@ The following inputs can be used as `step.with` keys
 | `aws_rds_db_subnets`| String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. |
 | `aws_rds_db_allocated_storage`| String | Storage size. Defaults to `10`. |
 | `aws_rds_db_max_allocated_storage`| String | Max storage size. Defaults to `0` to disable auto-scaling. |
+| `aws_rds_db_storage_encrypted` | Boolean | Toogle storage encryption. Defatuls to false. |
+| `aws_rds_db_storage_type` | String | Storage type. Like gp2 / gp3. Defaults to gp2. |
+| `aws_rds_db_kms_key_id` | String | The ARN for the KMS encryption key. |
 | `aws_rds_db_instance_class`| String | DB instance server type. Defaults to `db.t3.micro`. See [this list](https://aws.amazon.com/rds/instance-types/). |
 | `aws_rds_db_final_snapshot` | String | If final snapshot is wanted, add a snapshot name. Leave emtpy if not. |
 | `aws_rds_db_restore_snapshot_identifier` | String | Name of the snapshot to restore the databse from. |
 | `aws_rds_db_cloudwatch_logs_exports`| String | Set of log types to enable for exporting to CloudWatch logs. Defaults to `postgresql`. Options are MySQL and MariaDB: `audit,error,general,slowquery`. PostgreSQL: `postgresql,upgrade`. MSSQL: `agent,error`. Oracle: `alert,audit,listener,trace`. |
+| `aws_rds_db_multi_az` | Boolean| Specifies if the RDS instance is multi-AZ. Defaults to `false`. |
+| `aws_rds_db_maintenance_window` | String | The window to perform maintenance in. Eg: `Mon:00:00-Mon:03:00` |
+| `aws_rds_db_apply_immediately` | Boolean | Specifies whether any database modifications are applied immediately, or during the next maintenance window. Defaults to `false`.|
 | `aws_rds_db_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to RDS provisioned resources.|
 <hr/>
 <br/>

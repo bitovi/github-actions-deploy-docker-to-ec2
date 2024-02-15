@@ -375,6 +375,15 @@ inputs:
   aws_rds_db_instance_class: # aws_postgres_instance_class
     description: 'DB instance server type. Defaults to db.t3.micro.'
     required: false
+  aws_rds_db_storage_encrypted:
+    description: 'Toogle storage encryption. Defatuls to false.'
+    required: false
+  aws_rds_db_storage_type:
+    description: 'Storage type. Like gp2 / gp3. Defaults to gp2.'
+    required: false
+  aws_rds_db_kms_key_id:
+    description: 'The ARN for the KMS encryption key.'
+    required: false
   aws_rds_db_final_snapshot: # aws_postgres_database_final_snapshot
     description: 'Generates a snapshot of the database before deletion.'
     required: false
@@ -383,6 +392,15 @@ inputs:
     required: false
   aws_rds_db_cloudwatch_logs_exports:
     description: 'Set of log types to enable for exporting to CloudWatch logs.'
+    required: false
+  aws_rds_db_multi_az:
+    description: 'Specifies if the RDS instance is multi-AZ'
+    required: false
+  aws_rds_db_maintenance_window:
+    description: 'The window to perform maintenance in. Eg: Mon:00:00-Mon:03:00 '
+    required: false
+  aws_rds_db_apply_immediately:
+    description: 'Specifies whether any database modifications are applied immediately, or during the next maintenance window'
     required: false
   aws_rds_db_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
@@ -725,10 +743,16 @@ runs:
         aws_rds_db_subnets: ${{ inputs.aws_rds_db_subnets || inputs.aws_postgres_subnets }}
         aws_rds_db_allocated_storage: ${{ inputs.aws_rds_db_allocated_storage }}
         aws_rds_db_max_allocated_storage: ${{ inputs.aws_rds_db_max_allocated_storage }}
+        aws_rds_db_storage_encrypted: ${{ inputs.aws_rds_db_storage_encrypted }}
+        aws_rds_db_storage_type: ${{ inputs.aws_rds_db_storage_type }}
+        aws_rds_db_kms_key_id: ${{ inputs.aws_rds_db_kms_key_id }}
         aws_rds_db_instance_class: ${{ inputs.aws_rds_db_instance_class || inputs.aws_postgres_instance_class }}
         aws_rds_db_final_snapshot: ${{ inputs.aws_rds_db_final_snapshot || inputs.aws_postgres_database_final_snapshot }}
         aws_rds_db_restore_snapshot_identifier: ${{ inputs.aws_rds_db_restore_snapshot_identifier }}
         aws_rds_db_cloudwatch_logs_exports: ${{ inputs.aws_rds_db_cloudwatch_logs_exports }}
+        aws_rds_db_multi_az: ${{ inputs.aws_rds_db_multi_az }}
+        aws_rds_db_maintenance_window: ${{ inputs.aws_rds_db_maintenance_window }}
+        aws_rds_db_apply_immediately: ${{ inputs.aws_rds_db_apply_immediately }}
         aws_rds_db_additional_tags: ${{ inputs.aws_rds_db_additional_tags }}
 
         # DB Proxy
