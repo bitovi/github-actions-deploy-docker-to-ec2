@@ -177,6 +177,9 @@ jobs:
 1. [DB Proxy](#db-proxy-inputs)
 1. [GitHub Deployment repo inputs](#github-deployment-repo-inputs)
 
+### Outputs
+1. [Outputs](#outputs)
+
 The following inputs can be used as `step.with` keys
 <br/>
 <br/>
@@ -385,6 +388,29 @@ The following inputs can be used as `step.with` keys
 | `gh_deployment_input_ansible_playbook` | String | Main playbook to be looked for. Defaults to `playbook.yml`.|
 | `gh_deployment_input_ansible_extra_vars_file` | String | Relative path to Ansible extra-vars file. |
 | `gh_deployment_action_input_ansible_extra_vars_file` | String | Relative path to Ansible extra-vars file from deployment to be set up into the action Ansible code. |
+<hr/>
+<br/>
+
+#### **Outputs**
+| Name             | Description                        |
+|------------------|------------------------------------|
+| VPC |
+| `aws_vpc_id` | The selected VPC ID used. |
+| EC2 |
+| `vm_url` | The URL of the generated app. |
+| `instance_endpoint` | The URL of the generated ec2 instance. |
+| `ec2_sg_id` | SG ID for the EC2 instance. |
+| EFS |
+| `aws_efs_fs_id` | AWS EFS FS ID of the volume. |
+| `aws_efs_replica_fs_id` | AWS EFS FS ID of the replica volume. |
+| `aws_efs_sg_id` | SG ID for the EFS Volume. |
+| RDS |
+| `db_endpoint` | RDS Endpoint. |
+| `db_secret_details_name` | AWS Secret name containing db credentials. |
+| `db_sg_id` | SG ID for the RDS instance. |
+| `db_proxy_rds_endpoint` | Database proxy endpoint. |
+| `db_proxy_secret_name_rds` | AWS Secret name containing proxy credentials. |
+| `db_proxy_sg_id_rds` | SG ID for the RDS Proxy instance. |
 <hr/>
 <br/>
 
