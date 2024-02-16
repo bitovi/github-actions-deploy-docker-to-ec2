@@ -610,7 +610,7 @@ runs:
 
     - name: Deploy with BitOps
       id: deploy
-      uses: bitovi/github-actions-commons@v0.0.13
+      uses: bitovi/github-actions-commons@selected-availability-zone-subnet-filter
       with:
         # AWS Specific
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
