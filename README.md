@@ -177,6 +177,9 @@ jobs:
 1. [DB Proxy](#db-proxy-inputs)
 1. [GitHub Deployment repo inputs](#github-deployment-repo-inputs)
 
+### Outputs
+1. [Action Outputs](#action-outputs)
+
 The following inputs can be used as `step.with` keys
 <br/>
 <br/>
@@ -254,6 +257,9 @@ The following inputs can be used as `step.with` keys
 | `aws_vpc_availability_zones` | String | Comma separated list of availability zones. Defaults to `aws_default_region+<random>` value. If a list is defined, the first zone will be the one used for the EC2 instance. |
 | `aws_vpc_id` | String | **Existing** AWS VPC ID to use. Accepts `vpc-###` values. |
 | `aws_vpc_subnet_id` | String | **Existing** AWS VPC Subnet ID. If none provided, will pick one. (Ideal when there's only one). |
+| `aws_vpc_enable_nat_gateway` | Boolean | Adds a NAT gateway for each public subnet. Defaults to `false`. |
+| `aws_vpc_single_nat_gateway` | Boolean | Toggles only one NAT gateway for all of the public subnets. Defaults to `false`. |
+| `aws_vpc_external_nat_ip_ids` | String | **Existing** comma separated list of IP IDs if reusing. (ElasticIPs). |
 | `aws_vpc_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to vpc provisioned resources.|
 <hr/>
 <br/>
@@ -283,6 +289,8 @@ The following inputs can be used as `step.with` keys
 | `aws_elb_listen_port` | String | Load balancer listening port. Default is `80` if NO FQDN provided, `443` if FQDN provided. Accepts comma separated values. |
 | `aws_elb_listen_protocol` | String | Protocol to enable. Could be HTTP, HTTPS, TCP or SSL. Defaults to `TCP` if NO FQDN provided, `SSL` if FQDN provided. |
 | `aws_elb_healthcheck` | String | Load balancer health check string. Default is `TCP:22`. |
+| `aws_elb_access_log_bucket_name` | String | S3 bucket name to store the ELB access logs. Defaults to `${aws_resource_identifier}-logs` (or `-lg `depending of length). **Bucket will be deleted if stack is destroyed.** | 
+| `aws_elb_access_log_expire` | String | Delete the access logs after this amount of days. Defaults to `90`. Set to `0` in order to disable this policy. | 
 | `aws_elb_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to elb provisioned resources.|
 <hr/>
 <br/>
@@ -307,16 +315,22 @@ The following inputs can be used as `step.with` keys
 #### **EFS Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
-| `aws_efs_create` | Boolean | Toggle to indicate whether to create an EFS and mount it to the EC2 instance as a part of the provisioning. Note: The stack will manage the EFS and will be destroyed along with the stack. |
-| `aws_efs_create_ha` | Boolean | Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within a region). |
+| `aws_efs_create` | Boolean | Toggle to indicate whether to create an EFS volume and mount it to the EC2 instance as a part of the provisioning. Note: The stack will manage the EFS and will be destroyed along with the stack. |
 | `aws_efs_fs_id` | String | ID of existing EFS volume if you wish to use an existing one. |
-| `aws_efs_vpc_id` | String | ID of the VPC for the EFS mount target. If `aws_efs_create_ha` is set to `true`, will create one mount target per subnet available in the VPC. If not, will create one in an automated selected region. |
-| `aws_efs_subnet_ids` | String | ID (or ID's) of the subnet for the EFS mount target. (Comma separated string.) |
+| `aws_efs_create_mount_target` | String | Toggle to indicate whether we should create a mount target for the EFS volume or not. Defaults to `true`.|
+| `aws_efs_create_ha` | Boolean | Toggle to indicate whether the EFS resource should be highly available (mount points in all available zones within region). |
+| `aws_efs_vol_encrypted` | String | Toggle encryption of the EFS volume. Defaults to `true`.|
+| `aws_efs_kms_key_id` | String | The ARN for the KMS encryption key. Will use default if none defined. |
+| `aws_efs_performance_mode` | String | Toggle perfomance mode. Options are: `generalPurpose` or `maxIO`.|  
+| `aws_efs_throughput_mode` | String | Throughput mode for the file system. Defaults to `bursting`. Valid values: `bursting`, `provisioned`, or `elastic`. When using provisioned, also set `aws_efs_throughput_speed`. |
+| `aws_efs_throughput_speed` | String | The throughput, measured in MiB/s, that you want to provision for the file system. Only applicable with throughput_mode set to provisioned. |
 | `aws_efs_security_group_name` | String | The name of the EFS security group. Defaults to `SG for ${aws_resource_identifier} - EFS`. |
+| `aws_efs_allowed_security_groups` | String | Extra names of the security grou-ps to access the EFS volume. Accepts comma separated list of. |
+| `aws_efs_ingress_allow_all` | Boolean | Allow access from 0.0.0.0/0 in the same VPC. Defaults to `true`. |
 | `aws_efs_create_replica` | Boolean | Toggle whether a read-only replica should be created for the EFS primary file system. |
 | `aws_efs_replication_destination` | String | AWS Region to target for replication. |
 | `aws_efs_enable_backup_policy` | Boolean | Toggle whether the EFS should have a backup policy. |
-| `aws_efs_transition_to_inactive` | String | Indicates how long it takes to transition files to the IA storage class. |
+| `aws_efs_transition_to_inactive` | String | Indicates how long it takes to transition files to the IA storage class. Defaults to `AFTER_30_DAYS`. |
 | `aws_efs_mount_target` | String | Directory path in efs to mount directory to. Default is `/`. |
 | `aws_efs_ec2_mount_point` | String | The `aws_efs_ec2_mount_point` input represents the folder path within the EC2 instance to the data directory. Default is `/user/ubuntu/<application_repo>/data`. Additionally, this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
 | `aws_efs_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to efs provisioned resources.|
@@ -342,10 +356,16 @@ The following inputs can be used as `step.with` keys
 | `aws_rds_db_subnets`| String | Specify which subnets to use as a list of strings.  Example: `i-1234,i-5678,i-9101`. |
 | `aws_rds_db_allocated_storage`| String | Storage size. Defaults to `10`. |
 | `aws_rds_db_max_allocated_storage`| String | Max storage size. Defaults to `0` to disable auto-scaling. |
+| `aws_rds_db_storage_encrypted` | Boolean | Toogle storage encryption. Defatuls to false. |
+| `aws_rds_db_storage_type` | String | Storage type. Like gp2 / gp3. Defaults to gp2. |
+| `aws_rds_db_kms_key_id` | String | The ARN for the KMS encryption key. |
 | `aws_rds_db_instance_class`| String | DB instance server type. Defaults to `db.t3.micro`. See [this list](https://aws.amazon.com/rds/instance-types/). |
 | `aws_rds_db_final_snapshot` | String | If final snapshot is wanted, add a snapshot name. Leave emtpy if not. |
 | `aws_rds_db_restore_snapshot_identifier` | String | Name of the snapshot to restore the databse from. |
 | `aws_rds_db_cloudwatch_logs_exports`| String | Set of log types to enable for exporting to CloudWatch logs. Defaults to `postgresql`. Options are MySQL and MariaDB: `audit,error,general,slowquery`. PostgreSQL: `postgresql,upgrade`. MSSQL: `agent,error`. Oracle: `alert,audit,listener,trace`. |
+| `aws_rds_db_multi_az` | Boolean| Specifies if the RDS instance is multi-AZ. Defaults to `false`. |
+| `aws_rds_db_maintenance_window` | String | The window to perform maintenance in. Eg: `Mon:00:00-Mon:03:00` |
+| `aws_rds_db_apply_immediately` | Boolean | Specifies whether any database modifications are applied immediately, or during the next maintenance window. Defaults to `false`.|
 | `aws_rds_db_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to RDS provisioned resources.|
 <hr/>
 <br/>
@@ -374,6 +394,29 @@ The following inputs can be used as `step.with` keys
 | `gh_deployment_input_ansible_playbook` | String | Main playbook to be looked for. Defaults to `playbook.yml`.|
 | `gh_deployment_input_ansible_extra_vars_file` | String | Relative path to Ansible extra-vars file. |
 | `gh_deployment_action_input_ansible_extra_vars_file` | String | Relative path to Ansible extra-vars file from deployment to be set up into the action Ansible code. |
+<hr/>
+<br/>
+
+#### **Action Outputs**
+| Name             | Description                        |
+|------------------|------------------------------------|
+| **VPC** |
+| `aws_vpc_id` | The selected VPC ID used. |
+| **EC2** |
+| `vm_url` | The URL of the generated app. |
+| `instance_endpoint` | The URL of the generated ec2 instance. |
+| `ec2_sg_id` | SG ID for the EC2 instance. |
+| **EFS** |
+| `aws_efs_fs_id` | AWS EFS FS ID of the volume. |
+| `aws_efs_replica_fs_id` | AWS EFS FS ID of the replica volume. |
+| `aws_efs_sg_id` | SG ID for the EFS Volume. |
+| **RDS** |
+| `db_endpoint` | RDS Endpoint. |
+| `db_secret_details_name` | AWS Secret name containing db credentials. |
+| `db_sg_id` | SG ID for the RDS instance. |
+| `db_proxy_rds_endpoint` | Database proxy endpoint. |
+| `db_proxy_secret_name_rds` | AWS Secret name containing proxy credentials. |
+| `db_proxy_sg_id_rds` | SG ID for the RDS Proxy instance. |
 <hr/>
 <br/>
 
@@ -416,7 +459,9 @@ Option 1, you have access to the `aws_efs_create` attribute which will create a 
 > :warning: Be very careful here! The **EFS is fully managed by Terraform**. Therefor **it will be destroyed upon stack destruction**.
 
 ### 2. Mount EFS
-Option 2, you have access to the `aws_efs_fs_id` attributes, which will mount an existing EFS Volume. 
+Option 2, you have access to the `aws_efs_fs_id` attributes, which will mount an existing EFS Volume. If the volume have mount targets already created, set `aws_efs_create_mount_target` to false. 
+
+If you set `aws_efs_create_mount_target` and `aws_efs_create_ha`, mount targets will be created for all of the availability zones of the region. 
 
 ## Adding external RDS Database
 

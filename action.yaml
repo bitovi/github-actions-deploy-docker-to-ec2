@@ -155,6 +155,15 @@ inputs:
   aws_vpc_subnet_id:
     description: 'Specify a Subnet to be used with the instance. If none provided, will pick one.'
     required: false
+  aws_vpc_enable_nat_gateway:
+    description: 'Enables NAT gateway'
+    required: false
+  aws_vpc_single_nat_gateway:
+    description: 'Creates only one NAT gateway'
+    required: false
+  aws_vpc_external_nat_ip_ids:
+    description: 'Comma separated list of IP IDS to reuse in the NAT gateways'
+    required: false
   aws_vpc_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
@@ -212,6 +221,12 @@ inputs:
   aws_elb_healthcheck:  # lb_healthcheck
     description: 'Load balancer health check string. Defaults to TCP:22'
     required: false
+  aws_elb_access_log_bucket_name:
+    description: 'S3 bucket name to store the ELB access logs.'
+    required: false
+  aws_elb_access_log_expire:
+    description: 'Delete the access logs after this amount of days. Defaults to 90.'
+    required: false
   aws_elb_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
@@ -250,44 +265,62 @@ inputs:
     required: false
 
   # AWS EFS
-  aws_efs_create: # aws_create_efs
-    description: 'Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack'
+  aws_efs_create: 
+    description: 'Toggle to indicate whether to create and EFS and mount it to the ec2 as a part of the provisioning. Note: The EFS will be managed by the stack and will be destroyed along with the stack.'
     required: false
-  aws_efs_create_ha: # aws_create_ha_efs
-    description: 'Toggle to indicate whether the EFS resource should be highly available (target mounts in all available zones within region)'
-    required: false
-  aws_efs_fs_id: # aws_mount_efs_id
+  aws_efs_fs_id: 
     description: 'ID of existing EFS'
     required: false
-  aws_efs_vpc_id:
-    description: 'ID of the VPC for the EFS mount target. If aws_efs_create_ha is set to true, will create one mount target per subnet available in the VPC. If not, will pick one.'
+  aws_efs_create_mount_target: 
+    description: 'Toggle to indicate whether we should create a mount target for the EFS volume. Accepts incoming fs_id with no mount targets too.'
     required: false
-  aws_efs_subnet_ids:
-    description: 'ID or IDs of the subnet for the EFS mount target.'
+  aws_efs_create_ha: 
+    description: 'Toggle to indicate whether the EFS resource should be highly available (mount points in all available zones within region).'
     required: false
-  aws_efs_security_group_name:
-    description:  'The name of the EFS security group'
+  aws_efs_vol_encrypted: 
+    description: 'Toggle encryption of the EFS volume.'
     required: false
-  aws_efs_create_replica: # aws_create_efs_replica
+  aws_efs_kms_key_id: 
+    description: 'The ARN for the KMS encryption key. Default key will be used if none defined.'
+    required: false
+  aws_efs_performance_mode: 
+    description: 'Toggle perfomance mode. Options are: generalPurpose or maxIO.'
+    required: false
+  aws_efs_throughput_mode: 
+    description: 'Throughput mode for the file system. Defaults to bursting. Valid values: bursting, provisioned, or elastic. When using provisioned, also set provisioned_throughput_in_mibps.'
+    required: false
+  aws_efs_throughput_speed: 
+    description: 'The throughput, measured in MiB/s, that you want to provision for the file system. Only applicable with throughput_mode set to provisioned.'
+    required: false
+  aws_efs_security_group_name: 
+    description: 'The name of the EFS security group. Defaults to SG for aws_resource_identifier - EFS.'
+    required: false
+  aws_efs_allowed_security_groups: 
+    description: 'Comma separated list of security groups to be added to the EFS SG.'
+    required: false
+  aws_efs_ingress_allow_all: 
+    description: 'Allow incoming traffic from 0.0.0.0/0.'
+    required: false
+  aws_efs_create_replica: 
     description: 'Toggle to indiciate whether a read-only replica should be created for the EFS primary file system'
     required: false
-  aws_efs_replication_destination: # aws_replication_configuration_destination
+  aws_efs_replication_destination: 
     description: 'AWS Region to target for replication'
     required: false
-  aws_efs_enable_backup_policy: # aws_enable_efs_backup_policy
-    description: 'Toggle to indiciate whether the EFS should have a backup policy, default is false'
+  aws_efs_enable_backup_policy: 
+    description: 'Toggle to indiciate whether the EFS should have a backup policy, default is `false`'
     required: false
-  aws_efs_transition_to_inactive:
-    description: 'Indicates how long it takes to transition files to the IA storage class.'
+  aws_efs_transition_to_inactive: 
+    description: 'https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system#transition_to_ia'
     required: false
-  aws_efs_mount_target: # efs_mount_target
-    description: 'Directory path in the EFS volume to mount directory to. Default is /.'
+  aws_efs_mount_target: 
+    description: 'Directory path in efs to mount to'
     required: false
-  aws_efs_ec2_mount_point: # application_mount_target
-    description: 'Directory path in EC2 Instance to mount the EFS volume. Default is `data`. Exported as `HOST_DIR` in `.env`'
+  aws_efs_ec2_mount_point: 
+    description: 'Directory path in application env to mount directory'
     required: false
-  aws_efs_additional_tags:
-    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
+  aws_efs_additional_tags: 
+    description: 'A list of strings that will be added to created resources'
     required: false
 
  # AWS RDS
@@ -342,6 +375,15 @@ inputs:
   aws_rds_db_instance_class: # aws_postgres_instance_class
     description: 'DB instance server type. Defaults to db.t3.micro.'
     required: false
+  aws_rds_db_storage_encrypted:
+    description: 'Toogle storage encryption. Defatuls to false.'
+    required: false
+  aws_rds_db_storage_type:
+    description: 'Storage type. Like gp2 / gp3. Defaults to gp2.'
+    required: false
+  aws_rds_db_kms_key_id:
+    description: 'The ARN for the KMS encryption key.'
+    required: false
   aws_rds_db_final_snapshot: # aws_postgres_database_final_snapshot
     description: 'Generates a snapshot of the database before deletion.'
     required: false
@@ -350,6 +392,15 @@ inputs:
     required: false
   aws_rds_db_cloudwatch_logs_exports:
     description: 'Set of log types to enable for exporting to CloudWatch logs.'
+    required: false
+  aws_rds_db_multi_az:
+    description: 'Specifies if the RDS instance is multi-AZ'
+    required: false
+  aws_rds_db_maintenance_window:
+    description: 'The window to perform maintenance in. Eg: Mon:00:00-Mon:03:00 '
+    required: false
+  aws_rds_db_apply_immediately:
+    description: 'Specifies whether any database modifications are applied immediately, or during the next maintenance window'
     required: false
   aws_rds_db_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
@@ -506,20 +557,60 @@ inputs:
 ####
 
 outputs:
+  # VPC
+  aws_vpc_id:
+    description: "The selected VPC ID used."
+    value: ${{ steps.deploy.outputs.aws_vpc_id }}
+  # EC2
   vm_url:
     description: "The URL of the generated app"
     value: ${{ steps.deploy.outputs.vm_url }}
+  instance_endpoint:
+    description: "The URL of the generated ec2 instance"
+    value: ${{ steps.deploy.outputs.instance_endpoint }}
+  ec2_sg_id:
+    description: "SG ID for the EC2 instance"
+    value: ${{ steps.deploy.outputs.ec2_sg_id }}
+  # EFS
+  aws_efs_fs_id:
+    description: "EFS FS ID"
+    value: ${{ steps.deploy.outputs.aws_efs_fs_id }}
+  aws_efs_replica_fs_id:
+    description: "EFS FS Replica ID"
+    value: ${{ steps.deploy.outputs.aws_efs_replica_fs_id }}
+  aws_efs_sg_id:
+    description: "EFS FS SG ID"
+    value: ${{ steps.deploy.outputs.aws_efs_sg_id }}
+  # RDS
+  db_endpoint:
+    description: "RDS Endpoint"
+    value: ${{ steps.deploy.outputs.db_endpoint }}
+  db_secret_details_name:
+    description: "AWS Secret name containing db credentials"
+    value: ${{ steps.deploy.outputs.db_secret_details_name }}
+  db_sg_id:
+    description: "SG ID for the RDS instance"
+    value: ${{ steps.deploy.outputs.db_sg_id }}
+  db_proxy_rds_endpoint:
+    description: "Database proxy endpoint"
+    value: ${{ steps.deploy.outputs.db_proxy_rds_endpoint }}
+  db_proxy_secret_name_rds:
+    description: "AWS Secret name containing proxy credentials"
+    value: ${{ steps.deploy.outputs.db_proxy_secret_name_rds }}
+  db_proxy_sg_id_rds:
+    description: "SG ID for the RDS Proxy instance"
+    value: ${{ steps.deploy.outputs.db_proxy_sg_id_rds }}
 
 runs:
   using: 'composite'
   steps:
     - name: Checkout if required
       if: ${{ inputs.checkout == 'true' }}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Deploy with BitOps
       id: deploy
-      uses: bitovi/github-actions-commons@v0.0.10
+      uses: bitovi/github-actions-commons@v0.0.13
       with:
         # AWS Specific
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
@@ -576,6 +667,9 @@ runs:
         aws_vpc_availability_zones: ${{ inputs.aws_vpc_availability_zones }}
         aws_vpc_id: ${{ inputs.aws_vpc_id }}
         aws_vpc_subnet_id: ${{ inputs.aws_vpc_subnet_id }}
+        aws_vpc_enable_nat_gateway: ${{ inputs.aws_vpc_enable_nat_gateway }}
+        aws_vpc_single_nat_gateway: ${{ inputs.aws_vpc_single_nat_gateway }}
+        aws_vpc_external_nat_ip_ids: ${{ inputs.aws_vpc_external_nat_ip_ids }}
         aws_vpc_additional_tags: ${{ inputs.aws_vpc_additional_tags }}
 
         # AWS Route53 Domains abd Certificates
@@ -597,6 +691,8 @@ runs:
         aws_elb_listen_port: ${{ inputs.aws_elb_listen_port || inputs.lb_port }}
         aws_elb_listen_protocol: ${{ inputs.aws_elb_listen_protocol }}
         aws_elb_healthcheck: ${{ inputs.aws_elb_healthcheck || inputs.lb_healthcheck }}
+        aws_elb_access_log_bucket_name: ${{ inputs.aws_elb_access_log_bucket_name }}
+        aws_elb_access_log_expire: ${{ inputs.aws_elb_access_log_expire }}
         aws_elb_additional_tags: ${{ inputs.aws_elb_additional_tags }}
         
         # Docker
@@ -613,17 +709,21 @@ runs:
 
         # AWS EFS
         aws_efs_create: ${{ inputs.aws_efs_create || inputs.aws_create_efs }}
-        aws_efs_create_ha: ${{ inputs.aws_efs_create_ha || inputs.aws_create_ha_efs }}
         aws_efs_fs_id: ${{ inputs.aws_efs_fs_id || inputs.aws_mount_efs_id }}
-        aws_efs_vpc_id: ${{ inputs.aws_efs_vpc_id }}
-        aws_efs_subnet_ids: ${{ inputs.aws_efs_subnet_ids }}
+        aws_efs_create_mount_target: ${{ inputs.aws_efs_create_mount_target }}
+        aws_efs_create_ha: ${{ inputs.aws_efs_create_ha || inputs.aws_create_ha_efs }}
+        aws_efs_vol_encrypted: ${{ inputs.aws_efs_vol_encrypted }}
+        aws_efs_kms_key_id: ${{ inputs.aws_efs_kms_key_id }}
+        aws_efs_performance_mode: ${{ inputs.aws_efs_performance_mode }}
+        aws_efs_throughput_mode: ${{ inputs.aws_efs_throughput_mode }}
+        aws_efs_throughput_speed: ${{ inputs.aws_efs_throughput_speed }}
         aws_efs_security_group_name: ${{ inputs.aws_efs_security_group_name }}
+        aws_efs_allowed_security_groups: ${{ inputs.aws_efs_allowed_security_groups }}
+        aws_efs_ingress_allow_all: ${{ inputs.aws_efs_ingress_allow_all }}
         aws_efs_create_replica: ${{ inputs.aws_efs_create_replica || inputs.aws_create_efs_replica }}
         aws_efs_replication_destination: ${{ inputs.aws_efs_replication_destination || inputs.aws_replication_configuration_destination }}
         aws_efs_enable_backup_policy: ${{ inputs.aws_efs_enable_backup_policy || inputs.aws_enable_efs_backup_policy }}
         aws_efs_transition_to_inactive: ${{ inputs.aws_efs_transition_to_inactive }}
-        aws_efs_mount_target: ${{ inputs.aws_efs_mount_target || inputs.efs_mount_target }}
-        aws_efs_ec2_mount_point: ${{ inputs.aws_efs_ec2_mount_point || inputs.application_mount_target }}
         aws_efs_additional_tags: ${{ inputs.aws_efs_additional_tags }}
 
         # AWS RDS
@@ -643,10 +743,16 @@ runs:
         aws_rds_db_subnets: ${{ inputs.aws_rds_db_subnets || inputs.aws_postgres_subnets }}
         aws_rds_db_allocated_storage: ${{ inputs.aws_rds_db_allocated_storage }}
         aws_rds_db_max_allocated_storage: ${{ inputs.aws_rds_db_max_allocated_storage }}
+        aws_rds_db_storage_encrypted: ${{ inputs.aws_rds_db_storage_encrypted }}
+        aws_rds_db_storage_type: ${{ inputs.aws_rds_db_storage_type }}
+        aws_rds_db_kms_key_id: ${{ inputs.aws_rds_db_kms_key_id }}
         aws_rds_db_instance_class: ${{ inputs.aws_rds_db_instance_class || inputs.aws_postgres_instance_class }}
         aws_rds_db_final_snapshot: ${{ inputs.aws_rds_db_final_snapshot || inputs.aws_postgres_database_final_snapshot }}
         aws_rds_db_restore_snapshot_identifier: ${{ inputs.aws_rds_db_restore_snapshot_identifier }}
         aws_rds_db_cloudwatch_logs_exports: ${{ inputs.aws_rds_db_cloudwatch_logs_exports }}
+        aws_rds_db_multi_az: ${{ inputs.aws_rds_db_multi_az }}
+        aws_rds_db_maintenance_window: ${{ inputs.aws_rds_db_maintenance_window }}
+        aws_rds_db_apply_immediately: ${{ inputs.aws_rds_db_apply_immediately }}
         aws_rds_db_additional_tags: ${{ inputs.aws_rds_db_additional_tags }}
 
         # DB Proxy
