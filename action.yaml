@@ -623,7 +623,7 @@ runs:
         echo "========================================"
         echo "gh input: ${env_repo}"
         echo "gh input: ${repo_env}"
-        echo "merged: ${{merged}}"
+        echo "merged: ${merged}"
         echo "========================================"
 
       shell: bash
