@@ -614,9 +614,9 @@ runs:
     # the inputs are put into env vars first
     - name: Echo out the inputs
       env:
-        env_repo: ${{ inputs.env_repo }}
-        repo_env: ${{ inputs.repo_env }}
-        merged: ${{ inputs.env_repo || inputs.repo_env }}
+        env_repo: "${{ inputs.env_repo }}"
+        repo_env: "${{ inputs.repo_env }}"
+        merged: "${{ inputs.env_repo || inputs.repo_env }}"
       run: |
         echo "========================================"
         echo ""Debugging"
