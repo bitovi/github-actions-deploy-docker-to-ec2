@@ -619,7 +619,7 @@ runs:
         merged: "${{ inputs.env_repo || inputs.repo_env }}"
       run: |
         echo "========================================"
-        echo ""Debugging"
+        echo "Debugging"
         echo "========================================"
         echo "gh input: ${env_repo}"
         echo "gh input: ${repo_env}"
