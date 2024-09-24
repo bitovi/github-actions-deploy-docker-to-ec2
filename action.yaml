@@ -608,6 +608,25 @@ runs:
       if: ${{ inputs.checkout == 'true' }}
       uses: actions/checkout@v4
 
+    # bash step to echo out the following:
+    # gh input: inputs.env_repo
+    # gh input: inputs.repo_env
+    # the inputs are put into env vars first
+    - name: Echo out the inputs
+      env:
+        env_repo: ${{ inputs.env_repo }}
+        repo_env: ${{ inputs.repo_env }}
+        merged: ${{ inputs.env_repo || inputs.repo_env }}
+      run: |
+        echo "========================================"
+        echo ""Debugging"
+        echo "========================================"
+        echo "gh input: ${env_repo}"
+        echo "gh input: ${repo_env}"
+        echo "merged: ${{merged}}"
+        echo "========================================"
+
+      shell: bash
     - name: Deploy with BitOps
       id: deploy
       uses: bitovi/github-actions-commons@v0.0.13
