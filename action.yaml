@@ -610,7 +610,7 @@ runs:
 
     - name: Deploy with BitOps
       id: deploy
-      uses: bitovi/github-actions-commons@v1
+      uses: bitovi/github-actions-commons@fixing_cert_arn_override
       with:
         # AWS Specific
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
