@@ -230,7 +230,18 @@ inputs:
   aws_elb_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
-  
+
+  # AWS Load Balancer Type
+  aws_lb_type:
+    description: 'Load balancer type: "elb" or "alb". Defaults to "elb"'
+    required: false
+  aws_alb_enable_waf:
+    description: 'Enable AWS WAF v2 for ALB (only applicable when aws_lb_type is "alb")'
+    required: false
+  aws_alb_subnets:
+    description: 'Comma-separated list of subnet IDs for ALB. If empty, will use single subnet from VPC configuration (only applicable when aws_lb_type is "alb")'
+    required: false
+
   # Docker 
   docker_install: 
     description: 'Define if docker should be installed. After this, docker-compose up will be excecuted.'
@@ -610,7 +621,7 @@ runs:
 
     - name: Deploy with BitOps
       id: deploy
-      uses: bitovi/github-actions-commons@v1
+      uses: bitovi/github-actions-commons@add-alb
       with:
         # AWS Specific
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
@@ -695,6 +706,11 @@ runs:
         aws_elb_access_log_expire: ${{ inputs.aws_elb_access_log_expire }}
         aws_elb_additional_tags: ${{ inputs.aws_elb_additional_tags }}
         
+        # AWS Load Balancer Type
+        aws_lb_type: ${{ inputs.aws_lb_type }}
+        aws_alb_enable_waf: ${{ inputs.aws_alb_enable_waf }}
+        aws_alb_subnets: ${{ inputs.aws_alb_subnets }}
+
         # Docker
         docker_install: ${{ inputs.docker_install }}
         docker_remove_orphans: ${{ inputs.docker_remove_orphans }}
