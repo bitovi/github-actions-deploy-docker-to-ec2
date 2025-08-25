@@ -621,7 +621,7 @@ runs:
 
     - name: Deploy with BitOps
       id: deploy
-      uses: bitovi/github-actions-commons@add-alb
+      uses: bitovi/github-actions-commons@ecs-lb-waf-fixes
       with:
         # AWS Specific
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
