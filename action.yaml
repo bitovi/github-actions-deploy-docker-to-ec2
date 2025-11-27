@@ -606,11 +606,11 @@ runs:
   steps:
     - name: Checkout if required
       if: ${{ inputs.checkout == 'true' }}
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Deploy with BitOps
       id: deploy
-      uses: bitovi/github-actions-commons@v1
+      uses: bitovi/github-actions-commons@terraform-format
       with:
         # AWS Specific
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
