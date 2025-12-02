@@ -207,6 +207,7 @@ The following inputs can be used as `step.with` keys
 | `tf_state_file_name_append` | String | Appends a string to the tf-state-file. Setting this to `unique` will generate `tf-state-aws-unique`. (Can co-exist with `tf_state_file_name`) |
 | `tf_state_bucket` | String | AWS S3 bucket name to use for Terraform state. See [note](#s3-buckets-naming) | 
 | `tf_state_bucket_destroy` | Boolean | Force purge and deletion of S3 bucket defined. Only evaluated when `tf_stack_destroy` is also `true`, so it is safe to leave this enabled when standing up your stack. Defaults to `false`. |
+| `tf_state_bucket_prevent_destroy` | Boolean | Prevent Terraform from destroying the S3 state bucket. Set to `true` to enable lifecycle prevent_destroy. Defaults to `true`. |
 | `tf_targets` | List | A list of targets to create before the full stack creation. | 
 | `ansible_skip` | Boolean | Skip Ansible execution after Terraform excecution. Default is `false`.|
 | `ansible_ssh_to_private_ip` | Boolean | Make Ansible connect to the private IP of the instance. Only usefull if using a hosted runner in the same network. Default is `false`. | 
@@ -243,6 +244,7 @@ The following inputs can be used as `step.with` keys
 | `aws_ec2_user_data_file` | String | Relative path in the repo for a user provided script to be executed with Terraform EC2 Instance creation. See [this note](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html#user-data-shell-scripts). Make sure the add the executable flag to the file. |
 | `aws_ec2_user_data_replace_on_change`| Boolean | If `aws_ec2_user_data_file` file changes, instance will stop and start. Hence public IP will change. This will destroy and recreate the instance. Defaults to `true`. |
 | `aws_ec2_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to ec2 provisioned resources.|
+| `aws_ec2_prevent_destroy` | Boolean | Prevent Terraform from destroying the EC2 instance. Set to `true` to enable lifecycle prevent_destroy. Defaults to `true`. |
 <hr/>
 <br/>
 
@@ -261,6 +263,7 @@ The following inputs can be used as `step.with` keys
 | `aws_vpc_single_nat_gateway` | Boolean | Toggles only one NAT gateway for all of the public subnets. Defaults to `false`. |
 | `aws_vpc_external_nat_ip_ids` | String | **Existing** comma separated list of IP IDs if reusing. (ElasticIPs). |
 | `aws_vpc_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to vpc provisioned resources.|
+| `aws_vpc_prevent_destroy` | Boolean | Prevent Terraform from destroying the VPC. Set to `true` to enable lifecycle prevent_destroy. Defaults to `true`. |
 <hr/>
 <br/>
 
@@ -276,6 +279,7 @@ The following inputs can be used as `step.with` keys
 | `aws_r53_create_root_cert` | Boolean | Generates and manage the root cert for the application. **See note**. Default is `false`. |
 | `aws_r53_create_sub_cert` | Boolean | Generates and manage the sub-domain certificate for the application. **See note**. Default is `false`. |
 | `aws_r53_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to R53 provisioned resources.|
+| `aws_r53_cert_prevent_destroy` | Boolean | Prevent Terraform from destroying Route53 certificates. Set to `true` to enable lifecycle prevent_destroy. Defaults to `true`. |
 <hr/>
 <br/>
 
@@ -292,6 +296,7 @@ The following inputs can be used as `step.with` keys
 | `aws_elb_access_log_bucket_name` | String | S3 bucket name to store the ELB access logs. Defaults to `${aws_resource_identifier}-logs` (or `-lg `depending of length). **Bucket will be deleted if stack is destroyed.** | 
 | `aws_elb_access_log_expire` | String | Delete the access logs after this amount of days. Defaults to `90`. Set to `0` in order to disable this policy. | 
 | `aws_elb_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to elb provisioned resources.|
+| `aws_elb_prevent_destroy` | Boolean | Prevent Terraform from destroying the load balancer. Set to `true` to enable lifecycle prevent_destroy. Defaults to `true`. |
 <hr/>
 <br/>
 
@@ -334,6 +339,7 @@ The following inputs can be used as `step.with` keys
 | `aws_efs_mount_target` | String | Directory path in efs to mount directory to. Default is `/`. |
 | `aws_efs_ec2_mount_point` | String | The `aws_efs_ec2_mount_point` input represents the folder path within the EC2 instance to the data directory. Default is `/user/ubuntu/<application_repo>/data`. Additionally, this value is loaded into the docker-compose `.env` file as `HOST_DIR`. |
 | `aws_efs_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to efs provisioned resources.|
+| `aws_efs_prevent_destroy` | Boolean | Prevent Terraform from destroying the EFS file system. Set to `true` to enable lifecycle prevent_destroy. Defaults to `true`. |
 <hr/>
 <br/>
 
@@ -365,8 +371,9 @@ The following inputs can be used as `step.with` keys
 | `aws_rds_db_cloudwatch_logs_exports`| String | Set of log types to enable for exporting to CloudWatch logs. Defaults to `postgresql`. Options are MySQL and MariaDB: `audit,error,general,slowquery`. PostgreSQL: `postgresql,upgrade`. MSSQL: `agent,error`. Oracle: `alert,audit,listener,trace`. |
 | `aws_rds_db_multi_az` | Boolean| Specifies if the RDS instance is multi-AZ. Defaults to `false`. |
 | `aws_rds_db_maintenance_window` | String | The window to perform maintenance in. Eg: `Mon:00:00-Mon:03:00` |
-| `aws_rds_db_apply_immediately` | Boolean | Specifies whether any database modifications are applied immediately, or during the next maintenance window. Defaults to `false`.|
+| `aws_rds_db_apply_immediately` | Boolean | Specifies whether any database modifications are applied immediately, or during the next maintenance window. Defaults to `false`.|
 | `aws_rds_db_additional_tags` | JSON | Add additional tags to the terraform [default tags](https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider), any tags put here will be added to RDS provisioned resources.|
+| `aws_rds_db_prevent_destroy` | Boolean | Prevent Terraform from destroying the RDS database. Set to `true` to enable lifecycle prevent_destroy. Defaults to `true`. **Important: This protects your database from accidental deletion.** |
 <hr/>
 <br/>
 
@@ -462,6 +469,61 @@ Option 1, you have access to the `aws_efs_create` attribute which will create a 
 Option 2, you have access to the `aws_efs_fs_id` attributes, which will mount an existing EFS Volume. If the volume have mount targets already created, set `aws_efs_create_mount_target` to false. 
 
 If you set `aws_efs_create_mount_target` and `aws_efs_create_ha`, mount targets will be created for all of the availability zones of the region. 
+
+## Protecting Resources with Prevent Destroy
+
+To protect critical infrastructure from accidental deletion, the `prevent_destroy` lifecycle flag is **enabled by default** on various AWS resources. When enabled, Terraform will refuse to destroy the resource, providing an extra layer of safety for your production infrastructure.
+
+### Available Prevent Destroy Flags
+
+The following resources have `prevent_destroy` enabled by default (all default to `true`):
+
+- **`tf_state_bucket_prevent_destroy`** - Protects the S3 bucket containing Terraform state
+- **`aws_ec2_prevent_destroy`** - Protects the EC2 instance
+- **`aws_vpc_prevent_destroy`** - Protects the VPC infrastructure
+- **`aws_r53_cert_prevent_destroy`** - Protects Route53 certificates
+- **`aws_elb_prevent_destroy`** - Protects the Elastic Load Balancer
+- **`aws_efs_prevent_destroy`** - Protects the EFS file system
+- **`aws_rds_db_prevent_destroy`** - Protects the RDS database
+
+### Example Usage - Disabling Protection
+
+Since protection is enabled by default, you typically only need to explicitly set these flags if you want to **disable** protection:
+
+```yaml
+name: Deploy without resource protection
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+  EC2-Deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - id: deploy
+      uses: bitovi/github-actions-deploy-docker-to-ec2@v1.0.1
+      with:
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws_default_region: us-east-1
+        
+        # Disable protection for development environment
+        aws_ec2_prevent_destroy: false
+        aws_vpc_prevent_destroy: false
+        
+        # Keep database protected even in dev
+        aws_rds_db_enable: true
+        aws_rds_db_prevent_destroy: true  # Explicitly keep enabled
+```
+
+### Important Notes
+
+- **All resources are protected by default** with `prevent_destroy` set to `true`
+- This provides a safety net against accidental infrastructure deletion
+- When `prevent_destroy` is enabled, you must manually disable it before destroying the stack
+- To destroy a protected resource: set the flag to `false`, apply the changes, then run the destroy operation
+- For production environments, it's recommended to keep these protections enabled
+- The Terraform state bucket protection is independent of `tf_state_bucket_destroy`
 
 ## Adding external RDS Database
 
