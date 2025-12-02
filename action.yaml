@@ -51,6 +51,10 @@ inputs:
   tf_state_bucket_destroy:
     description: 'Force purge and deletion of S3 bucket defined. Only evaluated when `tf_stack_destroy` is also true, so it is safe to leave this enabled when standing up your stack.'
     required: false
+  tf_state_bucket_prevent_destroy:
+    description: 'Prevent Terraform from destroying the S3 state bucket. Set to true to enable lifecycle prevent_destroy.'
+    required: false
+    default: true
   tf_targets: # targets
     description: 'A list of targets to create before the full stack creation.'
     required: false
@@ -129,6 +133,10 @@ inputs:
   aws_ec2_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
+  aws_ec2_prevent_destroy:
+    description: 'Prevent Terraform from destroying the EC2 instance. Set to true to enable lifecycle prevent_destroy.'
+    required: false
+    default: true
 
   # AWS VPC Inputs
   aws_vpc_create:
@@ -167,6 +175,10 @@ inputs:
   aws_vpc_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
+  aws_vpc_prevent_destroy:
+    description: 'Prevent Terraform from destroying the VPC. Set to true to enable lifecycle prevent_destroy.'
+    required: false
+    default: true
 
   # AWS Route53 Domains abd Certificates
   aws_r53_enable:
@@ -196,6 +208,10 @@ inputs:
   aws_r53_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
+  aws_r53_cert_prevent_destroy:
+    description: 'Prevent Terraform from destroying Route53 certificates. Set to true to enable lifecycle prevent_destroy.'
+    required: false
+    default: true
 
   # AWS ELB
   aws_elb_create:
@@ -230,6 +246,10 @@ inputs:
   aws_elb_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
+  aws_elb_prevent_destroy:
+    description: 'Prevent Terraform from destroying the load balancer. Set to true to enable lifecycle prevent_destroy.'
+    required: false
+    default: true
   
   # Docker 
   docker_install: 
@@ -322,6 +342,10 @@ inputs:
   aws_efs_additional_tags: 
     description: 'A list of strings that will be added to created resources'
     required: false
+  aws_efs_prevent_destroy:
+    description: 'Prevent Terraform from destroying the EFS file system. Set to true to enable lifecycle prevent_destroy.'
+    required: false
+    default: true
 
  # AWS RDS
   aws_rds_db_enable: # aws_enable_postgres
@@ -405,6 +429,10 @@ inputs:
   aws_rds_db_additional_tags:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
+  aws_rds_db_prevent_destroy:
+    description: 'Prevent Terraform from destroying the RDS database. Set to true to enable lifecycle prevent_destroy.'
+    required: false
+    default: true
 
  # RDS Proxy
   aws_db_proxy_name:
@@ -629,6 +657,7 @@ runs:
         tf_state_file_name_append: ${{ inputs.tf_state_file_name_append }}
         tf_state_bucket: ${{ inputs.tf_state_bucket }}
         tf_state_bucket_destroy: ${{ inputs.tf_state_bucket_destroy }}
+        tf_state_bucket_prevent_destroy: ${{ inputs.tf_state_bucket_prevent_destroy }}
         tf_targets: ${{ inputs.tf_targets  || inputs.targets }}
         ansible_skip: ${{ inputs.ansible_skip }}
         ansible_ssh_to_private_ip: ${{ inputs.ansible_ssh_to_private_ip }}
@@ -657,6 +686,7 @@ runs:
         aws_ec2_user_data_file: ${{ inputs.aws_ec2_user_data_file }}
         aws_ec2_user_data_replace_on_change: ${{ inputs.aws_ec2_user_data_replace_on_change }}
         aws_ec2_additional_tags: ${{ inputs.aws_ec2_additional_tags }}
+        aws_ec2_prevent_destroy: ${{ inputs.aws_ec2_prevent_destroy }}
 
         ## AWS VPC
         aws_vpc_create: ${{ inputs.aws_vpc_create }}
@@ -671,6 +701,7 @@ runs:
         aws_vpc_single_nat_gateway: ${{ inputs.aws_vpc_single_nat_gateway }}
         aws_vpc_external_nat_ip_ids: ${{ inputs.aws_vpc_external_nat_ip_ids }}
         aws_vpc_additional_tags: ${{ inputs.aws_vpc_additional_tags }}
+        aws_vpc_prevent_destroy: ${{ inputs.aws_vpc_prevent_destroy }}
 
         # AWS Route53 Domains abd Certificates
         aws_r53_enable: ${{ inputs.aws_r53_enable }}
@@ -682,6 +713,7 @@ runs:
         aws_r53_create_root_cert: ${{ inputs.aws_r53_create_root_cert || inputs.create_root_cert }}
         aws_r53_create_sub_cert: ${{ inputs.aws_r53_create_sub_cert || inputs.create_sub_cert }}
         aws_r53_additional_tags: ${{ inputs.aws_r53_additional_tags }}
+        aws_r53_cert_prevent_destroy: ${{ inputs.aws_r53_cert_prevent_destroy }}
 
         # AWS ELB
         aws_elb_create: ${{ inputs.aws_elb_create }}
@@ -694,6 +726,7 @@ runs:
         aws_elb_access_log_bucket_name: ${{ inputs.aws_elb_access_log_bucket_name }}
         aws_elb_access_log_expire: ${{ inputs.aws_elb_access_log_expire }}
         aws_elb_additional_tags: ${{ inputs.aws_elb_additional_tags }}
+        aws_elb_prevent_destroy: ${{ inputs.aws_elb_prevent_destroy }}
         
         # Docker
         docker_install: ${{ inputs.docker_install }}
@@ -725,6 +758,7 @@ runs:
         aws_efs_enable_backup_policy: ${{ inputs.aws_efs_enable_backup_policy || inputs.aws_enable_efs_backup_policy }}
         aws_efs_transition_to_inactive: ${{ inputs.aws_efs_transition_to_inactive }}
         aws_efs_additional_tags: ${{ inputs.aws_efs_additional_tags }}
+        aws_efs_prevent_destroy: ${{ inputs.aws_efs_prevent_destroy }}
 
         # AWS RDS
         aws_rds_db_enable: ${{ inputs.aws_rds_db_enable || inputs.aws_enable_postgres }}
@@ -754,6 +788,7 @@ runs:
         aws_rds_db_maintenance_window: ${{ inputs.aws_rds_db_maintenance_window }}
         aws_rds_db_apply_immediately: ${{ inputs.aws_rds_db_apply_immediately }}
         aws_rds_db_additional_tags: ${{ inputs.aws_rds_db_additional_tags }}
+        aws_rds_db_prevent_destroy: ${{ inputs.aws_rds_db_prevent_destroy }}
 
         # DB Proxy
         aws_db_proxy_name : ${{ inputs.aws_db_proxy_name }}
