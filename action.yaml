@@ -250,6 +250,12 @@ inputs:
   aws_alb_listen_protocol:
     description: "Comma-separated list of listener protocols for ALB (HTTP/HTTPS)"
     required: false
+  aws_alb_redirect_enable:
+    description: "Enable HTTP to HTTPS redirection on ALB"
+    required: false
+  aws_alb_www_to_apex_redirect:
+    description: 'Enable www to apex domain redirection on ALB'
+    required: false
   aws_alb_healthcheck_path:
     description: "Health check path for ALB target group"
     required: false
@@ -267,6 +273,9 @@ inputs:
     required: false
   aws_alb_access_log_expire:
     description: "Delete the access logs after this amount of days"
+    required: false
+  aws_alb_additional_tags:
+    description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
 
   # AWS WAF
@@ -793,12 +802,15 @@ runs:
         aws_alb_app_protocol: ${{ inputs.aws_alb_app_protocol }}
         aws_alb_listen_port: ${{ inputs.aws_alb_listen_port }}
         aws_alb_listen_protocol: ${{ inputs.aws_alb_listen_protocol }}
+        aws_alb_redirect_enable: ${{ inputs.aws_alb_redirect_enable }}
+        aws_alb_www_to_apex_redirect: ${{ inputs.aws_alb_www_to_apex_redirect }}
         aws_alb_healthcheck_path: ${{ inputs.aws_alb_healthcheck_path }}
         aws_alb_healthcheck_protocol: ${{ inputs.aws_alb_healthcheck_protocol }}
         aws_alb_ssl_policy: ${{ inputs.aws_alb_ssl_policy }}
         aws_alb_access_log_enabled: ${{ inputs.aws_alb_access_log_enabled }}
         aws_alb_access_log_bucket_name: ${{ inputs.aws_alb_access_log_bucket_name }}
         aws_alb_access_log_expire: ${{ inputs.aws_alb_access_log_expire }}
+        aws_alb_additional_tags: ${{ inputs.aws_alb_additional_tags }}
 
         # AWS WAF
         aws_waf_enable: ${{ inputs.aws_waf_enable }}
