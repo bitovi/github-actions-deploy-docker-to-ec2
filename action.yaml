@@ -231,7 +231,7 @@ inputs:
     description: 'A JSON object of additional tags that will be included on created resources. Example: `{"key1": "value1", "key2": "value2"}`'
     required: false
   
-    # AWS ALB
+  # AWS ALB
   aws_alb_create:
     description: "Global toggle for ALB creation"
     required: false
@@ -386,6 +386,9 @@ inputs:
     required: false
   docker_repo_app_directory_cleanup: # app_directory_cleanup
     description: 'Will generate a timestamped compressed file and delete the app repo directory.'
+    required: false
+  docker_backup_retention:
+    description: 'Number of old backups to retain. Default is unlimited.'
     required: false
   docker_efs_mount_target: # data_mount_target
     description: 'Directory path within docker env to mount directory to, default is `/data`'
@@ -749,7 +752,7 @@ runs:
 
     - name: Deploy with BitOps
       id: deploy
-      uses: bitovi/github-actions-commons@add-alb-and-waf-to-ec2
+      uses: bitovi/github-actions-commons@add-docker-backup-cleanup
       with:
         # AWS Specific
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
@@ -889,6 +892,7 @@ runs:
         docker_full_cleanup: ${{ inputs.docker_full_cleanup }}
         docker_repo_app_directory: ${{ inputs.docker_repo_app_directory || inputs.app_directory }}
         docker_repo_app_directory_cleanup: ${{ inputs.docker_repo_app_directory_cleanup || inputs.app_directory_cleanup }}
+        docker_backup_retention: ${{ inputs.docker_backup_retention }}
         docker_efs_mount_target: ${{ inputs.docker_efs_mount_target || inputs.data_mount_target }}
         docker_cloudwatch_enable: ${{ inputs.docker_cloudwatch_enable }}
         docker_cloudwatch_lg_name: ${{ inputs.docker_cloudwatch_lg_name }}
