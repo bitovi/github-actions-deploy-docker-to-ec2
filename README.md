@@ -15,7 +15,7 @@ The action will copy this repo to the VM and then run `docker compose up`.
 ### ‼️ Changing any of these values may result in **unexpected or conflicting resource creation**. ‼️</br>
 
 > ✨ **Multiple deployments:**  
-If you need to deploy multiple environments (e.g. `dev`, `staging`, `prod`) within the same workflow, explicitly set `aws_resource_identifier` and append the environment name to ensure uniqueness.
+If you need to deploy multiple environments (e.g. `dev`, `staging`, `prod`) within the same repository, explicitly set `aws_resource_identifier` and append the environment name to ensure uniqueness.
 ## Action Summary
 This action will create an EC2 instance and the resources defined, copy this repo to the VM, install docker (and other options if enabled) and then run `docker compose up`.
 
