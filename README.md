@@ -17,7 +17,7 @@ The action will copy this repo to the VM and then run `docker compose up`.
 > ✨ **Multiple deployments:**  
 If you need to deploy multiple environments (e.g. `dev`, `staging`, `prod`) within the same repository, explicitly set `aws_resource_identifier` and append the environment name to ensure uniqueness.
 
-> ✳️ **New in this release** ✳️ 
+## ✳️ **New in this release** ✳️ 
 >- Added `docker_backup_retention`, allowing cleanup of old backups. Set the number of backups to keep, defaults to unlimited.
 >- Fixed some bugs related to certificate handling. Specifically dependencies and first-time root-cert creation.
 >- Added ALB with WAF option - Including priorities for rules and the possibility to add your own.>
