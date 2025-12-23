@@ -752,7 +752,7 @@ runs:
 
     - name: Deploy with BitOps
       id: deploy
-      uses: bitovi/github-actions-commons@add-docker-backup-cleanup
+      uses: bitovi/github-actions-commons@v2
       with:
         # AWS Specific
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
