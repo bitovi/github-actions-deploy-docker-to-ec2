@@ -10,7 +10,11 @@ The action will copy this repo to the VM and then run `docker compose up`.
 
 #### `aws_resource_identifier` is used as a unique key identifier for naming AWS resources.
 
-### By default -->  **`${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}`**</br>
+### By default, it's made from the following values:
+
+```
+${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}-${GITHUB_BRANCH_NAME}
+```
 
 ### ‼️ Changing any of these values may result in **unexpected or conflicting resource creation**. ‼️</br>
 
@@ -18,9 +22,9 @@ The action will copy this repo to the VM and then run `docker compose up`.
 If you need to deploy multiple environments (e.g. `dev`, `staging`, `prod`) within the same repository, explicitly set `aws_resource_identifier` and append the environment name to ensure uniqueness.
 
 ## ✳️ **New in this release** ✳️ 
->- Added `docker_backup_retention`, allowing cleanup of old backups. Set the number of backups to keep, defaults to unlimited.
->- Fixed some bugs related to certificate handling. Specifically dependencies and first-time root-cert creation.
->- Added ALB with WAF option - Including priorities for rules and the possibility to add your own.>
+- Added `docker_backup_retention`, allowing cleanup of old backups. Set the number of backups to keep, defaults to unlimited.</br>
+- Fixed some bugs related to certificate handling. Specifically dependencies and first-time root-cert creation.</br>
+- Added ALB with WAF option - Including priorities for rules and the possibility to add your own.</br>
 ✨ Both ALB and ELB can coexist, but when a domain is defined, it will be applied for ALB resources if both enabled. To disable the ELB, set `aws_elb_create` to false.
 
 ## Action Summary
