@@ -16,6 +16,13 @@ The action will copy this repo to the VM and then run `docker compose up`.
 
 > ✨ **Multiple deployments:**  
 If you need to deploy multiple environments (e.g. `dev`, `staging`, `prod`) within the same repository, explicitly set `aws_resource_identifier` and append the environment name to ensure uniqueness.
+
+> ✳️ **New in this release** ✳️ 
+>- Added `docker_backup_retention`, allowing cleanup of old backups. Set the number of backups to keep, defaults to unlimited.
+>- Fixed some bugs related to certificate handling. Specifically dependencies and first-time root-cert creation.
+>- Added ALB with WAF option - Including priorities for rules and the possibility to add your own.>
+✨ Both ALB and ELB can coexist, but when a domain is defined, it will be applied for ALB resources if both enabled. To disable the ELB, set `aws_elb_create` to false.
+
 ## Action Summary
 This action will create an EC2 instance and the resources defined, copy this repo to the VM, install docker (and other options if enabled) and then run `docker compose up`.
 
@@ -110,7 +117,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: deploy
-        uses: bitovi/github-actions-deploy-docker-to-ec2@v1.0.1
+        uses: bitovi/github-actions-deploy-docker-to-ec2@v1
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -139,7 +146,7 @@ jobs:
     steps:
     - id: deploy
       name: Deploy
-      uses: bitovi/github-actions-deploy-docker-to-ec2@v1.0.1
+      uses: bitovi/github-actions-deploy-docker-to-ec2@v1
       with:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
