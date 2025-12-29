@@ -24,8 +24,12 @@ If you need to deploy multiple environments (e.g. `dev`, `staging`, `prod`) with
 ## ✳️ **New in this release** ✳️ 
 - Added `docker_backup_retention`, allowing cleanup of old backups. Set the number of backups to keep, defaults to unlimited.</br>
 - Fixed some bugs related to certificate handling. Specifically dependencies and first-time root-cert creation.</br>
+- ⚠️ `aws_elb_access_log_bucket_name` was not being set correctly, hence it was staticly set to a fixed value.</br>
 - Added ALB with WAF option - Including priorities for rules and the possibility to add your own.</br>
 ✨ Both ALB and ELB can coexist, but when a domain is defined, it will be applied for ALB resources if both enabled. To disable the ELB, set `aws_elb_create` to false.
+
+### ‼️⚠️ Breaking changes ⚠️‼️
+As `aws_elb_access_log_bucket_name` was not being set, if you defined this variable it will be recreated with the name you defined in your workflow. Not critical, but logs will be lost as you are recreating the bucket. </br>
 
 ## Action Summary
 This action will create an EC2 instance and the resources defined, copy this repo to the VM, install docker (and other options if enabled) and then run `docker compose up`.
@@ -187,7 +191,7 @@ jobs:
 1. [AWS Route53 Domains and Certificates](#aws-route53-domains-and-certificate-inputs)
 1. [Load Balancer](#load-balancer-inputs-classic-elb)
 1. [Application Load Balancer Inputs (ALB)](#application-load-balancer-inputs-alb)
-1. [WAF](#waf)
+1. [WAF](#waf-inputs)
 1. [Docker](#docker-inputs)
 1. [EFS](#efs-inputs)
 1. [RDS](#rds-inputs)
@@ -320,17 +324,20 @@ The following inputs can be used as `step.with` keys
 | `aws_alb_app_port` | String | Comma-separated list of application ports for ALB target group. If none defined, will use `aws_alb_listen_port` ones. |
 | `aws_alb_app_protocol` | String | Comma-separated list of protocols for ALB target group (HTTP/HTTPS). Defaults to `HTTP`. |
 | `aws_alb_listen_port` | String | Comma-separated list of listener ports for ALB. Depending on certificate, defaults to `80` or `443`. |
-| `aws_alb_listen_protocol` | String | Comma-separated list of listener protocols for ALB (HTTP/HTTPS). Defaults to Depending on certificate, defaults to `HTTP` or `HTTPS`. |
+| `aws_alb_listen_protocol` | String | Comma-separated list of listener protocols for ALB (HTTP/HTTPS). Depending on certificate, defaults to `HTTP` or `HTTPS`. |
 | `aws_alb_redirect_enable` | Boolean | Enable HTTP to HTTPS redirection on ALB. Defaults to `false` |
 | `aws_alb_www_to_apex_redirect` | Boolean | Enable www to apex domain redirection on ALB. Defaults to `false` |
 | `aws_alb_healthcheck_path` | String | Health check path for ALB target group. Defaults to `"/"` |
 | `aws_alb_healthcheck_protocol` | String | Health check protocol for ALB target group. Defaults to `"HTTP"` |
 | `aws_alb_ssl_policy` | String | SSL policy for HTTPS listeners. More [here](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/describe-ssl-policies.html) |
+| `aws_alb_access_log_enabled` | Boolean | Enable ALB access logs. |
+| `aws_alb_access_log_bucket_name` | String | S3 bucket name to store the ALB access logs. Defaults to `${aws_resource_identifier}-lb`. **Bucket will be deleted if stack is destroyed.** |
+| `aws_alb_access_log_expire` | String | Delete the access logs after this amount of days. Defaults to `90`. Set to `0` in order to disable this policy. | 
 | `aws_alb_additional_tags`| String | A list of strings that will be added to created resources. Example: `{"key1": "value1", "key2": "value2"}`. Default `"{}"` |
 <hr/>
 <br/>
 
-#### **WAF**
+#### **WAF Inputs**
 | Name             | Type    | Description                        |
 |------------------|---------|------------------------------------|
 | `aws_waf_enable` | Boolean | Enable WAF for load balancer (LB only - NOT ELB). Default is `false` |
