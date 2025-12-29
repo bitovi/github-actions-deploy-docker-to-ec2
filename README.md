@@ -24,7 +24,7 @@ If you need to deploy multiple environments (e.g. `dev`, `staging`, `prod`) with
 ## ✳️ **New in this release** ✳️ 
 - Added `docker_backup_retention`, allowing cleanup of old backups. Set the number of backups to keep, defaults to unlimited.</br>
 - Fixed some bugs related to certificate handling. Specifically dependencies and first-time root-cert creation.</br>
-- ⚠️ `aws_elb_access_log_bucket_name` was not being set correctly, hence it was staticly set to a fixed value.</br>
+- ⚠️ `aws_elb_access_log_bucket_name` was not being set correctly, hence it was set to a fixed value ignoring input.</br>
 - Added ALB with WAF option - Including priorities for rules and the possibility to add your own.</br>
 ✨ Both ALB and ELB can coexist, but when a domain is defined, it will be applied for ALB resources if both enabled. To disable the ELB, set `aws_elb_create` to false.
 
