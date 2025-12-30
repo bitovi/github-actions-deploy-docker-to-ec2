@@ -752,7 +752,7 @@ runs:
 
     - name: Deploy with BitOps
       id: deploy
-      uses: bitovi/github-actions-commons@v2.0.7
+      uses: bitovi/github-actions-commons@fix-non-ec2-issue
       with:
         # AWS Specific
         aws_access_key_id: ${{ inputs.aws_access_key_id }}
